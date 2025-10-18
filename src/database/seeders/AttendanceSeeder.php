@@ -27,13 +27,13 @@ class AttendanceSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'user_id' => 2,
+                'user_id' => 1,
                 'clock_in_time' => '2025-10-15 08:50:00',
                 'break_start' => '2025-10-15 12:10:00',
                 'break_end' => '2025-10-15 13:00:00',
                 'clock_out_time' => '2025-10-15 17:45:00',
                 // 'status' => 1,
-                'status' => 'off_duty', // ✅ ENUM型文字列
+                'status' => 'none', // ✅ ENUM型文字列
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

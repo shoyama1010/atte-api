@@ -17,7 +17,8 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const HOME = '/home';
+    // public const HOME = '/home';
+    public const HOME = '/attendance'; // Fortifyログイン後のリダイレクト先
 
     /**
      * The controller namespace for the application.
@@ -38,14 +39,23 @@ class RouteServiceProvider extends ServiceProvider
         $this->configureRateLimiting();
 
         $this->routes(function () {
+            // 🔹 APIルート（既存のまま）
             Route::prefix('api')
                 ->middleware('api')
                 ->namespace($this->namespace)
                 ->group(base_path('routes/api.php'));
 
+            // 🔹 一般ユーザー（Fortify）ルート（既存のまま）
             Route::middleware('web')
                 ->namespace($this->namespace)
                 ->group(base_path('routes/web.php'));
+
+             // 🔹 管理者ルート（ここを追記！）
+            Route::prefix('admin')
+                ->name('admin.')
+                ->middleware('web')
+                ->namespace($this->namespace)
+                ->group(base_path('routes/admin.php'));
         });
     }
 
