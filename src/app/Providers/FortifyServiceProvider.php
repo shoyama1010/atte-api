@@ -12,7 +12,9 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Laravel\Fortify\Fortify;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -29,6 +31,7 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // 🔹 新規登録処理
         Fortify::createUsersUsing(CreateNewUser::class);
 
         // 🔹 会員登録画面を表示
@@ -41,25 +44,16 @@ class FortifyServiceProvider extends ServiceProvider
             return view('auth.login');
         });
 
-        // 🔹 ログイン認証処理
-        Fortify::authenticateUsing(function (Request $request) {
-            $user = \App\Models\User::where('email', $request->email)->first();
-
-            if (
-                $user &&
-                \Hash::check($request->password, $user->password)
-            ) {
-                return $user;
-            }
-
-            return null;
+        // 🔹 メール認証処理
+        Fortify::verifyEmailView(function () {
+            return view('auth.verify-email');
         });
 
         // 🔹 ログイン後のリダイレクト処理
         Fortify::authenticateUsing(function (Request $request) {
             $user = \App\Models\User::where('email', $request->email)->first();
-            
-            if ($user && \Hash::check($request->password, $user->password)) {
+
+            if ($user && Hash::check($request->password, $user->password)) {
                 // 管理者 or 一般ユーザーで遷移先を切り替え
                 if ($user->role === 'admin') {
                     session(['redirect_after_login' => 'admin.dashboard']);
@@ -70,5 +64,6 @@ class FortifyServiceProvider extends ServiceProvider
             }
             return null;
         });
+
     }
 }

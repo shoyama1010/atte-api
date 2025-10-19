@@ -1,0 +1,93 @@
+/* ===============================
+   勤務修正申請フォーム・一覧共通
+=============================== */
+
+.attendance-request-container,
+.correction-list-container {
+    width: 80%;
+    max-width: 900px;
+    margin: 60px auto;
+    padding: 30px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* タイトル */
+h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* テーブル */
+.request-table,
+.correction-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+}
+
+.request-table th,
+.request-table td,
+.correction-table th,
+.correction-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+.request-table th {
+    width: 25%;
+    background-color: #f6f6f6;
+}
+
+textarea {
+    width: 90%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* ボタンエリア */
+.button-area {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.btn-submit {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-submit:hover {
+    background-color: #0056b3;
+}
+
+.btn-back {
+    margin-left: 10px;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.btn-back:hover {
+    text-decoration: underline;
+}
+
+/* ステータス色分け */
+.status.pending { color: #f39c12; font-weight: bold; }
+.status.approved { color: #27ae60; font-weight: bold; }
+.status.rejected { color: #e74c3c; font-weight: bold; }
+
+/* エラーメッセージ */
+.error {
+    color: #e74c3c;
+    font-size: 0.9rem;
+    margin-top: 5px;
+}

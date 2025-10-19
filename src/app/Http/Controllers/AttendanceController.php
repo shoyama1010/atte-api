@@ -13,6 +13,7 @@ class AttendanceController extends Controller
     public function index()
     {
         $user = Auth::user();
+        // 自分の勤怠データを新しい順に取得
         $attendance = Attendance::where('user_id', $user->id)
             ->whereDate('created_at', now()->toDateString())
             ->first();
@@ -73,5 +74,27 @@ class AttendanceController extends Controller
         ]);
 
         return redirect()->route('attendance.index')->with('message', '退勤しました');
+    }
+
+    public function list()
+    {
+        $user = Auth::user();
+
+        // 自分の勤怠データを新しい順に取得
+        $attendances = Attendance::where('user_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        return view('attendance.list', compact('user', 'attendances'));
+    }
+
+    public function detail($id)
+    {
+        $user = Auth::user();
+        $attendance = Attendance::where('id', $id)
+            ->where('user_id', $user->id)
+            ->firstOrFail();
+
+        return view('attendance.detail', compact('user', 'attendance'));
     }
 }

@@ -1,0 +1,51 @@
+/* ===============================
+   勤怠一覧画面スタイル
+=============================== */
+
+.attendance-list-container {
+    width: 80%;
+    margin: 50px auto;
+    text-align: center;
+}
+
+.attendance-list-container h2 {
+    margin-bottom: 20px;
+    font-size: 1.6rem;
+    font-weight: 600;
+}
+
+.attendance-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.attendance-table th,
+.attendance-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+.attendance-table th {
+    background-color: #f2f2f2;
+}
+
+.attendance-table tr:nth-child(even) {
+    background-color: #fafafa;
+}
+
+.attendance-table a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.attendance-table a:hover {
+    text-decoration: underline;
+}
+
+.pagination {
+    margin-top: 20px;
+    text-align: center;
+}
