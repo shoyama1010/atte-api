@@ -10,6 +10,22 @@ use App\Models\CorrectionRequest;
 class CorrectionRequestController extends Controller
 {
     /**
+     * 勤務修正申請一覧の表示
+     */
+    public function list()
+    {
+        $user = Auth::user();
+
+        // ログインユーザー自身の申請履歴を新しい順に取得
+        $requests = CorrectionRequest::where('user_id', $user->id)
+            ->with('attendance')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('stamp_correction_request.list', compact('user', 'requests'));
+    }
+
+    /**
      * 勤務修正申請フォームを表示
      */
     public function edit($attendanceId)

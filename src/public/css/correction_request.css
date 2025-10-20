@@ -91,3 +91,75 @@ textarea {
     font-size: 0.9rem;
     margin-top: 5px;
 }
+
+/* ===============================
+   ▼ 状態セルの調整（枠内にきっちり中央配置）
+=============================== */
+.correction-table td {
+    vertical-align: middle;  /* テキストを縦方向中央に */
+}
+
+.correction-table td .status {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    min-width: 60px;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+/* 状態別カラー（そのままでもOK） */
+ .status.pending {
+    color: #f39c12;
+    border-color: #f39c12;
+    font-weight: bold;
+    background-color: #fff9f0;
+}
+
+.status.approved {
+    color: #27ae60;
+    border-color: #27ae60;
+    background-color: #f4fff8;
+    font-weight: bold;
+}
+
+.status.rejected {
+    color: #e74c3c;
+    border-color: #e74c3c;
+    background-color: #fff5f5;
+    font-weight: bold;
+}
+
+/* ======== 上部タブメニュー ======== */
+.status-tabs {
+    display: flex;
+    /* justify-content: center; */
+    margin-bottom: 20px;
+}
+
+.status-tabs ul {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.status-tabs li a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 600;
+    font-size: 16px;
+    transition: color 0.3s;
+}
+
+.status-tabs li a:hover {
+    color: #007bff;
+}
+
+.status-tabs li.active a {
+    color: #007bff;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 4px;
+}

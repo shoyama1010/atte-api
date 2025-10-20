@@ -54,12 +54,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // 🔹 勤務修正申請（再設計版）
     Route::get('/attendance/request/{attendance}', [CorrectionRequestController::class, 'edit'])
         ->name('attendance.request.edit');  // ← 旧 create() → edit() に変更
-    Route::post('/attendance/request/{attendance}', [CorrectionRequestController::class, 'update'])
+
+        Route::post('/attendance/request/{attendance}', [CorrectionRequestController::class, 'update'])
         ->name('attendance.request.update'); // ← 旧 store() → update() に変更
 
     // 申請一覧画面（一般ユーザー）
     Route::get('/stamp_correction_request/list', [CorrectionRequestController::class, 'list'])
         ->name('stamp_correction_request.list');
+
+    // 勤務修正申請一覧
+    // Route::get('/stamp_correction_request/list', [CorrectionRequestController::class, 'list'])
+    //     ->name('stamp_correction_request.list');
 });
 
 /*

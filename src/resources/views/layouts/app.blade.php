@@ -7,7 +7,7 @@
 
     {{-- ✅ 共通CSS（全ページのベーススタイル） --}}
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-
+    <link rel="stylesheet" href="{{ asset('css/auth.css') }}">
     {{-- ✅ ページごとの追加CSSを読み込み（@section('css')で個別定義） --}}
     @yield('css')
 </head>
@@ -35,7 +35,7 @@
                         @endif
 
                         {{-- 🔹 管理者用メニュー（guard: admin） --}}
-                        @if(Auth::guard('admin')->check())
+                        @if(Auth::guard('admin')->check() && Route::has('admin.attendance.list'))
                             <li><a href="{{ route('admin.attendance.list') }}">勤怠一覧</a></li>
                             <li><a href="{{ route('admin.staff.list') }}">スタッフ一覧</a></li>
                             <li><a href="{{ route('admin.correction.list') }}">申請一覧</a></li>
