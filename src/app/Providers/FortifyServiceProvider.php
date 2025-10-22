@@ -54,16 +54,20 @@ class FortifyServiceProvider extends ServiceProvider
             $user = \App\Models\User::where('email', $request->email)->first();
 
             if ($user && Hash::check($request->password, $user->password)) {
-                // 管理者 or 一般ユーザーで遷移先を切り替え
+
+                // 管理者の場合
                 if ($user->role === 'admin') {
-                    session(['redirect_after_login' => 'admin.dashboard']);
-                } else {
-                    session(['redirect_after_login' => 'attendance.index']);
+                    // Fortifyのreturnは「$user」でOK（リダイレクトは別設定で制御）
+                    session(['redirect_after_login' => '/admin/attendance/list']);
+                    return $user;
                 }
+
+                // 一般ユーザーの場合
+                session(['redirect_after_login' => '/attendance']);
                 return $user;
             }
+
             return null;
         });
-
     }
 }

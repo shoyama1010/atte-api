@@ -51,7 +51,6 @@
                             </td>
                             <td>{{ $request->user->name }}</td>
                             <td>{{ $request->created_at->format('Y/m/d') }}</td>
-                            {{-- <td>{{ $request->attendance->created_at->format('Y/m/d') }}</td> --}}
                             <td>{{ optional($request->attendance)->clock_in_time?->format('Y/m/d') ?? '-' }}</td>
                             <td>{{ $request->reason ?? '（理由なし）' }}</td>
 

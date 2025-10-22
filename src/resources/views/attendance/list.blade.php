@@ -1,52 +1,60 @@
 @extends('layouts.app')
 
 @section('css')
-<link rel="stylesheet" href="{{ asset('css/attendance.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/attendance_list.css') }}">
 @endsection
 
 @section('content')
-<div class="attendance-list-container">
-    <h2>勤務一覧：{{ $user->name }} </h2>
+    <div class="attendance-list-container">
+        <h2>勤務一覧：{{ Auth::user()->name }} </h2>
 
-    <table class="attendance-table">
-        <thead>
-            <tr>
-                <th>日付</th>
-                <th>出勤</th>
-                <th>休憩開始</th>
-                <th>休憩終了</th>
-                <th>退勤</th>
-                <th>ステータス</th>
-                <th>詳細</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($attendances as $attendance)
-            <tr>
-                <td>{{ $attendance->created_at->format('Y/m/d') }}</td>
-                <td>{{ optional($attendance->clock_in_time)->format('H:i') ?? '-' }}</td>
-                <td>{{ optional($attendance->break_start)->format('H:i') ?? '-' }}</td>
-                <td>{{ optional($attendance->break_end)->format('H:i') ?? '-' }}</td>
-                <td>{{ optional($attendance->clock_out_time)->format('H:i') ?? '-' }}</td>
-                <td>
-                    @switch($attendance->status)
-                        @case('none') 未出勤 @break
-                        @case('working') 勤務中 @break
-                        @case('on_break') 休憩中 @break
-                        @case('left') 退勤済み @break
-                    @endswitch
-                </td>
-                <td>
-                    <a href="{{ route('attendance.detail', $attendance->id) }}" class="btn-detail">詳細</a>
-                </td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
+        @if ($attendances->isEmpty())
+            <p>現在、勤務記録はありません。</p>
+        @else
+            <table class="attendance-table">
+                <thead>
+                    <tr>
+                        <th>日付</th>
+                        <th>出勤</th>
+                        <th>退勤</th>
+                        <th>休憩時間</th>
+                        <th>合計</th>
+                        {{-- <th>ステータス</th> --}}
+                        <th>詳細</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($attendances as $attendance)
+                       @php
+                       // 出勤・退勤・休憩時間の計算
+                        $clockIn = $attendance->clock_in_time ? \Carbon\Carbon::parse($attendance->clock_in_time) : null;
+                        $clockOut = $attendance->clock_out_time ? \Carbon\Carbon::parse($attendance->clock_out_time) : null;
+                        $breakStart = $attendance->break_start ? \Carbon\Carbon::parse($attendance->break_start) : null;
+                        $breakEnd = $attendance->break_end ? \Carbon\Carbon::parse($attendance->break_end) : null;
+                        // 休憩時間（分単位）
+                        $breakDuration = ($breakStart && $breakEnd) ? $breakEnd->diffInMinutes($breakStart) : 0;
+                        // 総勤務時間（出勤～退勤） - 休憩
+                        $totalDuration = ($clockIn && $clockOut)
+                            ? $clockOut->diffInMinutes($clockIn) - $breakDuration
+                            : 0;
+                        // 表示形式（h:i）
+                        $breakTimeFormatted = sprintf('%02d:%02d', floor($breakDuration / 60), $breakDuration % 60);
+                        $totalTimeFormatted = sprintf('%02d:%02d', floor($totalDuration / 60), $totalDuration % 60);
+                       @endphp
 
-    <div class="pagination">
-        {{ $attendances->links() }}
+                        <tr>
+                            <td>{{ optional($clockIn)->format('Y/m/d') ?? '-' }}</td>
+                            <td>{{ optional($clockIn)->format('H:i') ?? '-' }}</td>
+                            <td>{{ optional($clockOut)->format('H:i') ?? '-' }}</td>
+                            <td>{{ $breakTimeFormatted }}</td>
+                            <td>{{ $totalTimeFormatted }}</td>
+                            <td>
+                                <a href="{{ route('attendance.detail', ['id' => $attendance->id]) }}">詳細</a>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        @endif
     </div>
-</div>
 @endsection
-

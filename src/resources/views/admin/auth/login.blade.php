@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+
+
 @section('content')
     <div class="auth-container">
         <h2>管理者ログイン</h2>

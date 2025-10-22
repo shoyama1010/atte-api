@@ -15,6 +15,7 @@ class UserFactory extends Factory
     public function definition()
     {
         return [
+            'admin_id' => 1, // ← ★追加！（NULL禁止の場合必須）
             'name' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
             'email_verified_at' => now(),

@@ -82,10 +82,13 @@ class AttendanceController extends Controller
 
         // 自分の勤怠データを新しい順に取得
         $attendances = Attendance::where('user_id', $user->id)
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+            // ->orderBy('created_at', 'desc')
+            ->orderBy('clock_in_time', 'desc')
+            ->get();
+            // ->paginate(10);
 
-        return view('attendance.list', compact('user', 'attendances'));
+        // return view('attendance.list', compact('user', 'attendances'));
+        return view('attendance.list', compact('attendances'));
     }
 
     public function detail($id)

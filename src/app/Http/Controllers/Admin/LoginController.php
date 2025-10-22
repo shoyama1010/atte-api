@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Auth;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -10,20 +10,22 @@ class LoginController extends Controller
 {
     public function showLoginForm()
     {
-        return view('admin.auth.login');
+        return view('admin.login');
     }
 
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
 
+        // 管理者認証
         if (Auth::guard('admin')->attempt($credentials)) {
-            // return redirect()->route('admin.dashboard');
+            // ✅ ログイン成功時：勤怠一覧にリダイレクト
             return redirect()->intended('/admin/attendance/list');
         }
 
+        // ログイン失敗時
         return back()->withErrors([
-            'email' => 'メールアドレスまたはパスワードが正しくありません。',
+            'email' => 'ログイン情報が正しくありません。',
         ]);
     }
 
@@ -33,6 +35,6 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('admin.login');
+        return redirect('/admin/login');
     }
 }

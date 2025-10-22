@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 
 class UserSeeder extends Seeder
 {
@@ -33,5 +34,8 @@ class UserSeeder extends Seeder
                 'updated_at' => now(),
             ],
         ]);
+
+        // ✅ ここでFactoryを使ってランダム10人分を追加
+        User::factory()->count(10)->create();
     }
 }
