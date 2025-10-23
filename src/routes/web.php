@@ -7,12 +7,14 @@ use App\Http\Controllers\Admin\AdminAttendanceController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\CorrectionRequestController;
 use App\Http\Controllers\Admin\LoginController;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
 | メール認証関連ルート
 |--------------------------------------------------------------------------
 */
+
 Route::middleware('auth')->group(function () {
     // 🔹 確認待ち画面（verify-email.blade.php）
     Route::get('/email/verify', function () {
@@ -49,6 +51,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/attendance/break-end', [AttendanceController::class, 'breakEnd'])->name('attendance.breakEnd');
     Route::post('/attendance/clock-out', [AttendanceController::class, 'clockOut'])->name('attendance.clockOut');
 
+    // Route::get('/stamp_correction_request/list', [CorrectionRequestController::class, 'list'])
+    //     ->name('stamp_correction_request.list');
+
     // 勤怠一覧・詳細
     Route::get('/attendance/list', [AttendanceController::class, 'list'])->name('attendance.list');
     Route::get('/attendance/detail/{id}', [AttendanceController::class, 'detail'])->name('attendance.detail');
@@ -56,7 +61,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/attendance/request/{attendance}', [CorrectionRequestController::class, 'edit'])
         ->name('attendance.request.edit');  // ← 旧 create() → edit() に変更
 
-        Route::post('/attendance/request/{attendance}', [CorrectionRequestController::class, 'update'])
+    Route::post('/attendance/request/{attendance}', [CorrectionRequestController::class, 'update'])
         ->name('attendance.request.update'); // ← 旧 store() → update() に変更
     // 申請一覧画面（一般ユーザー）
     Route::get('/stamp_correction_request/list', [CorrectionRequestController::class, 'list'])
@@ -67,8 +72,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 | ログアウト（Fortify標準ルートを上書き）
 |--------------------------------------------------------------------------
 */
-use Illuminate\Support\Facades\Auth;
-
 Route::post('/logout', function (Request $request) {
     Auth::guard('web')->logout();
     $request->session()->invalidate();
@@ -86,12 +89,14 @@ Route::middleware(['auth:admin'])->group(function () {
     // 🔽 詳細ページへのルートを追加
     Route::get('/admin/attendance/{id}', [AdminAttendanceController::class, 'show'])
         ->name('admin.attendance.detail');
+    Route::get('/admin/attendance/{id}', [AdminAttendanceController::class, 'edit'])->name('admin.attendance.edit');
+    Route::put('/admin/attendance/{id}', [AdminAttendanceController::class, 'update'])->name('admin.attendance.update');
 });
 
 // 管理者：申請一覧（一般ユーザーと同じコントローラでもOK）
 Route::middleware(['auth:admin'])->group(function () {
-    Route::get('/stamp_correction_request/list', [CorrectionRequestController::class, 'list'])
-        ->name('admin.correction.list');
+    Route::get('/admin/stamp_correction_request/list', [CorrectionRequestController::class, 'list'])
+        ->name('admin.stamp_correction_request.list');
 });
 
 Route::post('/admin/logout', function (Illuminate\Http\Request $request) {

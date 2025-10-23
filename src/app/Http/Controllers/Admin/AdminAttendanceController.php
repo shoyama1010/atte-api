@@ -31,4 +31,34 @@ class AdminAttendanceController extends Controller
 
         return view('admin.attendance.detail', compact('attendance'));
     }
+
+    public function edit($id)
+    {
+        $attendance = Attendance::with('user')->findOrFail($id);
+        return view('admin.attendance.edit', compact('attendance'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'clock_in_time' => 'nullable|date_format:H:i',
+            'clock_out_time' => 'nullable|date_format:H:i|after:clock_in_time',
+            'break_start' => 'nullable|date_format:H:i',
+            'break_end' => 'nullable|date_format:H:i|after:break_start',
+            'remarks' => 'nullable|string|max:255',
+        ]);
+
+        $attendance = Attendance::findOrFail($id);
+
+        $attendance->update([
+            'clock_in_time' => $request->clock_in_time,
+            'clock_out_time' => $request->clock_out_time,
+            'break_start' => $request->break_start,
+            'break_end' => $request->break_end,
+            'remarks' => $request->remarks,
+        ]);
+
+        return redirect()->route('admin.attendance.list')
+            ->with('success', '勤怠情報を修正しました。');
+    }
 }

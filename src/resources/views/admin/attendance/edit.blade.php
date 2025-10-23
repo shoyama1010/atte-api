@@ -1,22 +1,18 @@
 @extends('layouts.app')
 
 @section('css')
-<link rel="stylesheet" href="{{ asset('css/attendance.css') }}">
-{{-- <link rel="stylesheet" href="{{ asset('css/correction_request.css') }}"> --}}
+<link rel="stylesheet" href="{{ asset('css/attendance_detail.css') }}">
 @endsection
 
 @section('content')
 <div class="attendance-request-container">
-    <h2>勤務詳細修正申請</h2>
+    <h2>勤務詳細：{{ $attendance->user->name }}</h2>
 
-    <form method="POST" action="{{ route('attendance.request.update', $attendance->id) }}">
+    <form method="POST" action="{{ route('admin.attendance.update', $attendance->id) }}">
         @csrf
+        @method('PUT')
 
         <table class="request-table">
-            <tr>
-                <th>名前</th>
-                <td>{{ $user->name }}</td>
-            </tr>
             <tr>
                 <th>日付</th>
                 <td>{{ $attendance->created_at->format('Y年m月d日') }}</td>
@@ -42,19 +38,18 @@
                 </td>
             </tr>
             <tr>
-                <th>備考</th>
+                <th>備考（修正理由など）</th>
                 <td>
-                    <textarea name="reason" rows="2" placeholder="修正理由を入力してください">{{ old('reason') }}</textarea>
-                    @error('reason')<p class="error">{{ $message }}</p>@enderror
+                    <textarea name="remarks" rows="2" placeholder="修正理由を入力してください">{{ old('remarks', $attendance->remarks) }}</textarea>
+                    @error('remarks')<p class="error">{{ $message }}</p>@enderror
                 </td>
             </tr>
         </table>
 
         <div class="button-area">
-            <button type="submit" class="btn-submit">修正(申請)</button>
-            <a href="{{ route('attendance.detail', $attendance->id) }}" class="btn-back">戻る</a>
+            <button type="submit" class="btn-submit">修正を保存</button>
+            <a href="{{ route('admin.attendance.list') }}" class="btn-back">一覧に戻る</a>
         </div>
     </form>
 </div>
 @endsection
-

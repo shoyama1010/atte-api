@@ -44,7 +44,7 @@
                     @elseif (Auth::guard('admin')->check())
                         <li><a href="{{ route('attendance.list') }}">勤怠一覧</a></li>
                         {{-- <li><a href="{{ route('staff.list') }}">スタッフ一覧</a></li>  ← 今は未実装なのでコメントアウト --}}
-                        <li><a href="{{ route('stamp_correction_request.list') }}">申請一覧</a></li>
+                        <li><a href="{{ route('admin.stamp_correction_request.list') }}">申請一覧</a></li>
                         <li>
                             <form method="POST" action="{{ route('admin.logout') }}">
                                 @csrf

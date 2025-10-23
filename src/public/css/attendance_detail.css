@@ -1,0 +1,135 @@
+/* ==============================
+   勤怠詳細・修正フォーム共通スタイル
+============================== */
+
+/* ページ全体 */
+.attendance-request-container {
+    max-width: 700px;
+    margin: 60px auto;
+    padding: 40px 50px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* タイトル */
+.attendance-request-container h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 25px;
+    border-left: 6px solid #333;
+    padding-left: 12px;
+    color: #222;
+}
+
+/* テーブル */
+.request-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 25px;
+}
+
+.request-table th {
+    width: 30%;
+    text-align: left;
+    background-color: #f8f8f8;
+    padding: 12px 15px;
+    border-bottom: 1px solid #ddd;
+    font-weight: 600;
+    color: #333;
+}
+
+.request-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #ddd;
+    color: #444;
+}
+
+/* 入力フォーム */
+.request-table input[type="time"],
+.request-table textarea {
+    width: 40%;
+    padding: 6px 8px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.request-table input[type="time"]:focus,
+.request-table textarea:focus {
+    border-color: #333;
+}
+
+.request-table textarea {
+    width: 90%;
+    resize: none;
+}
+
+/* エラーメッセージ */
+.error {
+    color: #e74c3c;
+    font-size: 0.9rem;
+    margin-top: 6px;
+}
+
+/* ボタンエリア */
+.button-area {
+    text-align: right;
+    margin-top: 25px;
+}
+
+/* 「修正申請する」「修正を保存」ボタン */
+.btn-submit {
+    background-color: #2c3e50;
+    color: #fff;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.btn-submit:hover {
+    background-color: #3b536d;
+}
+
+/* 「一覧に戻る」ボタン */
+.btn-back {
+    margin-left: 10px;
+    background: #ccc;
+    color: #333;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background 0.2s ease;
+}
+
+.btn-back:hover {
+    background: #bbb;
+}
+
+/* レスポンシブ対応 */
+@media screen and (max-width: 600px) {
+    .request-table th,
+    .request-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .request-table input[type="time"],
+    .request-table textarea {
+        width: 100%;
+    }
+
+    .button-area {
+        text-align: center;
+    }
+
+    .btn-submit,
+    .btn-back {
+        width: 90%;
+        margin-bottom: 10px;
+    }
+}

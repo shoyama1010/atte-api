@@ -49,9 +49,10 @@
                                 -
                             @endif
                         </td>
-                        <td><a href="#">詳細</a></td>
-                    </tr>
-                @empty
+                        <td>
+                            <a href="{{ route('admin.attendance.edit', ['id' => $attendance->id]) }}">詳細</a>
+                        </td>
+                    @empty
                     <tr>
                         <td colspan="6">該当データがありません。</td>
                     </tr>

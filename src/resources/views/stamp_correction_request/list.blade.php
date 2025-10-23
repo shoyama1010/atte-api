@@ -31,7 +31,6 @@
                         <th>申請日</th>
                         <th>修正対象日</th>
                         <th>申請内容</th>
-                        {{-- <th>状態</th> --}}
                         <th>詳細</th>
                     </tr>
                 </thead>
@@ -53,8 +52,12 @@
                             <td>{{ $request->created_at->format('Y/m/d') }}</td>
                             <td>{{ optional($request->attendance)->clock_in_time?->format('Y/m/d') ?? '-' }}</td>
                             <td>{{ $request->reason ?? '（理由なし）' }}</td>
-
-                            <td><a href="#">詳細</a></td>
+                            <td>
+                                <a href="{{ route('attendance.detail', ['id' => $request->attendance->id]) }}"
+                                    class="detail-link">
+                                    詳細
+                                </a>
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
