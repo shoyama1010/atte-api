@@ -8,6 +8,7 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\CorrectionRequestController;
 use App\Http\Controllers\Admin\LoginController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Admin\AdminStaffController;
 
 /*
 |--------------------------------------------------------------------------
@@ -97,6 +98,25 @@ Route::middleware(['auth:admin'])->group(function () {
 Route::middleware(['auth:admin'])->group(function () {
     Route::get('/admin/stamp_correction_request/list', [CorrectionRequestController::class, 'list'])
         ->name('admin.stamp_correction_request.list');
+});
+
+Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(function () {
+
+    // スタッフ一覧
+    Route::get('/staff/list', [AdminStaffController::class, 'index'])
+        ->name('staff.list');
+
+    // スタッフ詳細（＝既存の勤怠編集画面）
+    Route::get('/attendance/{id}', [AdminAttendanceController::class, 'show'])
+        ->name('attendance.edit');
+
+    // 特定スタッフの勤怠一覧
+    Route::get('/attendance/staff/{id}', [AdminAttendanceController::class, 'staffList'])
+        ->name('attendance.staff.list');
+
+    // CSVエクスポート
+    Route::get('/attendance/staff/{id}/export', [AdminAttendanceController::class, 'exportStaff'])
+        ->name('attendance.staff.export');
 });
 
 Route::post('/admin/logout', function (Illuminate\Http\Request $request) {
