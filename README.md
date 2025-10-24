@@ -6,7 +6,8 @@
 
 # アプリケーションURL
 ローカル環境
-http://localhost
+http://localhost/login
+＊会員登録してない方は、会員登録⇒メール認証となります
 
 # 機能一覧
 
