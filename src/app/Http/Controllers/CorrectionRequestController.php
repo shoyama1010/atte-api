@@ -14,15 +14,17 @@ class CorrectionRequestController extends Controller
      */
     public function list()
     {
-        $user = Auth::user();
+        // $user = Auth::user();
+        $status = request('status', 'pending');
 
         // ログインユーザー自身の申請履歴を新しい順に取得
-        $requests = CorrectionRequest::where('user_id', $user->id)
+        $requests = CorrectionRequest::where('user_id', auth()->id())
             ->with('attendance')
+            ->when($status, fn($query) => $query->where('status', $status))
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('stamp_correction_request.list', compact('user', 'requests'));
+        return view('stamp_correction_request.list', compact('requests'));
     }
 
     /**

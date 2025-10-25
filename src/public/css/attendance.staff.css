@@ -54,3 +54,50 @@
     border-radius: 5px;
     background: #f4f4f4;
 }
+
+.attendance-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* ===============================
+   スタッフ別勤怠一覧 追記
+=============================== */
+.csv-btn-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 25px;
+}
+
+.btn-csv {
+    background-color: #000;
+    color: #fff;
+    padding: 10px 24px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.btn-csv:hover {
+    background-color: #333;
+}
+
+.back-btn-area {
+    margin-top: 30px;
+    text-align: left;
+}
+
+.back-btn {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: 500;
+}
+
+.back-btn:hover {
+    text-decoration: underline;
+}
+

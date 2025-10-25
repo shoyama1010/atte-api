@@ -3,12 +3,14 @@
 <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 <link rel="stylesheet" href="{{ asset('css/attendance_list.css') }}">
 <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+<link rel="stylesheet" href="{{ asset('css/attendance.staff.css') }}">
 
 @section('content')
     <div class="attendance-container">
-
         <h2>>{{ $staff->name }} さんの勤怠一覧</h2>
-        
+        {{-- @if ($attendances->isEmpty())
+            <p class="no-data">勤怠データがありません。</p>
+        @else --}}
         {{-- 勤怠テーブル --}}
         <table class="attendance-table">
             <thead>
@@ -71,11 +73,14 @@
         {{-- <div class="pagination">
             {{ $attendances->links() }}
         </div> --}}
+        {{-- ✅ CSV出力ボタン（下部右寄せ） --}}
+        <div class="csv-btn-container">
+            <a href="{{ route('admin.attendance.staff.export', $staff->id) }}" class="btn-csv">CSV出力</a>
+        </div>
 
         {{-- 戻るボタン --}}
         <div class="back-btn-area" style="margin-top: 20px;">
             <a href="{{ route('admin.staff.list') }}" class="back-btn">← スタッフ一覧に戻る</a>
         </div>
-
     </div>
 @endsection

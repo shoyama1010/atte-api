@@ -1,0 +1,55 @@
+/* ===============================
+   管理者用 スタッフ一覧
+=============================== */
+.staff-list-container {
+    max-width: 900px;
+    margin: 60px auto;
+    padding: 20px 30px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.staff-list-container h2 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 25px;
+    text-align: left;
+}
+
+.staff-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.staff-table th,
+.staff-table td {
+    border-bottom: 1px solid #e0e0e0;
+    padding: 12px 8px;
+    text-align: left;
+}
+
+.staff-table th {
+    background: #f8f8f8;
+    font-weight: 600;
+}
+
+.staff-table tr:hover {
+    background-color: #f5f9ff;
+}
+
+.detail-link {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.detail-link:hover {
+    text-decoration: underline;
+}
+
+.no-data {
+    text-align: center;
+    color: #666;
+    padding: 20px;
+}

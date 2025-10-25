@@ -8,6 +8,7 @@ use App\Models\CorrectionRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AdminAttendanceController extends Controller
 {
@@ -112,12 +113,14 @@ class AdminAttendanceController extends Controller
     public function exportStaff($id)
     {
         $staff = User::findOrFail($id);
+
         $response = new StreamedResponse(function () use ($staff) {
             $handle = fopen('php://output', 'w');
             fputcsv($handle, ['日付', '出勤', '退勤', '休憩開始', '休憩終了', '備考']);
 
             $attendances = Attendance::where('user_id', $staff->id)
                 ->orderBy('date', 'desc')
+                // ->orderBy('clock_in_time', 'desc')
                 ->get();
 
             foreach ($attendances as $a) {

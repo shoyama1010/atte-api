@@ -75,11 +75,6 @@
                             <td>
                                 <a href="{{ route('admin.attendance.edit', $attendance->id) }}" class="detail-link">詳細</a>
                             </td>
-                             {{-- スタッフ一覧リンク --}}
-                            {{-- <td>
-                                <a href="{{ route('admin.staff.list', $attendance->user_id) }}"
-                                    class="detail-link">一覧</a>
-                            </td> --}}
                         </tr>
                     @endforeach
                 </tbody>
