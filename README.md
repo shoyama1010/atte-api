@@ -42,7 +42,7 @@ http://localhost/login
 
 ・mysql 8.0.26
 
-・
+・fortfy
 
 # テーブル設計
 
