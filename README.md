@@ -122,3 +122,6 @@ php artisan db:seed
 PHPコンテナにログインした状態で
 
 php artisan key:generate
+
+## 8　各種機能についての補足
+
