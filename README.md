@@ -42,7 +42,9 @@ http://localhost/login
 
 ・mysql 8.0.26
 
-・fortfy
+・fortfy（laravel認証）
+
+・formrequest（laravelバリデーション）
 
 # テーブル設計
 
