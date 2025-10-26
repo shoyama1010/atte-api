@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\AdminLoginRequest;
+use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
@@ -13,9 +15,11 @@ class LoginController extends Controller
         return view('admin.login');
     }
 
-    public function login(Request $request)
+    public function login(AdminLoginRequest $request)
     {
-        $credentials = $request->only('email', 'password');
+        // $credentials = $request->only('email', 'password');
+        // ✅ validated() によりバリデーション済み
+        $credentials = $request->validated();
 
         // 管理者認証
         if (Auth::guard('admin')->attempt($credentials)) {
@@ -29,7 +33,7 @@ class LoginController extends Controller
         ]);
     }
 
-    public function logout(Request $request)
+    public function logout(AdminLoginRequest $request)
     {
         Auth::guard('admin')->logout();
         $request->session()->invalidate();

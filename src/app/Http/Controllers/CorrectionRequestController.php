@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Attendance;
 use App\Models\CorrectionRequest;
+use App\Http\Requests\CorrectionRequestFormRequest;
 
 class CorrectionRequestController extends Controller
 {
@@ -43,7 +44,7 @@ class CorrectionRequestController extends Controller
     /**
      * 勤務修正申請を送信
      */
-    public function update(Request $request, $attendanceId)
+    public function update(CorrectionRequestFormRequest $request, $attendanceId)
     {
         $request->validate([
             'clock_in_time' => 'required|date_format:H:i',

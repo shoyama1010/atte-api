@@ -15,6 +15,8 @@ use Laravel\Fortify\Fortify;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Requests\LoginRequest;
+use Illuminate\Support\Facades\Validator;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -51,18 +53,34 @@ class FortifyServiceProvider extends ServiceProvider
 
         // 🔹 ログイン後のリダイレクト処理
         Fortify::authenticateUsing(function (Request $request) {
-            $user = \App\Models\User::where('email', $request->email)->first();
+            // ✅ バリデーションをここで手動実行
+            $validator = Validator::make($request->all(), [
+                'email' => 'required|email',
+                'password' => 'required|string|min:8',
+            ], [
+                'email.required' => 'メールアドレスを入力してください',
+                'email.email' => '有効なメールアドレスを入力してください',
+                'password.required' => 'パスワードを入力してください',
+                'password.min' => 'パスワードは8文字以上で入力してください',
+            ]);
 
-            if ($user && Hash::check($request->password, $user->password)) {
+            // エラーがあれば throw
+            $validator->validate();
 
-                // 管理者の場合
+            // ✅ 入力データ取得
+            $credentials = $validator->validated();
+
+            // ✅ ユーザー検索
+            $user = \App\Models\User::where('email', $credentials['email'])->first();
+
+            if ($user && Hash::check($credentials['password'], $user->password)) {
+                // 管理者
                 if ($user->role === 'admin') {
-                    // Fortifyのreturnは「$user」でOK（リダイレクトは別設定で制御）
                     session(['redirect_after_login' => '/admin/attendance/list']);
                     return $user;
                 }
 
-                // 一般ユーザーの場合
+                // 一般ユーザー
                 session(['redirect_after_login' => '/attendance']);
                 return $user;
             }

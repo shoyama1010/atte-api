@@ -56,7 +56,7 @@ class AttendanceController extends Controller
 
         $attendance->update([
             'break_end' => Carbon::now(),
-            'status' => 'working'
+            'status' => 'working' // ← ＊休憩終了後＝再勤務状態
         ]);
 
         return redirect()->route('attendance.index')->with('message', '休憩を終了しました');

@@ -53,3 +53,49 @@
     color: #666;
     padding: 20px;
 }
+
+/* ===============================
+   ページネーション（自作CSS版）
+=============================== */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 25px;
+}
+
+.pagination {
+    display: flex;
+    /* justify-content: center;
+    margin-top: 25px; */
+    gap: 6px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+
+.pagination nav {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    font-size: 0.9rem;
+}
+
+.pagination a,
+.pagination span {
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    text-decoration: none;
+    color: #333;
+}
+
+.pagination a:hover {
+    background-color: #f5f5f0;
+}
+
+.pagination .active span {
+    background-color: #000;
+    color: #fff;
+    border-color: #000;
+}

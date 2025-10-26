@@ -163,3 +163,9 @@ textarea {
     border-bottom: 2px solid #007bff;
     padding-bottom: 4px;
 }
+
+.error {
+    color: #d9534f;
+    font-size: 14px;
+    margin-top: 4px;
+}

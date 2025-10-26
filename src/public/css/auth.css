@@ -41,7 +41,8 @@
     padding: 12px;
     border: none;
     border-radius: 5px;
-    background-color: #007bff;
+    /* background-color: #007bff; */
+    background-color: black;
     color: #fff;
     font-size: 1rem;
     cursor: pointer;
@@ -75,4 +76,57 @@
 
 .link-area a:hover {
     text-decoration: underline;
+}
+
+/* ===============================
+   管理者ログイン（黒基調デザイン）
+=============================== */
+
+.admin-login-card {
+    background: #fff;
+    border: 2px solid #000;
+    border-radius: 10px;
+    padding: 40px 50px;
+    width: 380px;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+}
+
+.admin-login-card h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #000;
+    margin-bottom: 25px;
+}
+
+.admin-login-card input[type="email"],
+.admin-login-card input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.btn-admin-login {
+    width: 100%;
+    background-color: #000;
+    color: #fff;
+    font-size: 1rem;
+    padding: 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+
+.btn-admin-login:hover {
+    opacity: 0.8;
+}
+
+.error-message p {
+    color: #e74c3c;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
 }
