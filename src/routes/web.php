@@ -67,6 +67,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // 申請一覧画面（一般ユーザー）
     Route::get('/stamp_correction_request/list', [CorrectionRequestController::class, 'list'])
         ->name('stamp_correction_request.list');
+
+    // 勤務登録フォーム
+    Route::get('/attendance/create', [AttendanceController::class, 'create'])
+        ->name('attendance.create');
+    // 勤務登録処理
+    Route::post('/attendance/store', [AttendanceController::class, 'store'])
+        ->name('attendance.store');
+    // 👇 これを追加
+    Route::put('/attendance/update/{id}', [AttendanceController::class, 'update'])->name('attendance.update');
 });
 /*
 |--------------------------------------------------------------------------
@@ -79,7 +88,6 @@ Route::post('/logout', function (Request $request) {
     $request->session()->regenerateToken();
     return redirect('/login'); // ✅ ログアウト後はログイン画面へ
 })->middleware('web')->name('logout');
-
 /*
 |--------------------------------------------------------------------------
 | 管理者（adminガード）
@@ -90,42 +98,42 @@ Route::prefix('admin')->name('admin.')->group(function () {
     // 管理ログイン
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [LoginController::class, 'login'])->name('login.submit');
+});
+// 🔒 管理者認証後のページ
+// Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth:admin'])->group(function () {
 
-    // 🔒 管理者認証後のページ
-    Route::middleware('auth:admin')->group(function () {
+    // 勤怠一覧・詳細
+    Route::get('/attendance/list', [AdminAttendanceController::class, 'index'])->name('attendance.list');
+    Route::get('/attendance/{id}', [AdminAttendanceController::class, 'show'])->name('attendance.detail');
+    Route::get('/attendance/{id}/edit', [AdminAttendanceController::class, 'edit'])->name('attendance.edit');
+    Route::put('/attendance/{id}', [AdminAttendanceController::class, 'update'])->name('attendance.update');
 
-        // 勤怠一覧・詳細
-        Route::get('/attendance/list', [AdminAttendanceController::class, 'index'])->name('attendance.list');
-        Route::get('/attendance/{id}', [AdminAttendanceController::class, 'show'])->name('attendance.detail');
-        Route::get('/attendance/{id}/edit', [AdminAttendanceController::class, 'edit'])->name('attendance.edit');
-        Route::put('/attendance/{id}', [AdminAttendanceController::class, 'update'])->name('attendance.update');
+    // 🔹 申請一覧（管理者版）
+    Route::get('/stamp_correction_request/list', [CorrectionRequestListController::class, 'adminList'])
+        ->name('stamp_correction_request.list');
 
-        // 🔹 申請一覧（管理者版）
-        Route::get('/stamp_correction_request/list', [CorrectionRequestListController::class, 'adminList'])
-            ->name('stamp_correction_request.list');
+    // 🔹 承認機能
+    Route::get('/stamp_correction_request/approve/{id}', [CorrectionApprovalController::class, 'show'])
+        ->name('correction_request.show');
+    Route::post('/stamp_correction_request/approve/{id}', [CorrectionApprovalController::class, 'approve'])
+        ->name('correction_request.approve');
 
-        // 🔹 承認機能
-        Route::get('/stamp_correction_request/approve/{id}', [CorrectionApprovalController::class, 'show'])
-            ->name('correction_request.show');
-        Route::post('/stamp_correction_request/approve/{id}', [CorrectionApprovalController::class, 'approve'])
-            ->name('correction_request.approve');
+    // スタッフ管理
+    Route::get('/staff/list', [AdminStaffController::class, 'index'])->name('staff.list');
 
-        // スタッフ管理
-        Route::get('/staff/list', [AdminStaffController::class, 'index'])->name('staff.list');
+    // --- スタッフ別勤怠一覧 ---
+    Route::get('/attendance/staff/{id}', [AdminAttendanceController::class, 'staffList'])
+        ->name('attendance.staff.list');
 
-        // --- スタッフ別勤怠一覧 ---
-        Route::get('/attendance/staff/{id}', [AdminAttendanceController::class, 'staffList'])
-            ->name('attendance.staff.list');
+    Route::get('/attendance/staff/{id}/export', [AdminAttendanceController::class, 'exportStaff'])
+        ->name('attendance.staff.export');
 
-        Route::get('/attendance/staff/{id}/export', [AdminAttendanceController::class, 'exportStaff'])
-            ->name('attendance.staff.export');
-
-        // 管理者ログアウト
-        Route::post('/logout', function (Request $request) {
-            Auth::guard('admin')->logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
-            return redirect('/admin/login');
-        })->name('logout');
-    });
+    // 管理者ログアウト
+    Route::post('/logout', function (Request $request) {
+        Auth::guard('admin')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect('/admin/login');
+    })->name('logout');
 });

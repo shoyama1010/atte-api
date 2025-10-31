@@ -55,4 +55,9 @@ class Attendance extends Model
             default     => '不明',
         };
     }
+
+    public function rests()
+    {
+        return $this->hasMany(Rest::class);
+    }
 }

@@ -15,6 +15,14 @@ class CorrectionRequest extends Model
         'admin_id',
         'request_type',
         'reason',
+        'before_clock_in',
+        'before_clock_out',
+        'before_break_start',
+        'before_break_end',
+        'after_clock_in',
+        'after_clock_out',
+        'after_break_start',
+        'after_break_end',
         'status',
     ];
 

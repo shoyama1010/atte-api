@@ -1,5 +1,6 @@
 /* ===============================
    /* 出退勤（打刻）画面スタイル******** */
+
 .attendance-container {
     display: flex;
     flex-direction: column;
@@ -20,56 +21,92 @@
     margin: 15px 0;
 }
 
+/* ===============================
+   共通：ステータスラベル（日付より上）
+   =============================== */
 .status-label {
-    font-size: 1.1rem;
-    font-weight: bold;
-    color: #555;
-    margin-bottom: 20px;
-    border: 2px solid #ccc;
-    border-radius: 25px;
-    padding: 6px 20px;
     display: inline-block;
+    padding: 6px 16px;
+    border-radius: 14px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 20px;
 }
 
+/* 勤務外（グレー） */
+.status-none {
+    background-color: #e0e0e0;
+    color: #555;
+}
+
+/* 出勤中（青系） */
+.status-working {
+    background-color: #007bff;
+    color: white;
+}
+
+/* 休憩中（オレンジ） */
+.status-break {
+    background-color: #ffa500;
+    color: white;
+}
+
+/* 退勤済（黒） */
+.status-left {
+    background-color: #333;
+    color: white;
+}
+
+/* 不明（赤） */
+.status-unknown {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* ===============================
+   出退勤ボタンデザイン
+   =============================== */
 .attendance-buttons {
     display: flex;
-    gap: 15px;
     justify-content: center;
+    align-items: center;
+    gap: 40px;
+    margin-top: 30px;
 }
 
 .btn {
-    padding: 12px 25px;
-    border-radius: 5px;
-    font-size: 1rem;
+    width: 160px;
+    padding: 14px 0;
+    font-size: 1.2rem;
+    font-weight: bold;
     border: none;
+    border-radius: 8px;
     cursor: pointer;
     transition: 0.3s;
-    color: #fff;
+    text-align: center;
 }
 
-.btn-active {
-    background-color: #007bff;
+.btn-work {
+    background-color: #000;
+    color: #fff;
+}
+.btn-work:hover {
+    background-color: #333;
 }
 
 .btn-break {
-    background-color: #ffc107;
+    background-color: #fff;
     color: #000;
+    border: 2px solid #000;
+}
+.btn-break:hover {
+    background-color: #f3f3f3;
 }
 
 .btn-leave {
-    background-color: #dc3545;
+    background-color: #000;
+    color: #fff;
 }
-
-.btn-resume {
-    background-color: #28a745;
-}
-
-.btn:hover {
-    opacity: 0.8;
-}
-
-.status-text {
-    font-size: 1rem;
-    color: #333;
-    margin-top: 10px;
+.btn-leave:hover {
+    background-color: #333;
 }

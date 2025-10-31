@@ -24,6 +24,18 @@ class CorrectionRequestFormRequest extends FormRequest
     public function rules()
     {
         return [
+            'clock_in_time'  => 'required|date_format:H:i',
+            'clock_out_time' => 'required|date_format:H:i|after:clock_in_time',
+            'break_start'    => 'nullable|date_format:H:i|after_or_equal:clock_in_time|before:clock_out_time',
+            'break_end'      => 'nullable|date_format:H:i|after_or_equal:break_start|before_or_equal:clock_out_time',
+            'reason'         => 'required|string|max:255',
+        ];
+    }
+
+        public function messages(): array
+        {
+
+        return [
             'clock_in_time.required' => '出勤時刻を入力してください。',
             'clock_out_time.required' => '退勤時刻を入力してください。',
             'clock_out_time.after' => '退勤時刻は出勤時刻より後の時間にしてください。',

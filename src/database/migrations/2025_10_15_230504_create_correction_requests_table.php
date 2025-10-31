@@ -19,6 +19,7 @@ class CreateCorrectionRequestsTable extends Migration
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('admin_id')->nullable()->constrained('admins')->onDelete('set null');
             $table->string('request_type'); // 修正対象（例: 出勤時間, 退勤時間など）
+
             $table->timestamp('before_time')->nullable();
             $table->timestamp('after_time')->nullable();
             $table->text('reason')->nullable();

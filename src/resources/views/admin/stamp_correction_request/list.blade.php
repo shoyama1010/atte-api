@@ -19,7 +19,6 @@
                 </li>
             </ul>
         </div>
-
         {{-- ▼ 一覧テーブル --}}
         @if ($requests->isEmpty())
             <p>現在、申請履歴はありません。</p>
@@ -50,7 +49,6 @@
                                     <span>-</span>
                                 @endif
                             </td>
-
                             {{-- 社員名 --}}
                             <td>{{ $request->attendance->user->name ?? '―' }}</td>
 

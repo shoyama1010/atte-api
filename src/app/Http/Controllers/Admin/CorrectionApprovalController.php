@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\CorrectionRequest;
 use App\Models\Attendance;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CorrectionApprovalController extends Controller
 {
@@ -25,36 +26,28 @@ class CorrectionApprovalController extends Controller
      */
     public function approve(Request $request, $id)
     {
+        // 申請データを取得
         $correction = CorrectionRequest::findOrFail($id);
+
+        // 対象の勤怠データを取得
         $attendance = Attendance::findOrFail($correction->attendance_id);
 
-        // attendances テーブルに反映
-        $before = [
-            'clock_in_time' => $attendance->clock_in_time,
-            'clock_out_time' => $attendance->clock_out_time,
-            'break_start' => $attendance->break_start,
-            'break_end' => $attendance->break_end,
-        ];
-
-        // after_time の内容を取得（ユーザー申請時に JSON 保存されている前提）
-        $after = json_decode($correction->after_time, true);
-
-        // 勤怠情報を上書き更新
+        // 🔹 勤怠データを「after_～」の値で更新
         $attendance->update([
-            'clock_in_time' => $after['clock_in_time'] ?? $attendance->clock_in_time,
-            'clock_out_time' => $after['clock_out_time'] ?? $attendance->clock_out_time,
-            'break_start' => $after['break_start'] ?? $attendance->break_start,
-            'break_end' => $after['break_end'] ?? $attendance->break_end,
+            'clock_in_time'  => $correction->after_clock_in,
+            'clock_out_time' => $correction->after_clock_out,
+            'break_start'    => $correction->after_break_start,
+            'break_end'      => $correction->after_break_end,
         ]);
 
-        // correction_requests のステータス更新
+        // 🔹 申請データを「承認済み」に変更し、承認者IDを登録
         $correction->update([
-            'status' => 'approved',
-            'admin_id' => auth()->id(),
-            'before_time' => json_encode($before),
+            'status'   => 'approved',
+            'admin_id' => Auth::guard('admin')->id(), // 管理者認証ガード使用
         ]);
 
-        return redirect()->route('admin.correction_request.show', $id)
-            ->with('success', '申請を承認しました。');
+        // 完了後、一覧に戻る
+        return redirect()->route('admin.stamp_correction_request.list')
+            ->with('success', '修正申請を承認し、勤怠情報を更新しました。');
     }
 }

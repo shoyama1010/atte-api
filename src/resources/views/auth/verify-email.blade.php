@@ -4,7 +4,7 @@
 <div class="verify-container">
   <h2>メールアドレスの確認</h2>
   <p>
-    登録されたメールアドレス宛に確認メールを送信しました。<br>
+    登録していただいたメールアドレスに認証メールを送付しました。<br>
     メールに記載されたリンクをクリックして認証を完了してください。
   </p>
 
@@ -16,7 +16,7 @@
 
   <form method="POST" action="{{ route('verification.send') }}">
       @csrf
-      <button type="submit" class="btn btn-primary">確認メールを再送信</button>
+      <button type="submit" class="btn btn-primary">認証メールを再送する</button>
   </form>
 
   <form method="POST" action="{{ route('logout') }}">
