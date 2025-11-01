@@ -13,7 +13,6 @@
     <form action="{{ route('attendance.update', $attendance->id) }}" method="POST">
         @csrf
         @method('PUT')
-
         {{-- 共通フォームを読み込み --}}
         @include('attendance._form')
 

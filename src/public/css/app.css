@@ -29,16 +29,19 @@ body {
     margin: 0 auto;
 }
 
-.header-logo {
-    font-size: 24px;
-    font-weight: bold;
-    letter-spacing: 1px;
+/* =====================
+   ヘッダー ロゴ部分
+===================== */
+.header__logo img {
+  display: block;
+  height: 40px;
 }
 
-.header-logo a {
-    color: #fff;
-    text-decoration: none;
+.header__logo a {
+  display: inline-block;
+  text-decoration: none;
 }
+
 
 .header-nav ul {
     display: flex;
@@ -95,4 +98,102 @@ body {
     font-size: 12px;
     margin-top: 60px;
     padding-bottom: 10px;
+}
+
+/* ===============================
+   ヘッダー共通（既存の部分）
+================================ */
+.app-header {
+  background-color: #000;
+  color: #fff;
+  padding: 10px 40px;
+}
+
+.header-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header__logo img {
+  display: block;
+  height: 40px;
+}
+
+.header-nav ul {
+  display: flex;
+  gap: 25px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.header-nav a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.logout-btn {
+  background: #fff;
+  color: #000;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* ===============================
+   レスポンシブ対応
+================================ */
+
+/* 画面幅が900px以下（タブレット以下）の場合 */
+@media screen and (max-width: 900px) {
+  .header-inner {
+    flex-direction: column;       /* 上下に並べる */
+    align-items: flex-start;      /* 左寄せ */
+    padding: 10px 20px;
+  }
+
+  .header__logo {
+    margin-bottom: 10px;
+  }
+
+  .header-nav ul {
+    flex-wrap: wrap;              /* 折り返し許可 */
+    gap: 15px;
+  }
+}
+
+/* 画面幅が600px以下（スマホサイズ） */
+@media screen and (max-width: 600px) {
+  .header-inner {
+    align-items: center;
+  }
+
+  .header__logo img {
+    height: 32px;                 /* ロゴを少し小さく */
+  }
+
+  .header-nav ul {
+    flex-direction: column;       /* 縦並びに変更 */
+    align-items: center;
+    gap: 10px;
+  }
+
+  .header-nav a {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 8px 0;
+    border-top: 1px solid #333;
+  }
+
+  .logout-btn {
+    margin-top: 5px;
+    width: 100%;
+  }
 }

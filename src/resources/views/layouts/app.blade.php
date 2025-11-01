@@ -20,9 +20,12 @@
     <header class="app-header">
         <div class="header-inner">
             {{-- 左側：ロゴ --}}
-            <div class="header-logo">
+            <a href="{{ url('/') }}">
+                <img src="{{ asset('img/logo.jpg') }}" alt="ロゴ" height="40">
+            </a>
+            {{-- <div class="header-logo">
                 <a href="{{ url('/attendance') }}" style="color: #fff; text-decoration:none;">Coachtech</a>
-            </div>
+            </div> --}}
 
             {{-- 右側：ナビメニュー --}}
             <nav class="header-nav">

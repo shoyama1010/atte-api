@@ -60,4 +60,23 @@ class Attendance extends Model
     {
         return $this->hasMany(Rest::class);
     }
+
+    
+    public function getTotalRestTimeAttribute()
+    {
+        $totalMinutes = 0;
+
+        foreach ($this->rests as $rest) {
+            if ($rest->break_start && $rest->break_end) {
+                $start = \Carbon\Carbon::parse($rest->break_start);
+                $end   = \Carbon\Carbon::parse($rest->break_end);
+                $totalMinutes += $end->diffInMinutes($start);
+            }
+        }
+
+        // 分→時:分 形式で返す（例：01:30）
+        $hours = floor($totalMinutes / 60);
+        $minutes = $totalMinutes % 60;
+        return sprintf('%02d:%02d', $hours, $minutes);
+    }
 }

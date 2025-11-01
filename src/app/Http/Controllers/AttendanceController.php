@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Attendance;
 use Carbon\Carbon;
 use App\Models\Rest;
+use App\Models\CorrectionRequest;
 
 class AttendanceController extends Controller
 {
@@ -144,6 +145,53 @@ class AttendanceController extends Controller
         return view('attendance.detail', compact('user', 'attendance'));
     }
 
+    /**
+     * 勤務情報の更新処理
+     */
+    public function update(Request $request, $id)
+    {
+        // 対象の出勤データを取得
+        $attendance = Attendance::with('rests')->findOrFail($id);
+
+        // 出退勤時間を更新
+        $attendance->clock_in_time = $request->input('clock_in_time');
+        $attendance->clock_out_time = $request->input('clock_out_time');
+        $attendance->note = $request->input('note');
+        $attendance->save();
+
+        // 既存の休憩データを一旦削除して再登録（複数対応）
+        $attendance->rests()->delete();
+
+        if ($request->has('rests')) {
+            foreach ($request->rests as $rest) {
+                if (!empty($rest['break_start']) && !empty($rest['break_end'])) {
+                    $attendance->rests()->create([
+                        'break_start' => $rest['break_start'],
+                        'break_end'   => $rest['break_end'],
+                    ]);
+                }
+            }
+        }
+
+        // 修正申請の登録処理
+        CorrectionRequest::create([
+            'attendance_id'   => $attendance->id,
+            'user_id'         => auth()->id(),
+            'admin_id'        => null,
+            'request_type'    => 'time_change',
+            'before_clock_in' => $attendance->getOriginal('clock_in_time'),
+            'before_clock_out' => $attendance->getOriginal('clock_out_time'),
+            'after_clock_in'  => $request->input('clock_in_time'),
+            'after_clock_out' => $request->input('clock_out_time'),
+            'reason'          => $request->input('note'),
+            'status'          => 'pending', // ← これが重要！
+        ]);
+
+        return redirect()
+            ->route('attendance.detail', $attendance->id)
+            ->with('success', '勤務情報を更新しました。');
+    }
+
 
     // 休憩回数分のレコードを保存
     public function store(Request $request)
@@ -158,8 +206,10 @@ class AttendanceController extends Controller
             foreach ($request->rests as $rest) {
                 if (!empty($rest['break_start']) && !empty($rest['break_end'])) {
                     $attendance->rests()->create([
-                        'break_start' => $rest['break_start'],
-                        'break_end' => $rest['break_end'],
+                        'break_start' => Carbon::parse($attendance->created_at->format('Y-m-d') . ' ' . $rest['break_start']),
+                        'break_end'   => Carbon::parse($attendance->created_at->format('Y-m-d') . ' ' . $rest['break_end']),
+                        // 'break_start' => $rest['break_start'],
+                        // 'break_end' => $rest['break_end'],
                     ]);
                 }
             }
