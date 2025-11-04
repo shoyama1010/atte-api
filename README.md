@@ -6,7 +6,7 @@
 
 # アプリケーションURL
 ローカル環境
-http://localhost/login
+http://localhost/attendance
 ＊会員登録してない方は、会員登録⇒メール認証となります
 
 # 機能一覧
