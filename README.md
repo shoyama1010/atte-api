@@ -49,8 +49,9 @@ http://localhost/attendance
 
 # テーブル設計
 
+<img width="396" height="519" alt="Image" src="https://github.com/user-attachments/assets/4143f58d-d6e3-4968-887a-053a66b90ccc" />
 
-
+<img width="398" height="441" alt="Image" src="https://github.com/user-attachments/assets/e33a289b-f874-45ea-95c6-ba1ba519d727" />
 
 # ER図
 
