@@ -54,7 +54,7 @@ http://localhost/attendance
 
 # ER図
 
-<img width="1024" height="1024" alt="Image" src="https://github.com/user-attachments/assets/59dc6945-2823-4fd4-b136-50065e953d02" />
+<img width="1536" height="1024" alt="Image" src="https://github.com/user-attachments/assets/e18749f6-d80f-43f0-bdc0-a47c0588cda7" />
 
 # 環境構築
 ## 1 Gitファイルをクローンする
