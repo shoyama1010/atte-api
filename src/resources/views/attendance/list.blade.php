@@ -22,43 +22,32 @@
                         <th>詳細</th>
                     </tr>
                 </thead>
+
                 <tbody>
                     @foreach ($attendances as $attendance)
-                        @php
-                            // 出勤・退勤・休憩時間の計算
-                            $clockIn = $attendance->clock_in_time
-                                ? \Carbon\Carbon::parse($attendance->clock_in_time)
-                                : null;
-                            $clockOut = $attendance->clock_out_time
-                                ? \Carbon\Carbon::parse($attendance->clock_out_time)
-                                : null;
-                            $breakStart = $attendance->break_start
-                                ? \Carbon\Carbon::parse($attendance->break_start)
-                                : null;
-                            $breakEnd = $attendance->break_end ? \Carbon\Carbon::parse($attendance->break_end) : null;
-                            // 休憩時間（分単位）
-                            $breakDuration = $breakStart && $breakEnd ? $breakEnd->diffInMinutes($breakStart) : 0;
-                            // 総勤務時間（出勤～退勤） - 休憩
-                            $totalDuration =
-                                $clockIn && $clockOut ? $clockOut->diffInMinutes($clockIn) - $breakDuration : 0;
-                            // 表示形式（h:i）
-                            $breakTimeFormatted = sprintf('%02d:%02d', floor($breakDuration / 60), $breakDuration % 60);
-                            $totalTimeFormatted = sprintf('%02d:%02d', floor($totalDuration / 60), $totalDuration % 60);
-                        @endphp
-
                         <tr>
+                            {{-- 社員名 --}}
                             <td>{{ $attendance->user->name }}</td>
-                            {{-- <td>{{ optional($clockIn)->format('Y/m/d') ?? '-' }}</td> --}}
-                            <td>{{ optional($clockIn)->format('H:i') ?? '-' }}</td>
-                            <td>{{ optional($clockOut)->format('H:i') ?? '-' }}</td>
-                            <td>{{ $breakTimeFormatted }}</td>
-                            <td>{{ $totalTimeFormatted }}</td>
-                            <td><a href="{{ route('attendance.detail', ['id' => $attendance->id]) }}">詳細</a>
+
+                            {{-- 出勤・退勤 --}}
+                            <td>{{ optional($attendance->clock_in_time)->format('H:i') ?? '-' }}</td>
+                            <td>{{ optional($attendance->clock_out_time)->format('H:i') ?? '-' }}</td>
+
+                            {{-- 🔹 モデルで計算した休憩合計 --}}
+                            <td>{{ $attendance->total_rest_time ?? '00:00' }}</td>
+
+                            {{-- 🔹 モデルで計算した勤務合計（出勤〜退勤−休憩） --}}
+                            <td>{{ $attendance->working_duration ?? '00:00' }}</td>
+
+                            {{-- 詳細ボタン --}}
+                            <td>
+                                <a href="{{ route('attendance.detail', ['id' => $attendance->id]) }}">詳細</a>
                             </td>
                         </tr>
                     @endforeach
                 </tbody>
-            </table>
+
+                </table>
         @endif
     </div>
 @endsection

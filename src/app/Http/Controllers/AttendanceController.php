@@ -165,9 +165,15 @@ class AttendanceController extends Controller
         if ($request->has('rests')) {
             foreach ($request->rests as $rest) {
                 if (!empty($rest['break_start']) && !empty($rest['break_end'])) {
+
+                    // ✅ 日付を出勤日の created_at から取る（または clock_in_time でもOK）
+                    $date = Carbon::parse($attendance->clock_in_time)->format('Y-m-d');
+
                     $attendance->rests()->create([
-                        'break_start' => $rest['break_start'],
-                        'break_end'   => $rest['break_end'],
+                        'break_start' => Carbon::parse("{$date} {$rest['break_start']}"),
+                        'break_end'   => Carbon::parse("{$date} {$rest['break_end']}"),
+                        // 'break_start' => $rest['break_start'],
+                        // 'break_end'   => $rest['break_end'],
                     ]);
                 }
             }

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+use Carbon\Carbon;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -61,7 +62,7 @@ class Attendance extends Model
         return $this->hasMany(Rest::class);
     }
 
-    
+
     public function getTotalRestTimeAttribute()
     {
         $totalMinutes = 0;
@@ -77,6 +78,35 @@ class Attendance extends Model
         // 分→時:分 形式で返す（例：01:30）
         $hours = floor($totalMinutes / 60);
         $minutes = $totalMinutes % 60;
+        return sprintf('%02d:%02d', $hours, $minutes);
+    }
+/**
+     * 🔹勤務時間の合計（出勤〜退勤 − 休憩）
+     */
+    public function getWorkingDurationAttribute()
+    {
+        if (!$this->clock_in_time || !$this->clock_out_time) {
+            return null;
+        }
+
+        $clockIn  = Carbon::parse($this->clock_in_time);
+        $clockOut = Carbon::parse($this->clock_out_time);
+
+        $totalWorkMinutes = $clockOut->diffInMinutes($clockIn);
+        $restMinutes = 0;
+
+        foreach ($this->rests as $rest) {
+            if ($rest->break_start && $rest->break_end) {
+                $start = Carbon::parse($rest->break_start);
+                $end   = Carbon::parse($rest->break_end);
+                $restMinutes += $end->diffInMinutes($start);
+            }
+        }
+
+        $netMinutes = $totalWorkMinutes - $restMinutes;
+        $hours = floor($netMinutes / 60);
+        $minutes = $netMinutes % 60;
+
         return sprintf('%02d:%02d', $hours, $minutes);
     }
 }
