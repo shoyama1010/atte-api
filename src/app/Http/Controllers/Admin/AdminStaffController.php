@@ -9,8 +9,7 @@ class AdminStaffController extends Controller
 {
     public function index()
     {
-        // $staffs = User::where('role', 'staff')->paginate(10);
-        // return view('admin.staff.list', compact('staffs'));
+        
         $staffs = User::paginate(10);
         return view('admin.staff.list', compact('staffs'));
     }

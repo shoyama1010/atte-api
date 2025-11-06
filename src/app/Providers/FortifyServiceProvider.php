@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Requests\LoginRequest;
 use Illuminate\Support\Facades\Validator;
 
+
 class FortifyServiceProvider extends ServiceProvider
 {
     /**
@@ -27,65 +28,63 @@ class FortifyServiceProvider extends ServiceProvider
     {
         //
     }
-
     /**
      * Bootstrap any application services.
      */
     public function boot(): void
     {
+        // 既存のFortify設定の上に追記（createUsersUsing の前でもOK）
+        RateLimiter::for('login', function (Request $request) {
+            // 1分間に100回までに緩和（または Limit::none() で完全解除）
+            return Limit::perMinute(100)->by(Str::lower($request->email) . $request->ip());
+            return Limit::none();  // 完全に無制限にする場合
+        });
+
         // 🔹 新規登録処理
         Fortify::createUsersUsing(CreateNewUser::class);
-
         // 🔹 会員登録画面を表示
         Fortify::registerView(function () {
             return view('auth.register');
         });
-
         // 🔹 ログイン画面を表示
         Fortify::loginView(function () {
             return view('auth.login');
         });
-
         // 🔹 メール認証処理
         Fortify::verifyEmailView(function () {
             return view('auth.verify-email');
         });
-
         // 🔹 ログイン後のリダイレクト処理
         Fortify::authenticateUsing(function (Request $request) {
-            // ✅ バリデーションをここで手動実行
-            $validator = Validator::make($request->all(), [
-                'email' => 'required|email',
-                'password' => 'required|string|min:8',
-            ], [
-                'email.required' => 'メールアドレスを入力してください',
-                'email.email' => '有効なメールアドレスを入力してください',
-                'password.required' => 'パスワードを入力してください',
-                'password.min' => 'パスワードは8文字以上で入力してください',
-            ]);
+            // ✅ 先頭で日本語を強制
+            app()->setLocale('ja');
 
-            // エラーがあれば throw
-            $validator->validate();
+            // ✅ FormRequest のルールを取得
+            $loginRequest = new \App\Http\Requests\LoginRequest();
+            $rules = $loginRequest->rules();
+            $messages = $loginRequest->messages();
 
-            // ✅ 入力データ取得
-            $credentials = $validator->validated();
+            // ✅ Validator生成時に日本語メッセージを明示的に渡す
+            $validator = \Illuminate\Support\Facades\Validator::make(
+                $request->all(),
+                $rules,
+                $messages
+            );
 
-            // ✅ ユーザー検索
-            $user = \App\Models\User::where('email', $credentials['email'])->first();
-
-            if ($user && Hash::check($credentials['password'], $user->password)) {
-                // 管理者
-                if ($user->role === 'admin') {
-                    session(['redirect_after_login' => '/admin/attendance/list']);
-                    return $user;
-                }
-
-                // 一般ユーザー
-                session(['redirect_after_login' => '/attendance']);
-                return $user;
+            // ✅ バリデーション失敗時にエラーをスロー
+            if ($validator->fails()) {
+                throw new \Illuminate\Validation\ValidationException($validator);
             }
 
+            // ✅ 認証処理
+            $credentials = $validator->validated();
+            $user = \App\Models\User::where('email', $credentials['email'])->first();
+
+            if ($user && \Illuminate\Support\Facades\Hash::check($credentials['password'], $user->password)) {
+                return $user;
+            }
             return null;
         });
+
     }
 }

@@ -55,9 +55,7 @@ class AttendanceController extends Controller
             'attendance_id' => $attendance->id,
             'break_start' => now()->format('H:i:s'),
         ]);
-        // $attendance->rests()->create([
-        //     'break_start' => Carbon::now()->format('H:i:s'),
-        // ]);
+
         // 勤務状態を休憩中に変更
         $attendance->update(['status' => 'on_break']);
 
@@ -138,9 +136,6 @@ class AttendanceController extends Controller
             ->where('user_id', $user->id)
             ->where('id', $id)
             ->firstOrFail();
-        // $attendance = Attendance::where('id', $id)
-        //     ->where('user_id', $user->id)
-        //     ->firstOrFail();
 
         return view('attendance.detail', compact('user', 'attendance'));
     }

@@ -26,15 +26,14 @@ class AdminAttendanceController extends Controller
 
         return view('admin.attendance.list', compact('attendances', 'date'));
     }
+
     // 既存: 勤怠修正画面（スタッフ詳細扱い）
     public function show($id)
     {
         // 特定ユーザーの勤怠データを取得
         $attendance = Attendance::with('user')->findOrFail($id);
-
         return view('admin.attendance.edit', compact('attendance'));
     }
-
 
     public function edit($id)
     {

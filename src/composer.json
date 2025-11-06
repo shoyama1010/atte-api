@@ -9,6 +9,7 @@
         "doctrine/dbal": "^3.6",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
+        "laravel-lang/lang": "~11.0",
         "laravel/fortify": "^1.19",
         "laravel/framework": "^8.75",
         "laravel/sanctum": "^2.11",
