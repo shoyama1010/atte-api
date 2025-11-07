@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use App\Http\Requests\Admin\AttendanceRequest; // ← 追加
 
 class AdminAttendanceController extends Controller
 {
@@ -41,16 +42,9 @@ class AdminAttendanceController extends Controller
         return view('admin.attendance.edit', compact('attendance'));
     }
 
-    public function update(Request $request, $id)
+    public function update(AttendanceRequest $request, $id)
     {
-        $request->validate([
-            'clock_in_time' => 'nullable|date_format:H:i',
-            'clock_out_time' => 'nullable|date_format:H:i|after:clock_in_time',
-            'break_start' => 'nullable|date_format:H:i',
-            'break_end' => 'nullable|date_format:H:i|after:break_start',
-            'remarks' => 'nullable|string|max:255',
-        ]);
-
+        // Validation is handled by AttendanceRequest
         $attendance = Attendance::findOrFail($id);
 
         // 修正前の時刻を記録

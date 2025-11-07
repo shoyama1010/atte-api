@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\AdminLoginRequest;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class LoginController extends Controller
 {
@@ -17,19 +18,20 @@ class LoginController extends Controller
 
     public function login(AdminLoginRequest $request)
     {
-        // $credentials = $request->only('email', 'password');
         // ✅ validated() によりバリデーション済み
         $credentials = $request->validated();
 
         // 管理者認証
         if (Auth::guard('admin')->attempt($credentials)) {
+            // ✅ セッション再生成
+            $request->session()->regenerate();
             // ✅ ログイン成功時：勤怠一覧にリダイレクト
             return redirect()->intended('/admin/attendance/list');
         }
 
         // ログイン失敗時
         return back()->withErrors([
-            'email' => 'ログイン情報が正しくありません。',
+            'email' => 'メールアドレスまたはパスワードが正しくありません。',
         ]);
     }
 
