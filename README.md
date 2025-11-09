@@ -1,4 +1,5 @@
-# atte-api（バックエンド　＊フロントは、Next.jsにて実装。API連携にて、SPA化します）
+# atte-api（バックエンド）
+＊フロントは、Next.jsにて実装。API連携にて、SPA化します
 
 # 作成した目的
 
