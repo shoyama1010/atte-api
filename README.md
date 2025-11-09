@@ -2,7 +2,7 @@
 
 # 作成した目的
 
-ユーザーの勤怠と、管理者目線での勤怠管理を目的としてます。
+ユーザーの勤怠打刻と、管理者での勤怠管理を目的としてます。
 
 # アプリケーションURL
 ローカル環境
@@ -14,7 +14,7 @@ http://localhost/attendance
 
 ・ユーザー認証（登録＆ログイン）機能
 
-・メール認証機能
+・メール認証機能（応用機能　＊詳細は、補足で最下位箇所に記載）
 
 ・（勤怠）打刻機能
 
@@ -28,7 +28,7 @@ http://localhost/attendance
 
 ・勤怠の申請承認機能（管理側）
 
-・CSVエクスポート機能
+・CSVエクスポート機能（応用機能　＊詳細は、補足で最下位箇所に記載）
 
 # 使用技術
 ・Laravel 8
@@ -109,7 +109,7 @@ MAIL_FROM_NAME="laravel"
 
 docker-compose exec php bash
 
-でPHPコンテナにログインし(ログインしたままであれば上記コマンドは実行しなくて良いです。)
+PHPコンテナにログインし(ログインしたままであれば上記コマンドは実行しなくて良いです。)
 
 php artisan migrate
 
@@ -127,3 +127,8 @@ php artisan key:generate
 
 ## 8　各種機能についての補足
 
+・メール認証機能
+<img width="1190" height="675" alt="Image" src="https://github.com/user-attachments/assets/0f416545-107a-4715-bf93-7f205f1c0748" />
+
+・CSV機能
+<img width="1176" height="679" alt="Image" src="https://github.com/user-attachments/assets/d882022e-6901-4e87-bbee-fb97deb44fd2" />
