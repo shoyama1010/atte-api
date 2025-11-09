@@ -1,68 +1,78 @@
-.approval-container {
-    max-width: 800px;
-    margin: 40px auto;
-    padding: 30px;
+/* ===== 承認詳細画面（admin） ===== */
+.approval-detail-container {
+    width: 640px;
+    margin: 50px auto;
     background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.approval-container h2 {
-    font-size: 1.6rem;
-    margin-bottom: 25px;
+h2 {
     text-align: center;
+    margin-bottom: 25px;
+    font-size: 20px;
+    color: #333;
 }
 
-.approval-table {
+/* ===== 表 ===== */
+.approval-detail-table {
     width: 100%;
     border-collapse: collapse;
-    margin-bottom: 25px;
+    margin-bottom: 30px;
 }
 
-.approval-table th,
-.approval-table td {
-    border-bottom: 1px solid #e0e0e0;
-    padding: 12px 8px;
-}
-
-.approval-table th {
+.approval-detail-table th,
+.approval-detail-table td {
+    border-bottom: 1px solid #ddd;
+    padding: 12px 10px;
     text-align: left;
-    width: 30%;
+}
+
+.approval-detail-table th {
+    width: 160px;
     background-color: #fafafa;
     font-weight: 600;
+    color: #333;
 }
 
-.approval-buttons {
+/* ===== ボタンエリア ===== */
+.approval-actions {
+    text-align: center;
     display: flex;
     justify-content: center;
-    gap: 15px;
+    gap: 16px;
+}
+
+.btn-approve,
+.btn-approved,
+.btn-back {
+    padding: 10px 24px;
+    border-radius: 6px;
+    border: none;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
 }
 
 .btn-approve {
-    background-color: #3B82F6;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    cursor: pointer;
+    background-color: #007bff;
+    color: #fff;
 }
-
 .btn-approve:hover {
-    background-color: #2563EB;
+    background-color: #0056b3;
 }
 
 .btn-approved {
-    background-color: #10B981;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
+    background-color: #28a745;
+    color: #fff;
+    cursor: default;
 }
 
 .btn-back {
-    background-color: #ccc;
-    color: #333;
-    border-radius: 5px;
-    padding: 10px 20px;
-    text-decoration: none;
+    background-color: #999;
+    color: #fff;
+}
+.btn-back:hover {
+    background-color: #777;
 }

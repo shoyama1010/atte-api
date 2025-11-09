@@ -5,53 +5,45 @@
 @endsection
 
 @section('content')
-    <div class="approval-container">
+    <div class="approval-detail-container">
+
+
         <h2>勤務詳細：{{ $requestData->attendance->user->name }}</h2>
 
-        <table class="approval-table">
+        <table class="approval-detail-table">
             <tr>
                 <th>日付</th>
-                {{-- <td>{{ $requestData->attendance->clock_in_time->format('Y年m月d日') }}</td> --}}
-                <td>{{ optional($requestData->attendance->clock_in_time)->format('Y年m月d日') ?? '-' }}</td>
+                <td>{{ \Carbon\Carbon::parse($requestData->attendance->clock_in_time)->format('Y年m月d日') }}</td>
             </tr>
-            <tr>
-                <th>申請種別</th>
-                <td>{{ $requestData->request_type }}</td>
-            </tr>
-            <tr>
-                <th>修正理由</th>
-                {{-- <td>{{ $requestData->reason }}</td> --}}
-                <td>{{ $requestData->reason ?? '（なし）' }}</td>
-            </tr>
+            {{-- <tr>
+            <th>申請種別</th>
+            <td>{{ $requestData->request_type }}</td>
+        </tr> --}}
             <tr>
                 <th>修正前の時刻</th>
                 <td>
-                    {{-- 出勤：{{ $requestData->before_clock_in ?? '-' }}
-                    退勤：{{ $requestData->before_clock_out ?? '-' }}
-                    休憩：{{ $requestData->before_break_start ?? '-' }}〜{{ $requestData->before_break_end ?? '-' }} --}}
-                    出勤：{{ optional($requestData->after_clock_in)->format('H:i:s') ?? '-' }}
-                    退勤：{{ optional($requestData->after_clock_out)->format('H:i:s') ?? '-' }}
-                    休憩：{{ optional($requestData->after_break_start)->format('H:i:s') ?? '-' }}
-                    〜{{ optional($requestData->after_break_end)->format('H:i:s') ?? '-' }}
+                    出勤：{{ $requestData->before_clock_in ?? '－' }}
+                    ～ 退勤：{{ $requestData->before_clock_out ?? '－' }}
+                    ／ 休憩：{{ $requestData->before_break_start ?? '－' }}～{{ $correctionRequest->before_break_end ?? '－' }}
                 </td>
             </tr>
             <tr>
                 <th>修正後の時刻</th>
                 <td>
-                    {{-- 出勤：{{ $requestData->after_clock_in ?? '-' }}
-                    退勤：{{ $requestData->after_clock_out ?? '-' }}
-                    休憩：{{ $requestData->after_break_start ?? '-' }}〜{{ $requestData->after_break_end ?? '-' }} --}}
-                    出勤：{{ optional($requestData->after_clock_in)->format('H:i:s') ?? '-' }}
-                    退勤：{{ optional($requestData->after_clock_out)->format('H:i:s') ?? '-' }}
-                    休憩：{{ optional($requestData->after_break_start)->format('H:i:s') ?? '-' }}
-                    〜{{ optional($requestData->after_break_end)->format('H:i:s') ?? '-' }}
+                    出勤：{{ $requestData->after_clock_in ?? '－' }}
+                    ～ 退勤：{{ $requestData->after_clock_out ?? '－' }}
+                    ／ 休憩：{{ $requestData->after_break_start ?? '－' }}～{{ $correctionRequest->after_break_end ?? '－' }}
                 </td>
+            </tr>
+            <tr>
+                <th>修正理由</th>
+                <td>{{ $requestData->reason }}</td>
             </tr>
         </table>
 
-        <div class="approval-buttons">
+        <div class="approval-actions">
             @if ($requestData->status === 'pending')
-                <form method="POST" action="{{ route('admin.correction_request.approve', $requestData->id) }}">
+                <form action="{{ route('admin.stamp_correction_request.approve', $correctionRequest->id) }}" method="POST">
                     @csrf
                     <button type="submit" class="btn-approve">承認する</button>
                 </form>

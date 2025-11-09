@@ -134,3 +134,63 @@
     font-size: 0.9rem;
     margin-bottom: 10px;
 }
+
+/* ===============================
+   メール認証画面（verify-email）
+=============================== */
+
+.verify-card {
+    width: 500px;
+    text-align: center;
+}
+
+.verify-card h2 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.verify-text {
+    font-size: 1rem;
+    color: #333;
+    line-height: 1.8;
+    margin-bottom: 30px;
+}
+
+/* グレー系ボタン */
+.btn-gray {
+    display: inline-block;
+    width: 100%;
+    padding: 12px;
+    background-color: #e5e5e5;
+    color: #000;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-gray:hover {
+    background-color: #d5d5d5;
+}
+
+/* リンク部分 */
+.link-area {
+    margin-top: 15px;
+}
+
+.link-area a {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 0.95rem;
+}
+
+.link-area a:hover {
+    text-decoration: underline;
+}
+
+.success-message {
+    color: #27ae60;
+    margin-bottom: 20px;
+}

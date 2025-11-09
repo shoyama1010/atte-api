@@ -26,7 +26,8 @@ class AttendanceSeeder extends Seeder
                 'clock_out_time' => '2025-10-15 18:00:00',
                 // 'status' => 0,
                 // 'status' => 'working', // ✅ ENUMに合わせて文字列に修正
-                'status' => 'none', // ← ✅ ENUMに合わせて修正！
+                // 'status' => 'none', // ← ✅ ENUMに合わせて修正！
+                'status' => 'editable',  // ← これが今の新しいデフォルト
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -37,7 +38,8 @@ class AttendanceSeeder extends Seeder
                 'break_end' => '2025-10-15 13:00:00',
                 'clock_out_time' => '2025-10-15 17:45:00',
                 // 'status' => 1,
-                'status' => 'none', // ✅ ENUM型文字列
+                // 'status' => 'none', // ✅ ENUM型文字列
+                'status' => 'editable',  // ← これが今の新しいデフォルト
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -70,7 +72,8 @@ class AttendanceSeeder extends Seeder
                     'break_end' => $breakEnd,
                     'clock_out_time' => $clockOut,
                     // 'status' => 'off_duty',
-                    'status' => 'none', // ← ✅ ENUMに合わせて修正！
+                    // 'status' => 'none', // ← ✅ ENUMに合わせて修正！
+                    'status' => 'editable',  // ← これが今の新しいデフォルト
                     'created_at' => $date,
                     'updated_at' => $date,
                 ]);

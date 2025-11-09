@@ -152,6 +152,9 @@ class AttendanceController extends Controller
         $attendance->clock_in_time = $request->input('clock_in_time');
         $attendance->clock_out_time = $request->input('clock_out_time');
         $attendance->note = $request->input('note');
+        // ✅ ここを追加：修正後は承認待ちに変更
+        $attendance->status = 'pending';
+
         $attendance->save();
 
         // 既存の休憩データを一旦削除して再登録（複数対応）
@@ -167,8 +170,6 @@ class AttendanceController extends Controller
                     $attendance->rests()->create([
                         'break_start' => Carbon::parse("{$date} {$rest['break_start']}"),
                         'break_end'   => Carbon::parse("{$date} {$rest['break_end']}"),
-                        // 'break_start' => $rest['break_start'],
-                        // 'break_end'   => $rest['break_end'],
                     ]);
                 }
             }
@@ -209,8 +210,6 @@ class AttendanceController extends Controller
                     $attendance->rests()->create([
                         'break_start' => Carbon::parse($attendance->created_at->format('Y-m-d') . ' ' . $rest['break_start']),
                         'break_end'   => Carbon::parse($attendance->created_at->format('Y-m-d') . ' ' . $rest['break_end']),
-                        // 'break_start' => $rest['break_start'],
-                        // 'break_end' => $rest['break_end'],
                     ]);
                 }
             }
