@@ -1,5 +1,5 @@
 # atte-api（バックエンド）
-＊フロントは、Next.jsにて実装。API連携にて、SPA化します
+＊フロントは、Next.jsにて実装。API連携にて、SPA化します。フロントエンド：https://github.com/shoyama1010/attendance-frontend
 
 # 作成した目的
 
