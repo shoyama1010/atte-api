@@ -43,7 +43,9 @@
 
         <div class="approval-actions">
             @if ($requestData->status === 'pending')
-                <form action="{{ route('admin.stamp_correction_request.approve', $correctionRequest->id) }}" method="POST">
+                {{-- <form action="{{ route('admin.stamp_correction_request.approve', $requestData->id) }}" method="POST"> --}}
+                <form action="{{ route('admin.correction_request.approve', $requestData->id) }}" method="POST">
+
                     @csrf
                     <button type="submit" class="btn-approve">承認する</button>
                 </form>
@@ -51,7 +53,9 @@
                 <button class="btn-approved" disabled>承認済</button>
             @endif
 
-            <a href="{{ route('admin.stamp_correction_request.list') }}" class="btn-back">一覧に戻る</a>
+            {{-- <a href="{{ route('admin.stamp_correction_request.list') }}" class="btn-back">一覧に戻る</a> --}}
+            <a href="{{ route('admin.correction_request.show', $requestData->id) }}" class="btn-back">一覧に戻る</a>
+
         </div>
     </div>
 @endsection
