@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+
 use Carbon\Carbon;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -80,7 +81,7 @@ class Attendance extends Model
         $minutes = $totalMinutes % 60;
         return sprintf('%02d:%02d', $hours, $minutes);
     }
-/**
+    /**
      * 🔹勤務時間の合計（出勤〜退勤 − 休憩）
      */
     public function getWorkingDurationAttribute()
@@ -108,5 +109,11 @@ class Attendance extends Model
         $minutes = $netMinutes % 60;
 
         return sprintf('%02d:%02d', $hours, $minutes);
+    }
+
+    public function correctionRequest()
+    {
+        // 1つの勤怠レコードに対して、1件の修正申請が紐づく（1対1）
+        return $this->hasOne(CorrectionRequest::class);
     }
 }

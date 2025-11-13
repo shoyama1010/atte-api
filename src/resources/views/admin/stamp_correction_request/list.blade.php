@@ -51,16 +51,12 @@
                             </td>
                             {{-- 社員名 --}}
                             <td>{{ $request->attendance->user->name ?? '―' }}</td>
-
                             {{-- 申請日 --}}
                             <td>{{ $request->created_at->format('Y/m/d') }}</td>
-
                             {{-- 修正対象日（打刻日） --}}
                             <td>{{ optional($request->attendance)->clock_in_time?->format('Y/m/d') ?? '-' }}</td>
-
                             {{-- 理由 --}}
                             <td>{{ $request->reason ?? '（理由なし）' }}</td>
-
                             {{-- 詳細ボタン --}}
                             <td>
                                 <a href="{{ route('admin.correction_request.show', $request->id) }}" class="detail-link">

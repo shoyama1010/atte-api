@@ -66,7 +66,6 @@ class CorrectionRequestController extends Controller
             'before_clock_out'   => $attendance->clock_out_time,
             'before_break_start' => $attendance->break_start,
             'before_break_end'   => $attendance->break_end,
-
             // 🔹 修正後（after系）＝フォームの入力値
             'after_clock_in'    => $request->clock_in_time,
             'after_clock_out'   => $request->clock_out_time,

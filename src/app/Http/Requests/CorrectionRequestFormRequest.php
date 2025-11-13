@@ -38,7 +38,9 @@ class CorrectionRequestFormRequest extends FormRequest
         return [
             'clock_in_time.required' => '出勤時刻を入力してください。',
             'clock_out_time.required' => '退勤時刻を入力してください。',
-            'clock_out_time.after' => '退勤時刻は出勤時刻より後の時間にしてください。',
+            // 'clock_out_time.after' => '退勤時刻は出勤時刻より後の時間にしてください。',
+            'clock_out_time.after' => '休憩時間もしくは退勤時間が不適切な値です。',
+
             'break_start.after_or_equal' => '休憩開始は勤務時間内に設定してください。',
             'break_start.before' => '休憩開始は退勤時刻より前に設定してください。',
             'break_end.after' => '休憩終了は休憩開始より後に設定してください。',

@@ -35,7 +35,7 @@ class AttendanceRequest extends FormRequest
             'clock_in_time.required'  => '出勤時刻を入力してください。',
             'clock_in_time.date_format' => '出勤時刻の形式が正しくありません。',
             'clock_out_time.required' => '退勤時刻を入力してください。',
-            'clock_out_time.after'    => '退勤時刻は出勤時刻より後である必要があります。',
+            'clock_out_time.after'    => '休憩時間もしくは退勤時間が不適切な値です。',
 
             // 休憩
             'break_start.before' => '休憩開始時刻は休憩終了時刻より前に設定してください。',

@@ -121,23 +121,27 @@ class AttendanceController extends Controller
             // ->orderBy('created_at', 'desc')
             ->orderBy('clock_in_time', 'desc')
             ->get();
-        // ->paginate(10);
 
-        // return view('attendance.list', compact('user', 'attendances'));
         return view('attendance.list', compact('attendances'));
     }
 
-    // 勤務詳細
     public function detail($id)
     {
         $user = Auth::user();
 
-        $attendance = Attendance::with('rests')
+        // 勤怠データ＋休憩・修正申請データをまとめて取得
+        $attendance = Attendance::with(['rests', 'correctionRequest'])
             ->where('user_id', $user->id)
             ->where('id', $id)
             ->firstOrFail();
 
-        return view('attendance.detail', compact('user', 'attendance'));
+        // 関連を再読込してキャッシュをクリア
+        $attendance->load('correctionRequest');
+
+        // ステータスを correction_requests の状態優先で確認
+        $status = $attendance->correctionRequest->status ?? $attendance->status;
+
+        return view('attendance.detail', compact('user', 'attendance', 'status'));
     }
 
     /**

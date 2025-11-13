@@ -5,6 +5,8 @@ services:
     image: nginx:1.21.1
     ports:
       - "80:80"
+      # - "8080:80"
+      # - "8088:80"
     volumes:
       - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
       - ./src:/var/www/
@@ -39,6 +41,7 @@ services:
       - mysql
     ports:
       - 8080:80
+      # - "8081:80"
 
   mailhog:
     image: mailhog/mailhog

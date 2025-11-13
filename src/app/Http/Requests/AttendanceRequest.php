@@ -34,7 +34,7 @@ class AttendanceRequest extends FormRequest
     public function messages()
     {
         return [
-            'clock_out_time.after' => '退勤時刻は出勤時刻より後である必要があります。',
+            'clock_out_time.after' => '休憩時間もしくは退勤時間が不適切な値です。',
         ];
     }
 }

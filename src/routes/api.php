@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\AttendanceController;
+use App\Http\Controllers\Api\CorrectionRequestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,11 +16,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+
 
 Route::get('/test', function () {
     return response()->json(['message' => 'API connected successfully!']);
 });
+
+
+Route::get('/attendances/{id}', [AttendanceController::class, 'show']);
+Route::get('/correction-requests', [CorrectionRequestController::class, 'index']);
+Route::get('/correction-requests/{id}', [CorrectionRequestController::class, 'show']);
 
