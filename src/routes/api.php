@@ -22,8 +22,10 @@ Route::get('/test', function () {
     return response()->json(['message' => 'API connected successfully!']);
 });
 
+Route::get('/attendances', [AttendanceController::class, 'index']);
 
 Route::get('/attendances/{id}', [AttendanceController::class, 'show']);
 Route::get('/correction-requests', [CorrectionRequestController::class, 'index']);
 Route::get('/correction-requests/{id}', [CorrectionRequestController::class, 'show']);
 
+Route::put('/attendances/{id}', [AttendanceController::class, 'update']);

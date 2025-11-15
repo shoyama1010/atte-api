@@ -27,7 +27,8 @@
                     @foreach ($attendances as $attendance)
                         <tr>
                             {{-- 社員名 --}}
-                            <td>{{ $attendance->user->name }}</td>
+                            {{-- <td>{{ $attendance->user->name }}</td> --}}
+                            <td>{{ $attendance->created_at->format('Y/m/d') }}</td>
 
                             {{-- 出勤・退勤 --}}
                             <td>{{ optional($attendance->clock_in_time)->format('H:i') ?? '-' }}</td>

@@ -27,10 +27,10 @@
                 <thead>
                     <tr>
                         <th>状態</th>
-                        <th>社員名</th>
-                        <th>申請日</th>
-                        <th>修正対象日</th>
-                        <th>申請内容</th>
+                        <th>名前</th>
+                        <th>申請日時</th>
+                        <th>対象日時</th>
+                        <th>申請理由</th>
                         <th>詳細</th>
                     </tr>
                 </thead>
@@ -39,7 +39,7 @@
                         <tr>
                             <td>
                                 @if ($request->status === 'pending')
-                                    <span class="status pending">未承認</span>
+                                    <span class="status pending">承認待ち</span>
                                 @elseif($request->status === 'approved')
                                     <span class="status approved">承認済</span>
                                 @elseif ($request->status === 'rejected')
