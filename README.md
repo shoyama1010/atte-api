@@ -18,7 +18,7 @@ http://localhost/attendance
 
 ・メール認証機能（応用機能　＊詳細は、補足で最下位箇所に記載）
 
-・（勤怠）打刻機能
+・（勤怠）打刻機能（＊補足で最下位箇所に記載）
 
 ・管理者認証機能
 
@@ -132,5 +132,8 @@ php artisan key:generate
 ・メール認証機能
 <img width="1190" height="675" alt="Image" src="https://github.com/user-attachments/assets/0f416545-107a-4715-bf93-7f205f1c0748" />
 
-・CSV機能
+・CSV出力機能
 <img width="1176" height="679" alt="Image" src="https://github.com/user-attachments/assets/d882022e-6901-4e87-bbee-fb97deb44fd2" />
+
+・打刻機能（status:①状態は、見た目わかるように、色を変えてます。②最初の出勤時のみ、誰かわかるように、ユーザー名を入れてます。）
+<img width="1213" height="675" alt="Image" src="https://github.com/user-attachments/assets/f755c14d-846e-4639-94c8-cb577ced8b97" />
