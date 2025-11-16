@@ -8,6 +8,18 @@
     <div class="attendance-list-container">
         <h2>勤務一覧：{{ Auth::user()->name }} </h2>
 
+        {{-- 🔸 月切替バー --}}
+        <div class="month-bar">
+            <a href="{{ route('attendance.list', ['month' => $prevMonth]) }}" class="month-arrow">&lt; 前月</a>
+
+            <div class="month-center">
+                <i class="fa-regular fa-calendar"></i>
+                <span class="month-text">{{ \Carbon\Carbon::parse($month)->format('Y年m月') }}</span>
+            </div>
+
+            <a href="{{ route('attendance.list', ['month' => $nextMonth]) }}" class="month-arrow">翌月 &gt;</a>
+        </div>
+
         @if ($attendances->isEmpty())
             <p>現在、勤務記録はありません。</p>
         @else
@@ -17,7 +29,7 @@
                         <th>日付</th>
                         <th>出勤</th>
                         <th>退勤</th>
-                        <th>休憩時間</th>
+                        <th>休憩</th>
                         <th>合計</th>
                         <th>詳細</th>
                     </tr>
@@ -48,7 +60,7 @@
                     @endforeach
                 </tbody>
 
-                </table>
+            </table>
         @endif
     </div>
 @endsection

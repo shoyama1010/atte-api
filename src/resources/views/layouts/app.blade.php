@@ -9,6 +9,9 @@
     {{-- ✅ 共通CSS（全ページのベーススタイル） --}}
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link rel="stylesheet" href="{{ asset('css/auth.css') }}">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
     {{-- ✅ ページごとの追加CSSを読み込み（@section('css')で個別定義） --}}
     @yield('css')
 </head>

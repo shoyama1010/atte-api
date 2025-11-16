@@ -112,17 +112,27 @@ class AttendanceController extends Controller
         return redirect()->route('attendance.index')->with('message', '退勤しました');
     }
 
-    public function list()
+    public function list(Request $request)
     {
         $user = Auth::user();
+        // 現在の表示対象月（例：2025-11）をクエリパラメータから取得。なければ今月。
+        $month = $request->query('month', now()->format('Y-m'));
+
+        // 月初・月末をCarbonで算出
+        $startOfMonth = Carbon::parse($month . '-01')->startOfMonth();
+        $endOfMonth = $startOfMonth->copy()->endOfMonth();
 
         // 自分の勤怠データを新しい順に取得
         $attendances = Attendance::where('user_id', $user->id)
-            // ->orderBy('created_at', 'desc')
+            ->whereBetween('clock_in_time', [$startOfMonth, $endOfMonth])
             ->orderBy('clock_in_time', 'desc')
             ->get();
 
-        return view('attendance.list', compact('attendances'));
+        // 前月・翌月のリンク用パラメータ
+        $prevMonth = $startOfMonth->copy()->subMonth()->format('Y-m');
+        $nextMonth = $startOfMonth->copy()->addMonth()->format('Y-m');
+
+        return view('attendance.list', compact('attendances','month', 'prevMonth', 'nextMonth', 'user'));
     }
 
     public function detail($id)
