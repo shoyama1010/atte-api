@@ -168,7 +168,6 @@ class AttendanceController extends Controller
         $attendance->note = $request->input('note');
         // ✅ ここを追加：修正後は承認待ちに変更
         $attendance->status = 'pending';
-
         $attendance->save();
 
         // 既存の休憩データを一旦削除して再登録（複数対応）

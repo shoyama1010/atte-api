@@ -28,4 +28,6 @@ Route::get('/attendances/{id}', [AttendanceController::class, 'show']);
 Route::get('/correction-requests', [CorrectionRequestController::class, 'index']);
 Route::get('/correction-requests/{id}', [CorrectionRequestController::class, 'show']);
 
-Route::put('/attendances/{id}', [AttendanceController::class, 'update']);
+Route::put('/attendances/{id}', [AttendanceController::class, 'updateApi']);
+
+// Route::put('/attendances/{id}', [AttendanceController::class, '????']);

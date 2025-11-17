@@ -53,15 +53,7 @@ class CorrectionRequestController extends Controller
             'admin_id'        => null,
             'request_type'            => 'time_change',
             'reason'          => $request->reason,
-            // 'before_clock_in' => $attendance->clock_in_time,
-            // 'before_clock_out' => $attendance->clock_out_time,
-            // 'before_break_start' => $attendance->break_start,
-            // 'before_break_end'   => $attendance->break_end,
-            // 'after_clock_in'  => $request->clock_in_time,
-            // 'after_clock_out' => $request->clock_out_time,
-            // 'after_break_start' => $request->break_start,
-            // 'after_break_end'   => $request->break_end,
-            // 🔹 修正前（before系）＝元の勤怠データから取得
+
             'before_clock_in'    => $attendance->clock_in_time,
             'before_clock_out'   => $attendance->clock_out_time,
             'before_break_start' => $attendance->break_start,
@@ -74,10 +66,25 @@ class CorrectionRequestController extends Controller
             'status'          => 'pending',
         ]);
 
-        // return redirect()->route('attendance.detail', $attendanceId)
-        //     ->with('success', '修正申請を送信しました。');
-
         return redirect()->route('stamp_correction_request.list')
             ->with('success', '修正申請を送信しました。');
+    }
+
+    public function show($id)
+    {
+        $req = CorrectionRequest::with(['user', 'attendance'])
+            ->findOrFail($id);
+
+        return response()->json([
+            'id' => $req->id,
+            'user_name' => $req->user->name,
+            'created_at' => $req->created_at->format('Y-m-d H:i'),
+            'target_date' => $req->attendance->created_at->format('Y-m-d'),
+            'reason' => $req->reason,
+            'before_clock_in' => $req->before_clock_in,
+            'before_clock_out' => $req->before_clock_out,
+            'after_clock_in' => $req->after_clock_in,
+            'after_clock_out' => $req->after_clock_out,
+        ]);
     }
 }
