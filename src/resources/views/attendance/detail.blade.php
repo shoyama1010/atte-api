@@ -54,8 +54,8 @@
                 @include('attendance._form')
 
                 <div class="form-actions">
-                    <button type="submit" class="btn-update">変更を保存</button>
-                    <a href="{{ route('attendance.list') }}" class="btn-back">一覧に戻る</a>
+                    <button type="submit" class="btn-update">修正</button>
+                    {{-- <a href="{{ route('attendance.list') }}" class="btn-back">一覧に戻る</a> --}}
                 </div>
             </form>
         @endif

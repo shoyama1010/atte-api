@@ -1,8 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\Auth\LoginController;
-// use App\Http\Controllers\Admin\DashboardController;
+// use App\Http\Controllers\Admin\Auth\LoginController;
+use App\Http\Controllers\Admin\LoginController;
+
 
 // 管理者ログイン画面
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
