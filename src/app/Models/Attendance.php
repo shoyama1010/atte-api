@@ -114,6 +114,8 @@ class Attendance extends Model
     public function correctionRequest()
     {
         // 1つの勤怠レコードに対して、1件の修正申請が紐づく（1対1）
-        return $this->hasOne(CorrectionRequest::class);
+        // return $this->hasOne(CorrectionRequest::class);
+        // return $this->hasMany(CorrectionRequest::class);
+        return $this->hasOne(CorrectionRequest::class)->latestOfMany();
     }
 }

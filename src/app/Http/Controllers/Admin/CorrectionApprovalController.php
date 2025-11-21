@@ -28,7 +28,6 @@ class CorrectionApprovalController extends Controller
     {
         // 申請データを取得
         $correction = CorrectionRequest::findOrFail($id);
-
         // 対象の勤怠データを取得
         $attendance = Attendance::findOrFail($correction->attendance_id);
 
@@ -49,5 +48,6 @@ class CorrectionApprovalController extends Controller
         // 完了後、一覧に戻る
         return redirect()->route('admin.stamp_correction_request.list')
             ->with('success', '修正申請を承認し、勤怠情報を更新しました。');
+
     }
 }

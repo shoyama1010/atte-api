@@ -7,19 +7,17 @@
 @section('content')
     <div class="approval-detail-container">
 
-
-        <h2>勤務詳細：{{ $requestData->attendance->user->name }}</h2>
-
+        <h2>勤務詳細</h2>
         <table class="approval-detail-table">
+            <tr>
+                <th>名前</th>
+                <td>{{ $requestData->attendance->user->name }}</td>
+            </tr>
             <tr>
                 <th>日付</th>
                 <td>{{ \Carbon\Carbon::parse($requestData->attendance->clock_in_time)->format('Y年m月d日') }}</td>
             </tr>
             {{-- <tr>
-            <th>申請種別</th>
-            <td>{{ $requestData->request_type }}</td>
-        </tr> --}}
-            <tr>
                 <th>修正前の時刻</th>
                 <td>
                     出勤：{{ $requestData->before_clock_in ?? '－' }}
@@ -34,18 +32,34 @@
                     ～ 退勤：{{ $requestData->after_clock_out ?? '－' }}
                     ／ 休憩：{{ $requestData->after_break_start ?? '－' }}～{{ $correctionRequest->after_break_end ?? '－' }}
                 </td>
+            </tr> --}}
+            <tr>
+                <th>出勤・退勤</th>
+                <td>
+                    {{ $requestData->after_clock_in ?? 'ーー' }}
+                    〜 {{ $requestData->after_clock_out ?? 'ーー' }}
+                    {{-- ／休憩：
+                    {{ $requestData->after_break_start ?? 'ーー' }}
+                    〜
+                    {{ $requestData->after_break_end ?? 'ーー' }} --}}
+                </td>
+            </tr>
+            <tr>
+                <th>休憩</th>
+                <td>
+                    {{ $requestData->after_break_start ?? 'ーー' }}
+                    〜
+                    {{ $requestData->after_break_end ?? 'ーー' }}
+                </td>
             </tr>
             <tr>
                 <th>修正理由</th>
                 <td>{{ $requestData->reason }}</td>
             </tr>
         </table>
-
         <div class="approval-actions">
             @if ($requestData->status === 'pending')
-                {{-- <form action="{{ route('admin.stamp_correction_request.approve', $requestData->id) }}" method="POST"> --}}
                 <form action="{{ route('admin.correction_request.approve', $requestData->id) }}" method="POST">
-
                     @csrf
                     <button type="submit" class="btn-approve">承認する</button>
                 </form>
@@ -54,7 +68,7 @@
             @endif
 
             {{-- <a href="{{ route('admin.stamp_correction_request.list') }}" class="btn-back">一覧に戻る</a> --}}
-            <a href="{{ route('admin.correction_request.show', $requestData->id) }}" class="btn-back">一覧に戻る</a>
+            {{-- <a href="{{ route('admin.correction_request.show', $requestData->id) }}" class="btn-back">一覧に戻る</a> --}}
 
         </div>
     </div>

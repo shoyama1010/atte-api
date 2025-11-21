@@ -7,57 +7,25 @@
 @section('content')
     <div class="attendance-container">
         <h2>勤務詳細</h2>
+        {{-- ▼ 承認待ちのとき（編集不可ブロック） --}}
+        @if ($correctionStatus === 'pending')
 
-        {{-- 修正禁止時メッセージ --}}
-        {{-- @if ($attendance->status === 'pending') --}}
-        @if ($status === 'pending')
-            {{-- フォーム項目は表示するが入力は無効 --}}
-            <form>
-                @csrf
-                <table class="attendance-detail-table">
-                    <tr>
-                        <th>日付</th>
-                        <td>{{ $attendance->created_at->format('Y年m月d日') }}</td>
-                    </tr>
-                    <tr>
-                        <th>出勤・退勤</th>
-                        <td>{{ $attendance->clock_in_time }} ～ {{ $attendance->clock_out_time }}</td>
-                    </tr>
-                    <tr>
-                        <th>休憩</th>
-                        <td>
-                            @foreach ($attendance->rests as $rest)
-                                {{ $rest->break_start }} ～ {{ $rest->break_end }}<br>
-                            @endforeach
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>備考（修正理由など）</th>
-                        <td>{{ $attendance->note ?? '—' }}</td>
-                    </tr>
-                </table>
+        {{-- 勤務情報表示（読み取り専用） --}}
+             @include('attendance.show_block')
 
-                {{-- 🚨 修正禁止メッセージ（ここに赤帯で表示） --}}
-                <div class="alert alert-danger" style="margin-top: 20px; text-align:center; font-weight: bold;">
-                    承認待ちのため修正はできません。
-                </div>
+            {{-- メッセージ表示 --}}
+            <div class="alert alert-danger" style="margin-top:30px; text-align:center; padding:15px; font-weight:bold;">
+                承認待ちのため修正はできません。
+            </div>
 
-                <div class="form-actions">
-                    <a href="{{ route('attendance.list') }}" class="btn-back">一覧に戻る</a>
-                </div>
-            </form>
+            {{-- 戻るボタン --}}
+            <div class="form-actions" style="text-align:center; margin-top:20px;">
+                <a href="{{ route('attendance.list') }}" class="btn-back">一覧に戻る</a>
+            </div>
+
+            {{-- 修正可能（承認待ちでない） --}}
         @else
-            {{-- 通常の編集フォーム --}}
-            <form action="{{ route('attendance.update', $attendance->id) }}" method="POST">
-                @csrf
-                @method('PUT')
-                @include('attendance._form')
-
-                <div class="form-actions">
-                    <button type="submit" class="btn-update">修正</button>
-                    {{-- <a href="{{ route('attendance.list') }}" class="btn-back">一覧に戻る</a> --}}
-                </div>
-            </form>
+            @include('attendance.form_block')
         @endif
     </div>
 @endsection

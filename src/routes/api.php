@@ -30,4 +30,5 @@ Route::get('/correction-requests/{id}', [CorrectionRequestController::class, 'sh
 
 Route::put('/attendances/{id}', [AttendanceController::class, 'updateApi']);
 
-// Route::put('/attendances/{id}', [AttendanceController::class, '????']);
+Route::middleware(['auth:sanctum', 'admin'])
+    ->put('/correction_requests/{id}/approve', [CorrectionRequestController::class, 'approve']);

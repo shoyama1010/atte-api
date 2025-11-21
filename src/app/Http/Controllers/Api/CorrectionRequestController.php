@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\CorrectionRequest;
+use App\Models\Attendance;
 
 class CorrectionRequestController extends Controller
 {
@@ -46,5 +47,27 @@ class CorrectionRequestController extends Controller
             'clock_out_time' => $request->attendance->clock_out_time,
             'note' => $request->attendance->note,
         ]);
+    }
+
+    public function approve($id)
+    {
+        $correction = CorrectionRequest::findOrFail($id);
+        $attendance = Attendance::findOrFail($correction->attendance_id);
+
+        $attendance->update([
+            'clock_in_time'  => $correction->after_clock_in,
+            'clock_out_time' => $correction->after_clock_out,
+            'break_start'    => $correction->after_break_start,
+            'break_end'      => $correction->after_break_end,
+        ]);
+
+        $correction->update([
+            'status'   => 'approved',
+            'admin_id' => Auth::guard('admin')->id(),
+        ]);
+
+        // 🔥 Blade 用 正しい戻り方
+        return redirect()->route('admin.stamp_correction_request.list')
+            ->with('success', '承認しました');
     }
 }
