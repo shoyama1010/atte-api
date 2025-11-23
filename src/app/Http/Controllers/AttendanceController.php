@@ -151,23 +151,20 @@ class AttendanceController extends Controller
             'user' => $user,
             'attendance' => $attendance,
             'correctionStatus' => $correction->status ?? null,
-            // 'correctionStatus' => $attendance->correctionRequest->status ?? null,
         ]);
     }
 
     public function update(Request $request, $id)
     {
+        // dd($request->all());
+
         // 対象の出勤データを取得
         $attendance = Attendance::with('rests')->findOrFail($id);
-        // 出退勤時間を更新
-        $attendance->clock_in_time = $request->input('clock_in_time');
+        $attendance->clock_in_time = $request->input('clock_in_time'); // 出退勤時間を更新
         $attendance->clock_out_time = $request->input('clock_out_time');
         $attendance->note = $request->input('note');
-
-        // $attendance->status = 'pending';
         $attendance->save();
-        // 既存の休憩データを一旦削除して再登録（複数対応）
-        $attendance->rests()->delete();
+        $attendance->rests()->delete(); // 既存の休憩データを一旦削除して再登録（複数対応）
 
         if ($request->has('rests')) {
             foreach ($request->rests as $rest) {
@@ -181,8 +178,7 @@ class AttendanceController extends Controller
                 }
             }
         }
-        // 修正申請の登録処理
-        CorrectionRequest::create([
+        CorrectionRequest::create([ // 修正申請の登録処理
             'attendance_id'   => $attendance->id,
             'user_id'         => auth()->id(),
             'admin_id'        => null,
@@ -198,7 +194,7 @@ class AttendanceController extends Controller
             ->route('attendance.detail', $attendance->id)
             ->with('success', '勤務情報を更新しました。');
     }
-
+    
     // 休憩回数分のレコードを保存
     public function store(Request $request)
     {
@@ -207,8 +203,7 @@ class AttendanceController extends Controller
             'clock_in_time' => $request->clock_in_time,
             'clock_out_time' => $request->clock_out_time,
         ]);
-        // 休憩の登録（複数対応）
-        if ($request->has('rests')) {
+        if ($request->has('rests')) { // 休憩の登録（複数対応）
             foreach ($request->rests as $rest) {
                 if (!empty($rest['break_start']) && !empty($rest['break_end'])) {
                     $attendance->rests()->create([

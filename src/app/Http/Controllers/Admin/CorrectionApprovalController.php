@@ -7,6 +7,7 @@ use App\Models\CorrectionRequest;
 use App\Models\Attendance;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class CorrectionApprovalController extends Controller
 {
@@ -15,39 +16,47 @@ class CorrectionApprovalController extends Controller
      */
     public function show($id)
     {
+
+        // $requestData = CorrectionRequest::findOrFail($id);
         $requestData = CorrectionRequest::with(['attendance.user'])
             ->findOrFail($id);
-
         return view('admin.stamp_correction_request.approve', compact('requestData'));
     }
-
     /**
      * 承認ボタン押下処理
      */
     public function approve(Request $request, $id)
     {
-        // 申請データを取得
+        // 申請データ
         $correction = CorrectionRequest::findOrFail($id);
-        // 対象の勤怠データを取得
-        $attendance = Attendance::findOrFail($correction->attendance_id);
 
-        // 🔹 勤怠データを「after_～」の値で更新
+        // 対象の勤怠
+        $attendance = Attendance::with('rests')->findOrFail($correction->attendance_id);
+
+        // ▼ 1. 勤怠の基本項目を更新
         $attendance->update([
             'clock_in_time'  => $correction->after_clock_in,
             'clock_out_time' => $correction->after_clock_out,
-            'break_start'    => $correction->after_break_start,
-            'break_end'      => $correction->after_break_end,
+             
         ]);
+        // ▼ 2. 既存の休憩データを削除
+        $attendance->rests()->delete();
 
-        // 🔹 申請データを「承認済み」に変更し、承認者IDを登録
+        // ▼ 3. after の休憩が存在する場合のみ登録
+        if ($correction->after_break_start && $correction->after_break_end) {
+            $attendance->rests()->create([
+                'break_start' => $correction->after_break_start,
+                'break_end'   => $correction->after_break_end,
+            ]);
+        }
+
+        // ▼ 4. 申請データのステータス更新
         $correction->update([
             'status'   => 'approved',
-            'admin_id' => Auth::guard('admin')->id(), // 管理者認証ガード使用
+            'admin_id' => Auth::guard('admin')->id(),
         ]);
-
-        // 完了後、一覧に戻る
-        return redirect()->route('admin.stamp_correction_request.list')
+        return redirect()
+            ->route('admin.stamp_correction_request.list')
             ->with('success', '修正申請を承認し、勤怠情報を更新しました。');
-
     }
 }

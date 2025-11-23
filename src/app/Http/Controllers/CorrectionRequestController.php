@@ -43,26 +43,38 @@ class CorrectionRequestController extends Controller
      */
     public function update(CorrectionRequestFormRequest $request, $attendanceId)
     {
-        $user = Auth::user();
-        $attendance = Attendance::findOrFail($attendanceId);
 
-        // 修正申請を新規登録
+        // dd($request->all());
+
+        $user = Auth::user();
+        $attendance = Attendance::with('rests')->findOrFail($attendanceId);
+
+        // 休憩は1件想定
+        $rest = $attendance->rests->first();
+
+        // ▼ フォームの after（修正後）休憩
+        $afterBreakStart = $request->rests[0]['break_start'] ?? null;
+        $afterBreakEnd   = $request->rests[0]['break_end'] ?? null;
+
         CorrectionRequest::create([
             'attendance_id'   => $attendance->id,
             'user_id'         => $user->id,
             'admin_id'        => null,
-            'request_type'            => 'time_change',
+            'request_type'    => 'time_change',
             'reason'          => $request->reason,
 
+            // Before（元の勤怠）
             'before_clock_in'    => $attendance->clock_in_time,
             'before_clock_out'   => $attendance->clock_out_time,
-            'before_break_start' => $attendance->break_start,
-            'before_break_end'   => $attendance->break_end,
-            // 🔹 修正後（after系）＝フォームの入力値
+            'before_break_start' => optional($rest)->break_start,
+            'before_break_end'   => optional($rest)->break_end,
+
+            // After（修正後、フォーム値）
             'after_clock_in'    => $request->clock_in_time,
             'after_clock_out'   => $request->clock_out_time,
-            'after_break_start' => $request->break_start,
-            'after_break_end'   => $request->break_end,
+            'after_break_start' => $afterBreakStart,
+            'after_break_end'   => $afterBreakEnd,
+
             'status'          => 'pending',
         ]);
 
@@ -72,19 +84,13 @@ class CorrectionRequestController extends Controller
 
     public function show($id)
     {
-        $req = CorrectionRequest::with(['user', 'attendance'])
-            ->findOrFail($id);
 
-        return response()->json([
-            'id' => $req->id,
-            'user_name' => $req->user->name,
-            'created_at' => $req->created_at->format('Y-m-d H:i'),
-            'target_date' => $req->attendance->created_at->format('Y-m-d'),
-            'reason' => $req->reason,
-            'before_clock_in' => $req->before_clock_in,
-            'before_clock_out' => $req->before_clock_out,
-            'after_clock_in' => $req->after_clock_in,
-            'after_clock_out' => $req->after_clock_out,
-        ]);
+        // 修正申請データ + 勤務データ + 休憩データ + ユーザー
+        $requestData = CorrectionRequest::with([
+            'attendance.rests',
+            'user'
+        ])->findOrFail($id);
+
+        return view('admin.stamp_correction_request.approve', compact('requestData'));
     }
 }

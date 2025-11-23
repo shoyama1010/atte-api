@@ -17,31 +17,12 @@
                 <th>日付</th>
                 <td>{{ \Carbon\Carbon::parse($requestData->attendance->clock_in_time)->format('Y年m月d日') }}</td>
             </tr>
-            {{-- <tr>
-                <th>修正前の時刻</th>
-                <td>
-                    出勤：{{ $requestData->before_clock_in ?? '－' }}
-                    ～ 退勤：{{ $requestData->before_clock_out ?? '－' }}
-                    ／ 休憩：{{ $requestData->before_break_start ?? '－' }}～{{ $correctionRequest->before_break_end ?? '－' }}
-                </td>
-            </tr>
-            <tr>
-                <th>修正後の時刻</th>
-                <td>
-                    出勤：{{ $requestData->after_clock_in ?? '－' }}
-                    ～ 退勤：{{ $requestData->after_clock_out ?? '－' }}
-                    ／ 休憩：{{ $requestData->after_break_start ?? '－' }}～{{ $correctionRequest->after_break_end ?? '－' }}
-                </td>
-            </tr> --}}
+
             <tr>
                 <th>出勤・退勤</th>
                 <td>
                     {{ $requestData->after_clock_in ?? 'ーー' }}
                     〜 {{ $requestData->after_clock_out ?? 'ーー' }}
-                    {{-- ／休憩：
-                    {{ $requestData->after_break_start ?? 'ーー' }}
-                    〜
-                    {{ $requestData->after_break_end ?? 'ーー' }} --}}
                 </td>
             </tr>
             <tr>
@@ -66,10 +47,6 @@
             @else
                 <button class="btn-approved" disabled>承認済</button>
             @endif
-
-            {{-- <a href="{{ route('admin.stamp_correction_request.list') }}" class="btn-back">一覧に戻る</a> --}}
-            {{-- <a href="{{ route('admin.correction_request.show', $requestData->id) }}" class="btn-back">一覧に戻る</a> --}}
-
         </div>
     </div>
 @endsection

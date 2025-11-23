@@ -54,7 +54,11 @@
 
                             {{-- 詳細ボタン --}}
                             <td>
-                                <a href="{{ route('attendance.detail', ['id' => $attendance->id]) }}">詳細</a>
+                                {{-- <a href="{{ route('attendance.detail', ['id' => $attendance->id]) }}">詳細</a> --}}
+                                <a href="{{ route('attendance.request.edit', $attendance->id) }}" class="btn-edit">
+    詳細
+</a>
+
                             </td>
                         </tr>
                     @endforeach

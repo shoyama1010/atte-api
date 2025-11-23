@@ -59,6 +59,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // 勤怠一覧・詳細
     Route::get('/attendance/list', [AttendanceController::class, 'list'])->name('attendance.list');
     Route::get('/attendance/detail/{id}', [AttendanceController::class, 'detail'])->name('attendance.detail');
+
     // 🔹 勤務修正申請（再設計版）
     Route::get('/attendance/request/{attendance}', [CorrectionRequestController::class, 'edit'])
         ->name('attendance.request.edit');  // ← 旧 create() → edit() に変更
@@ -75,7 +76,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // 勤務登録処理
     Route::post('/attendance/store', [AttendanceController::class, 'store'])
         ->name('attendance.store');
+
+    Route::post('/attendance/test-dd', function () {
+        dd('フォームはここに来ているよ！');
+    });
     // 👇 これを追加
+    Route::post('/stamp_correction_request/{id}', [CorrectionRequestController::class, 'update'])
+    ->name('stamp_correction_request.update');
     Route::put('/attendance/update/{id}', [AttendanceController::class, 'update'])->name('attendance.update');
 });
 /*

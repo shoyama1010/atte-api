@@ -26,19 +26,21 @@ class CorrectionRequestFormRequest extends FormRequest
         return [
             'clock_in_time'  => 'required|date_format:H:i',
             'clock_out_time' => 'required|date_format:H:i|after:clock_in_time',
-            'break_start'    => 'nullable|date_format:H:i|after_or_equal:clock_in_time|before:clock_out_time',
-            'break_end'      => 'nullable|date_format:H:i|after_or_equal:break_start|before_or_equal:clock_out_time',
             'reason'         => 'required|string|max:255',
+            // ★ 休憩（ネストされた配列）を許可する
+            'rests'                         => 'array',
+            'rests.*.break_start'           => 'nullable|date_format:H:i',
+            'rests.*.break_end'             => 'nullable|date_format:H:i',
         ];
     }
 
-        public function messages(): array
-        {
+    public function messages(): array
+    {
 
         return [
             'clock_in_time.required' => '出勤時刻を入力してください。',
             'clock_out_time.required' => '退勤時刻を入力してください。',
-            // 'clock_out_time.after' => '退勤時刻は出勤時刻より後の時間にしてください。',
+            'clock_out_time.after' => '退勤時刻は出勤時刻より後の時間にしてください。',
             'clock_out_time.after' => '休憩時間もしくは退勤時間が不適切な値です。',
 
             'break_start.after_or_equal' => '休憩開始は勤務時間内に設定してください。',
