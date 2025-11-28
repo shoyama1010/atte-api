@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AttendanceController;
 use App\Http\Controllers\Api\CorrectionRequestController;
+use App\Http\Controllers\Api\AdminCorrectionRequestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,3 +33,7 @@ Route::put('/attendances/{id}', [AttendanceController::class, 'updateApi']);
 
 Route::middleware(['auth:sanctum', 'admin'])
     ->put('/correction_requests/{id}/approve', [CorrectionRequestController::class, 'approve']);
+
+Route::get('/admin/correction-requests/{id}', [AdminCorrectionRequestController::class, 'show']);
+Route::post('/admin/correction-requests/{id}/approve', [AdminCorrectionRequestController::class, 'approve']);
+

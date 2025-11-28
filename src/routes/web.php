@@ -26,7 +26,7 @@ Route::middleware('auth')->group(function () {
         return view('auth.verify-email');
     })->name('verification.notice');
 
-    // 🔹 認証メール再送信
+    // // 🔹 認証メール再送信
     Route::post('/email/verification-notification', function (Request $request) {
         $request->user()->sendEmailVerificationNotification();
         return back()->with('message', '認証メールを再送しました！');
@@ -56,17 +56,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/attendance/break-end', [AttendanceController::class, 'breakEnd'])->name('attendance.breakEnd');
     Route::post('/attendance/clock-out', [AttendanceController::class, 'clockOut'])->name('attendance.clockOut');
 
-    // 勤怠一覧・詳細
+    // 勤怠一覧
     Route::get('/attendance/list', [AttendanceController::class, 'list'])->name('attendance.list');
+
+    // 勤怠詳細（閲覧＋修正申請）
     Route::get('/attendance/detail/{id}', [AttendanceController::class, 'detail'])->name('attendance.detail');
+    // 修正申請送信 POST
+    // Route::post('/attendance/detail/{id}', [CorrectionRequestController::class, 'update'])
+    // ->name('attendance.update');
+    // 🔥 勤怠詳細から修正申請する（PUT）
+    Route::put('/attendance/update/{id}', [AttendanceController::class, 'update'])
+        ->name('attendance.update');
 
-    // 🔹 勤務修正申請（再設計版）
-    Route::get('/attendance/request/{attendance}', [CorrectionRequestController::class, 'edit'])
-        ->name('attendance.request.edit');  // ← 旧 create() → edit() に変更
-
-    Route::post('/attendance/request/{attendance}', [CorrectionRequestController::class, 'update'])
-        ->name('attendance.request.update'); // ← 旧 store() → update() に変更
-    // 申請一覧画面（一般ユーザー）
+        // 申請一覧画面（一般ユーザー）
     Route::get('/stamp_correction_request/list', [CorrectionRequestController::class, 'list'])
         ->name('stamp_correction_request.list');
 
@@ -77,13 +79,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/attendance/store', [AttendanceController::class, 'store'])
         ->name('attendance.store');
 
-    Route::post('/attendance/test-dd', function () {
-        dd('フォームはここに来ているよ！');
-    });
-    // 👇 これを追加
-    Route::post('/stamp_correction_request/{id}', [CorrectionRequestController::class, 'update'])
-    ->name('stamp_correction_request.update');
-    Route::put('/attendance/update/{id}', [AttendanceController::class, 'update'])->name('attendance.update');
 });
 /*
 |--------------------------------------------------------------------------
@@ -124,6 +119,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin'])->group(functi
     // 🔹 承認機能
     Route::get('/stamp_correction_request/approve/{id}', [CorrectionApprovalController::class, 'show'])
         ->name('correction_request.show');
+
     Route::post('/stamp_correction_request/approve/{id}', [CorrectionApprovalController::class, 'approve'])
         ->name('correction_request.approve');
 

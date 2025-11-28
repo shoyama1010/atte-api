@@ -33,14 +33,16 @@
                     {{ $requestData->after_break_end ?? 'ーー' }}
                 </td>
             </tr>
+
             <tr>
-                <th>修正理由</th>
+                <th>備考</th>
                 <td>{{ $requestData->reason }}</td>
             </tr>
         </table>
         <div class="approval-actions">
             @if ($requestData->status === 'pending')
-                <form action="{{ route('admin.correction_request.approve', $requestData->id) }}" method="POST">
+
+                <form method="POST" action="{{ route('admin.correction_request.approve', $requestData->id) }}">
                     @csrf
                     <button type="submit" class="btn-approve">承認する</button>
                 </form>

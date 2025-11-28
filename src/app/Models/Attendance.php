@@ -81,6 +81,24 @@ class Attendance extends Model
         $minutes = $totalMinutes % 60;
         return sprintf('%02d:%02d', $hours, $minutes);
     }
+
+
+    /**
+     * 🔹 単一勤務における休憩時間を返すアクセサ
+     * 例： "01:15" または "-" を返す
+     */
+    public function getBreakTimeAttribute()
+    {
+        if (!$this->break_start || !$this->break_end) {
+            return '-';
+        }
+
+        $start = \Carbon\Carbon::parse($this->break_start);
+        $end = \Carbon\Carbon::parse($this->break_end);
+
+        return $end->diff($start)->format('%H:%I');
+    }
+
     /**
      * 🔹勤務時間の合計（出勤〜退勤 − 休憩）
      */

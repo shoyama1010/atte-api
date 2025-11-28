@@ -92,12 +92,22 @@ class AdminAttendanceController extends Controller
     public function staffList($id)
     {
         $staff = User::findOrFail($id);
-        $date = now()->toDateString(); // ← 追加（デフォルト今日）
+        $date = now()->toDateString(); // ← デフォルトで今日
 
         $attendances = Attendance::where('user_id', $id)
-            // ->orderBy('date', 'desc')
             ->orderBy('clock_in_time', 'desc')
-            ->paginate(20);
+            ->get()
+            ->map(function ($attendance) {
+                // 休憩時間を計算
+                if ($attendance->break_start && $attendance->break_end) {
+                    $start = \Carbon\Carbon::parse($attendance->break_start);
+                    $end = \Carbon\Carbon::parse($attendance->break_end);
+                    $attendance->break_time = $end->diff($start)->format('%H:%I');
+                } else {
+                    $attendance->break_time = '-';
+                }
+                return $attendance;
+            });
 
         return view('admin.attendance.staff_list', compact('staff', 'attendances'));
     }

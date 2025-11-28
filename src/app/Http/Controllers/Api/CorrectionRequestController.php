@@ -34,18 +34,33 @@ class CorrectionRequestController extends Controller
 
     public function show($id)
     {
-        $request = CorrectionRequest::with(['attendance', 'attendance.user'])->findOrFail($id);
+        $request = CorrectionRequest::with(['attendance.user'])->findOrFail($id);
 
         return response()->json([
             'id' => $request->id,
             'user_name' => $request->attendance->user->name,
+
+            // ステータス
             'status' => $request->status,
-            'reason' => $request->reason,
             'request_date' => $request->created_at->format('Y-m-d'),
+
+            // 対象勤務日
             'target_date' => $request->attendance->created_at->format('Y-m-d'),
-            'clock_in_time' => $request->attendance->clock_in_time,
-            'clock_out_time' => $request->attendance->clock_out_time,
-            'note' => $request->attendance->note,
+
+            // 修正理由
+            'reason' => $request->reason,
+
+            // before (元の値)
+            'before_clock_in'     => $request->before_clock_in,
+            'before_clock_out'    => $request->before_clock_out,
+            'before_break_start'  => $request->before_break_start,
+            'before_break_end'    => $request->before_break_end,
+
+            // after (修正後)
+            'after_clock_in'      => $request->after_clock_in,
+            'after_clock_out'     => $request->after_clock_out,
+            'after_break_start'   => $request->after_break_start,
+            'after_break_end'     => $request->after_break_end,
         ]);
     }
 

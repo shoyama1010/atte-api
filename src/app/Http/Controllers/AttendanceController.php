@@ -143,58 +143,84 @@ class AttendanceController extends Controller
             ->where('user_id', $user->id)
             ->where('id', $id)
             ->firstOrFail();
-        $attendance->load('correctionRequest');
 
         // null対策＋最新申請の取得
-        $correction = $attendance->correctionRequest()->latest()->first();
-        return view('attendance.detail', [
-            'user' => $user,
-            'attendance' => $attendance,
-            'correctionStatus' => $correction->status ?? null,
-        ]);
+        $correctionRequest = $attendance->correctionRequest()->latest()->first();
+        // ステータス（pending / approved / null）
+        $correctionStatus = $correctionRequest->status ?? null;
+
+        return view('attendance.detail', compact(
+            'user',
+            'attendance',
+            'correctionRequest',
+            'correctionStatus'
+        ));
     }
 
+    // ▼ 修正申請の送信（勤怠詳細画面から直接申請）
     public function update(Request $request, $id)
     {
-        // dd($request->all());
-
-        // 対象の出勤データを取得
         $attendance = Attendance::with('rests')->findOrFail($id);
-        $attendance->clock_in_time = $request->input('clock_in_time'); // 出退勤時間を更新
-        $attendance->clock_out_time = $request->input('clock_out_time');
-        $attendance->note = $request->input('note');
-        $attendance->save();
-        $attendance->rests()->delete(); // 既存の休憩データを一旦削除して再登録（複数対応）
 
-        if ($request->has('rests')) {
-            foreach ($request->rests as $rest) {
-                if (!empty($rest['break_start']) && !empty($rest['break_end'])) {
-                    // ✅ 日付を出勤日の created_at から取る（または clock_in_time でもOK）
-                    $date = Carbon::parse($attendance->clock_in_time)->format('Y-m-d');
-                    $attendance->rests()->create([
-                        'break_start' => Carbon::parse("{$date} {$rest['break_start']}"),
-                        'break_end'   => Carbon::parse("{$date} {$rest['break_end']}"),
-                    ]);
-                }
-            }
+        // ▼ Before 値を退避（更新前のオリジナル）
+        $beforeClockIn  = $attendance->clock_in_time;
+        $beforeClockOut = $attendance->clock_out_time;
+
+        $beforeBreakStart = optional($attendance->rests->first())->break_start;
+        $beforeBreakEnd   = optional($attendance->rests->first())->break_end;
+
+        // ▼ After（フォーム入力値）
+        $afterClockIn  = $request->input('clock_in_time');
+        $afterClockOut = $request->input('clock_out_time');
+
+        $afterBreakStart = $request->rests[0]['break_start'] ?? null;
+        $afterBreakEnd   = $request->rests[0]['break_end'] ?? null;
+
+        // ▼ Attendance の更新
+        $attendance->clock_in_time  = $afterClockIn;
+        $attendance->clock_out_time = $afterClockOut;
+        $attendance->note = $request->note;
+        $attendance->save();
+
+        // ▼ 休憩時間の再登録
+        $attendance->rests()->delete();
+
+        if ($afterBreakStart && $afterBreakEnd) {
+            $date = Carbon::parse($attendance->clock_in_time)->format('Y-m-d');
+            $attendance->rests()->create([
+                'break_start' => Carbon::parse("$date $afterBreakStart"),
+                'break_end'   => Carbon::parse("$date $afterBreakEnd"),
+            ]);
         }
-        CorrectionRequest::create([ // 修正申請の登録処理
-            'attendance_id'   => $attendance->id,
-            'user_id'         => auth()->id(),
-            'admin_id'        => null,
-            'request_type'    => 'time_change',
-            'before_clock_in' => $attendance->getOriginal('clock_in_time'),
-            'before_clock_out' => $attendance->getOriginal('clock_out_time'),
-            'after_clock_in'  => $request->input('clock_in_time'),
-            'after_clock_out' => $request->input('clock_out_time'),
-            'reason'          => $request->input('note'),
-            'status'          => 'pending', // ← これが重要！
+
+        // ▼ 修正申請データの登録（重要）
+        CorrectionRequest::create([
+            'attendance_id' => $attendance->id,
+            'user_id' => Auth::id(),
+            'admin_id' => null,
+            'request_type' => 'time_change',
+            'reason' => $request->note,
+
+            // Before
+            'before_clock_in'  => $beforeClockIn,
+            'before_clock_out' => $beforeClockOut,
+            'before_break_start' => $beforeBreakStart,
+            'before_break_end'   => $beforeBreakEnd,
+
+            // After
+            'after_clock_in'  => $afterClockIn,
+            'after_clock_out' => $afterClockOut,
+            'after_break_start' => $afterBreakStart,
+            'after_break_end'   => $afterBreakEnd,
+
+            'status' => 'pending'
         ]);
+
         return redirect()
             ->route('attendance.detail', $attendance->id)
-            ->with('success', '勤務情報を更新しました。');
+            ->with('success', '修正申請を送信しました。（承認待ち）');
     }
-    
+
     // 休憩回数分のレコードを保存
     public function store(Request $request)
     {

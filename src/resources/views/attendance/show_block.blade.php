@@ -1,6 +1,10 @@
 <table class="attendance-detail-table">
     <tr>
-        <th>作成日</th>
+        <th>名前</th>
+        <td>{{ $user->name }}</td>
+    </tr>
+    <tr>
+        <th>日付</th>
         <td>{{ $attendance->created_at->format('Y年m月d日') }}</td>
     </tr>
 
@@ -18,6 +22,14 @@
     </tr>
     <tr>
         <th>備考</th>
-        <td>{{ $attendance->note }}</td>
+
+        <td>
+            @if (isset($correctionStatus) && $correctionStatus === 'pending' && isset($correctionRequest))
+                {{-- 承認待ち → 申請中の理由を表示 --}}
+                {{ $correctionRequest->reason }}
+            @else
+                {{ $attendance->note }}
+            @endif
+        </td>
     </tr>
 </table>
