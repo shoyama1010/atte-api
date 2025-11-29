@@ -6,7 +6,7 @@
 
 @section('content')
     <div class="attendance-list-container">
-        <h2>勤務一覧：{{ Auth::user()->name }} </h2>
+        <h2>勤怠一覧：{{ Auth::user()->name }} </h2>
 
         {{-- 🔸 月切替バー --}}
         <div class="month-bar">

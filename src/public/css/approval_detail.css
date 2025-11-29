@@ -1,78 +1,74 @@
-/* ===== 承認詳細画面（admin） ===== */
-.approval-detail-container {
-    width: 640px;
-    margin: 50px auto;
+/* ===== 背景 ===== */
+.approval-wrapper {
+    width: 100%;
+    padding: 60px 0;
+    background: #f2f2f2;
+}
+
+/* ===== カード ===== */
+.approval-card {
+    width: 860px;
+    margin: 0 auto;
     background: #fff;
-    padding: 30px 40px;
+    padding: 45px 55px;
     border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.08);
 }
 
-h2 {
-    text-align: center;
-    margin-bottom: 25px;
-    font-size: 20px;
-    color: #333;
+/* タイトル */
+.title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 35px;
+    border-left: 4px solid #000;
+    padding-left: 14px;
 }
 
-/* ===== 表 ===== */
-.approval-detail-table {
+/* ===== テーブル ===== */
+.detail-table {
     width: 100%;
     border-collapse: collapse;
-    margin-bottom: 30px;
+    margin-bottom: 40px;
 }
 
-.approval-detail-table th,
-.approval-detail-table td {
-    border-bottom: 1px solid #ddd;
-    padding: 12px 10px;
-    text-align: left;
-}
-
-.approval-detail-table th {
-    width: 160px;
-    background-color: #fafafa;
+.detail-table th {
+    width: 180px;
     font-weight: 600;
     color: #333;
+    padding: 18px 0;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.detail-table td {
+    padding: 18px 0;
+    border-bottom: 1px solid #e5e5e5;
+    color: #444;
 }
 
 /* ===== ボタンエリア ===== */
-.approval-actions {
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    gap: 16px;
-}
-
-.btn-approve,
-.btn-approved,
-.btn-back {
-    padding: 10px 24px;
-    border-radius: 6px;
-    border: none;
-    font-size: 15px;
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
+.button-area {
+    text-align: right;
+    margin-top: 15px;
 }
 
 .btn-approve {
-    background-color: #007bff;
+    background: #000;
     color: #fff;
+    padding: 10px 28px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
 }
+
 .btn-approve:hover {
-    background-color: #0056b3;
+    background: #333;
 }
 
+/* 承認済みボタン（Figma準拠：薄グレー） */
 .btn-approved {
-    background-color: #28a745;
+    background: #bfbfbf;
     color: #fff;
-    cursor: default;
-}
-
-.btn-back {
-    background-color: #999;
-    color: #fff;
-}
-.btn-back:hover {
-    background-color: #777;
+    padding: 10px 28px;
+    border-radius: 6px;
+    border: none;
 }

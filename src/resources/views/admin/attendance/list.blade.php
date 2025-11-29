@@ -4,24 +4,19 @@
     <link rel="stylesheet" href="{{ asset('css/admin_attendance_list.css') }}">
 
     <div class="attendance-list-container">
-
         {{-- 日付ヘッダー --}}
         <h2 class="attendance-date-title">{{ \Carbon\Carbon::parse($date)->format('Y年n月j日') }}の勤怠</h2>
-
         {{-- 日付ナビゲーション --}}
         <div class="date-nav">
             <a href="{{ route('admin.attendance.list', ['date' => \Carbon\Carbon::parse($date)->subDay()->toDateString()]) }}"
                 class="nav-btn">← 前日</a>
-
             <form method="GET" action="{{ route('admin.attendance.list') }}" class="date-form">
                 <input type="date" name="date" value="{{ $date }}" class="date-input">
                 <button type="submit" class="btn-go">表示</button>
             </form>
-
             <a href="{{ route('admin.attendance.list', ['date' => \Carbon\Carbon::parse($date)->addDay()->toDateString()]) }}"
                 class="nav-btn">翌日 →</a>
         </div>
-
         {{-- 勤怠一覧テーブル --}}
         @if ($attendances->isEmpty())
             <p class="no-data">該当日の勤怠データはありません。</p>
@@ -80,6 +75,5 @@
                 </tbody>
             </table>
         @endif
-
     </div>
 @endsection

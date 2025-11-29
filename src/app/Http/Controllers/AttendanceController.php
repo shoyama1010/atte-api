@@ -162,64 +162,68 @@ class AttendanceController extends Controller
     {
         $attendance = Attendance::with('rests')->findOrFail($id);
 
-        // ▼ Before 値を退避（更新前のオリジナル）
+        // 🔹 BEFORE（元データ保持）
         $beforeClockIn  = $attendance->clock_in_time;
         $beforeClockOut = $attendance->clock_out_time;
 
-        $beforeBreakStart = optional($attendance->rests->first())->break_start;
-        $beforeBreakEnd   = optional($attendance->rests->first())->break_end;
+        $beforeRests = $attendance->rests->map(function ($r) {
+            return [
+                'break_start' => $r->break_start,
+                'break_end'   => $r->break_end,
+            ];
+        })->toArray();
 
-        // ▼ After（フォーム入力値）
-        $afterClockIn  = $request->input('clock_in_time');
-        $afterClockOut = $request->input('clock_out_time');
-
-        $afterBreakStart = $request->rests[0]['break_start'] ?? null;
-        $afterBreakEnd   = $request->rests[0]['break_end'] ?? null;
-
-        // ▼ Attendance の更新
-        $attendance->clock_in_time  = $afterClockIn;
-        $attendance->clock_out_time = $afterClockOut;
-        $attendance->note = $request->note;
+        // 🔹 AFTER（フォーム入力）
+        $attendance->clock_in_time  = $request->clock_in_time;
+        $attendance->clock_out_time = $request->clock_out_time;
+        $attendance->note           = $request->note;
         $attendance->save();
 
-        // ▼ 休憩時間の再登録
+        // 🔹 休憩の更新（全削除→再登録）
         $attendance->rests()->delete();
 
-        if ($afterBreakStart && $afterBreakEnd) {
+        if ($request->has('rests')) {
             $date = Carbon::parse($attendance->clock_in_time)->format('Y-m-d');
-            $attendance->rests()->create([
-                'break_start' => Carbon::parse("$date $afterBreakStart"),
-                'break_end'   => Carbon::parse("$date $afterBreakEnd"),
-            ]);
+
+            foreach ($request->rests as $rest) {
+                if (!empty($rest['break_start']) && !empty($rest['break_end'])) {
+                    $attendance->rests()->create([
+                        'break_start' => "{$date} {$rest['break_start']}",
+                        'break_end'   => "{$date} {$rest['break_end']}",
+                    ]);
+                }
+            }
         }
 
-        // ▼ 修正申請データの登録（重要）
+        // 🔹 CorrectionRequest（修正申請）
         CorrectionRequest::create([
-            'attendance_id' => $attendance->id,
-            'user_id' => Auth::id(),
-            'admin_id' => null,
-            'request_type' => 'time_change',
-            'reason' => $request->note,
+            'attendance_id'     => $attendance->id,
+            'user_id'           => auth()->id(),
+            'admin_id'          => null,
+            'request_type'      => 'time_change',
+            'reason'            => $attendance->note,
 
-            // Before
-            'before_clock_in'  => $beforeClockIn,
-            'before_clock_out' => $beforeClockOut,
-            'before_break_start' => $beforeBreakStart,
-            'before_break_end'   => $beforeBreakEnd,
+            // BEFORE
+            'before_clock_in'    => $beforeClockIn,
+            'before_clock_out'   => $beforeClockOut,
+            'before_break_start' => $beforeRests[0]['break_start'] ?? null,
+            'before_break_end'   => $beforeRests[0]['break_end'] ?? null,
 
-            // After
-            'after_clock_in'  => $afterClockIn,
-            'after_clock_out' => $afterClockOut,
-            'after_break_start' => $afterBreakStart,
-            'after_break_end'   => $afterBreakEnd,
+            // AFTER（1件目）
+            'after_break_start'  => $request->rests[0]['break_start'] ?? null,
+            'after_break_end'    => $request->rests[0]['break_end'] ?? null,
 
-            'status' => 'pending'
+            'after_clock_in'     => $attendance->clock_in_time,
+            'after_clock_out'    => $attendance->clock_out_time,
+
+            'status' => 'pending',
         ]);
 
         return redirect()
             ->route('attendance.detail', $attendance->id)
-            ->with('success', '修正申請を送信しました。（承認待ち）');
+            ->with('success', '修正申請を送信しました。');
     }
+
 
     // 休憩回数分のレコードを保存
     public function store(Request $request)
