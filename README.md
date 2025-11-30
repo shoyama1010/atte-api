@@ -132,7 +132,7 @@ php artisan key:generate
 ## 8　各種機能についての補足
 
 ＊Next側へのログイン：マルチログインページのログインボタンにて遷移。
-
+<img width="1253" height="671" alt="Image" src="https://github.com/user-attachments/assets/10148c8f-cd4a-44d4-a17d-20b5905a3ef4" />
 
 ・メール認証機能
 <img width="1190" height="675" alt="Image" src="https://github.com/user-attachments/assets/0f416545-107a-4715-bf93-7f205f1c0748" />
