@@ -68,7 +68,8 @@
                             </td>
                             <td>{{ $workHours }}</td>
                             <td>
-                                <a href="{{ route('admin.attendance.edit', $attendance->id) }}" class="detail-link">詳細</a>
+                                {{-- <a href="{{ route('admin.attendance.edit', $attendance->id) }}" class="detail-link">詳細</a> --}}
+                                <a href="{{ route('admin.attendance.detail', $attendance->id) }}" class="detail-link">詳細</a>
                             </td>
                         </tr>
                     @endforeach

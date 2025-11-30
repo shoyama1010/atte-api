@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use App\Http\Requests\Admin\AttendanceRequest; // ← 追加
+use Illuminate\Support\Facades\Auth;
 
 class AdminAttendanceController extends Controller
 {
@@ -31,9 +32,11 @@ class AdminAttendanceController extends Controller
     public function show($id)
     {
         // 特定ユーザーの勤怠データを取得
-        $attendance = Attendance::with('user')->findOrFail($id);
+        $attendance = Attendance::with('user', 'rests')->findOrFail($id);
         // 勤務者（ユーザー情報）
         $staff = $attendance->user;
+
+
         // 出退勤データ
         $clockIn  = $attendance->clock_in_time ? Carbon::parse($attendance->clock_in_time)->format('H:i') : '--:--';
         $clockOut = $attendance->clock_out_time ? Carbon::parse($attendance->clock_out_time)->format('H:i') : '--:--';
@@ -49,12 +52,19 @@ class AdminAttendanceController extends Controller
 
         $breakHours = sprintf('%02d:%02d', floor($breakMinutes / 60), $breakMinutes % 60);
         // return view('admin.attendance.edit', compact('attendance'));
+
+        // ★ 最新の修正申請を取得（あれば）
+        $correctionRequest = CorrectionRequest::where('attendance_id', $attendance->id)
+            ->orderBy('id', 'desc')
+            ->first();
+
         return view('admin.attendance.detail', compact(
             'attendance',
             'staff',
             'clockIn',
             'clockOut',
-            'breakHours'
+            'breakHours',
+            'correctionRequest'
         ));
     }
 
@@ -75,45 +85,116 @@ class AdminAttendanceController extends Controller
         return view('admin.attendance.edit', compact('attendance'));
     }
 
-    public function update(AttendanceRequest $request, $id)
+
+    public function update(Request $request, $id)
     {
-        $attendance = Attendance::findOrFail($id);
-        // 修正前の時刻を記録
+        // 対象勤怠データ
+        $attendance = Attendance::with('rests')->findOrFail($id);
+
+        // ======== Before（修正前の値を保存） ========
         $before = [
-            'clock_in_time' => $attendance->clock_in_time,
+            'clock_in_time'  => $attendance->clock_in_time,
             'clock_out_time' => $attendance->clock_out_time,
-            'break_start' => $attendance->break_start,
-            'break_end' => $attendance->break_end,
+            'rests' => $attendance->rests->map(function ($rest) {
+                return [
+                    'break_start' => $rest->break_start,
+                    'break_end'   => $rest->break_end,
+                ];
+            })->toArray(),
+            'note' => $attendance->note,
         ];
-        // 勤怠テーブル更新
-        $attendance->update([
-            'clock_in_time' => $request->clock_in_time,
-            'clock_out_time' => $request->clock_out_time,
-            'break_start' => $request->break_start,
-            'break_end' => $request->break_end,
-            'remarks' => $request->remarks,
-        ]);
-        // 修正後の時刻を記録
+        // ======== Update（勤怠テーブル 更新） ========
+        $attendance->clock_in_time  = $request->clock_in_time;
+        $attendance->clock_out_time = $request->clock_out_time;
+        $attendance->note = $request->note;
+        $attendance->save();
+        // ======== Update（休憩テーブル 更新） ========
+        // 既存の休憩を削除
+        $attendance->rests()->delete();
+        // フォームから受け取った休憩を再登録
+        if ($request->break_start && $request->break_end) {
+
+            foreach ($request->break_start as $i => $start) {
+
+                if ($start && $request->break_end[$i]) {
+
+                    $date = Carbon::parse($attendance->clock_in_time)->format('Y-m-d');
+
+                    $attendance->rests()->create([
+                        'break_start' => Carbon::parse("$date $start"),
+                        'break_end'   => Carbon::parse("$date " . $request->break_end[$i]),
+                    ]);
+                }
+            }
+        }
+        // ======== After（修正後を保存） ========
         $after = [
-            'clock_in_time' => $attendance->clock_in_time,
+            'clock_in_time'  => $attendance->clock_in_time,
             'clock_out_time' => $attendance->clock_out_time,
-            'break_start' => $attendance->break_start,
-            'break_end' => $attendance->break_end,
+            'rests' => $attendance->rests->map(function ($rest) {
+                return [
+                    'break_start' => $rest->break_start,
+                    'break_end'   => $rest->break_end,
+                ];
+            })->toArray(),
+            'note' => $attendance->note,
         ];
-        // 修正履歴をcorrection_requestsテーブルに保存
+        // ======== CorrectionRequest（管理者による直接修正として保存） ========
         CorrectionRequest::create([
             'attendance_id' => $attendance->id,
-            'user_id' => $attendance->user_id,
-            'admin_id' => auth()->id(),
-            'request_type' => 'time_change',
-            'before_time' => json_encode($before),  // 変更前
-            'after_time' => json_encode($after),    // 変更後
-            'reason' => $request->remarks,
-            'status' => 'approved',
+            'user_id'  => $attendance->user_id,   // 勤怠したユーザー
+            'admin_id' => auth()->id(),          // 修正した管理者
+            'request_type' => 'admin_direct_edit',  // 管理者が直接修正
+            'reason' => $request->note,          // 管理者による修正理由
+            'before_time' => json_encode($before),
+            'after_time'  => json_encode($after),
+            'status' => 'approved',  // ★管理者の場合は即承認扱い
         ]);
-        return redirect()->route('admin.attendance.list')
-            ->with('success', '勤怠情報を修正しました。');
+        return redirect()
+            ->route('admin.attendance.detail', $attendance->id)
+            ->with('success', '勤怠情報を修正しました。（承認済として記録）');
     }
+
+    // public function update(AttendanceRequest $request, $id)
+    // {
+    //     $attendance = Attendance::findOrFail($id);
+    //     // 修正前の時刻を記録
+    //     $before = [
+    //         'clock_in_time' => $attendance->clock_in_time,
+    //         'clock_out_time' => $attendance->clock_out_time,
+    //         'break_start' => $attendance->break_start,
+    //         'break_end' => $attendance->break_end,
+    //     ];
+    //     // 勤怠テーブル更新
+    //     $attendance->update([
+    //         'clock_in_time' => $request->clock_in_time,
+    //         'clock_out_time' => $request->clock_out_time,
+    //         'break_start' => $request->break_start,
+    //         'break_end' => $request->break_end,
+    //         'remarks' => $request->remarks,
+    //     ]);
+    //     // 修正後の時刻を記録
+    //     $after = [
+    //         'clock_in_time' => $attendance->clock_in_time,
+    //         'clock_out_time' => $attendance->clock_out_time,
+    //         'break_start' => $attendance->break_start,
+    //         'break_end' => $attendance->break_end,
+    //     ];
+    //     // 修正履歴をcorrection_requestsテーブルに保存
+    //     CorrectionRequest::create([
+    //         'attendance_id' => $attendance->id,
+    //         'user_id' => $attendance->user_id,
+    //         'admin_id' => auth()->id(),
+    //         'request_type' => 'time_change',
+    //         'before_time' => json_encode($before),  // 変更前
+    //         'after_time' => json_encode($after),    // 変更後
+    //         'reason' => $request->remarks,
+    //         'status' => 'approved',
+    //     ]);
+    //     return redirect()->route('admin.attendance.list')
+    //         ->with('success', '勤怠情報を修正しました。');
+    // }
+
     // スタッフ別勤怠一覧
     public function staffList($id)
     {

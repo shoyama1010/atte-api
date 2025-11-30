@@ -114,7 +114,7 @@
                     </tr>
 
                     <tr>
-                        <th>備考（修正理由）</th>
+                        <th>備考</th>
                         <td class="edit-field">
                             <textarea name="note">{{ $attendance->note }}</textarea>
                         </td>

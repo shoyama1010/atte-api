@@ -53,12 +53,13 @@
                         <td>{{ optional($clockIn)->format('Y/m/d') ?? '-' }}</td>
                         <td>{{ optional($clockIn)->format('H:i') ?? '-' }}</td>
                         <td>{{ optional($clockOut)->format('H:i') ?? '-' }}</td>
-                        
+
                         <td>{{ $breakTime }}</td>
 
                         <td>{{ $workHours }}</td>
                         <td>
-                            <a href="{{ route('admin.attendance.edit', ['id' => $attendance->id]) }}">詳細</a>
+                            {{-- <a href="{{ route('admin.attendance.edit', ['id' => $attendance->id]) }}">詳細</a> --}}
+                            <a href="{{ route('admin.attendance.detail', $attendance->id) }}" class="detail-link">詳細</a>
                         </td>
                     </tr>
                 @empty

@@ -64,7 +64,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // 修正申請送信 POST
     // Route::post('/attendance/detail/{id}', [CorrectionRequestController::class, 'update'])
     // ->name('attendance.update');
-    // 🔥 勤怠詳細から修正申請する（PUT）
+    //  勤怠詳細から修正申請する（PUT）
     Route::put('/attendance/update/{id}', [AttendanceController::class, 'update'])
         ->name('attendance.update');
 
@@ -108,9 +108,15 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin'])->group(functi
 
     // 勤怠一覧・詳細
     Route::get('/attendance/list', [AdminAttendanceController::class, 'index'])->name('attendance.list');
+    // 管理側勤怠詳細（読み取り専用 or 修正可）
     Route::get('/attendance/{id}', [AdminAttendanceController::class, 'show'])->name('attendance.detail');
+    // 編集画面
     Route::get('/attendance/{id}/edit', [AdminAttendanceController::class, 'edit'])->name('attendance.edit');
+
+    // Route::get('/attendance/detail/{id}', [AttendanceController::class, 'detail'])->name('attendance.detail');
+    // 修正申請（管理者が一般側と同じ申請を出す）
     Route::put('/attendance/{id}', [AdminAttendanceController::class, 'update'])->name('attendance.update');
+
 
     // 🔹 申請一覧（管理者版）
     Route::get('/stamp_correction_request/list', [CorrectionRequestListController::class, 'adminList'])
