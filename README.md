@@ -131,7 +131,7 @@ php artisan key:generate
 
 ## 8　各種機能についての補足
 
-＊Next側へのログイン：マルチログインページのログインボタンにて遷移。
+＊Next側へのログイン：マルチログインページの「勤怠一覧（Next）」にて遷移。http://localhost:3000/attendances
 <img width="1253" height="671" alt="Image" src="https://github.com/user-attachments/assets/10148c8f-cd4a-44d4-a17d-20b5905a3ef4" />
 
 ・メール認証機能
