@@ -1,8 +1,6 @@
 # atte-api（バックエンド）
 ＊フロントエンドもログイン機能以外は、Next.jsにて実装。API連携にて、SPA化。
 
-＊Next側には、マルチログインページのヘッダーにリンクしてます。
-
 フロントエンド(Next.js)：https://github.com/shoyama1010/attendance-frontend
 
 # 作成した目的
@@ -17,7 +15,7 @@ http://localhost/attendance
 
 # 機能一覧
 
-・ユーザー認証（登録＆ログイン）機能
+・ユーザー認証（登録＆ログイン）機能  ＊フロント側への補足で、最下位箇所に記載。
 
 ・メール認証機能（応用機能　＊詳細は、補足で最下位箇所に記載）
 
@@ -132,6 +130,9 @@ PHPコンテナにログインした状態で
 php artisan key:generate
 
 ## 8　各種機能についての補足
+
+＊Next側へのログイン：マルチログインページのログインボタンにて遷移。
+
 
 ・メール認証機能
 <img width="1190" height="675" alt="Image" src="https://github.com/user-attachments/assets/0f416545-107a-4715-bf93-7f205f1c0748" />
