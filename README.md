@@ -1,5 +1,6 @@
 # atte-api（バックエンド）
 ＊フロントエンドもログイン機能以外は、Next.jsにて実装。API連携にて、SPA化。
+
 ＊Next側には、マルチログインページのヘッダーにリンクしてます。
 
 フロントエンド(Next.js)：https://github.com/shoyama1010/attendance-frontend
@@ -11,6 +12,7 @@
 # アプリケーションURL
 ローカル環境
 http://localhost/attendance
+
 ＊自動的にログイン画面に移動します。会員登録してない方は、会員登録⇒メール認証となります
 
 # 機能一覧
