@@ -1,16 +1,16 @@
 # atte-api（バックエンド）
-＊フロントエンドもログイン機能以外は、Next.jsにて実装。API連携にて、SPA化します。
+＊フロントエンドもログイン機能以外は、Next.jsにて実装。API連携にて、SPA化。
+＊Next側には、マルチログインページのヘッダーにリンクしてます。
 
-フロントエンド：https://github.com/shoyama1010/attendance-frontend
+フロントエンド(Next.js)：https://github.com/shoyama1010/attendance-frontend
 
 # 作成した目的
 
-ユーザーの勤怠打刻と、管理者での勤怠管理を目的としてます。
+ユーザーの勤怠打刻記録と、管理者での勤怠管理及びスタッフ管理を目的としてます。
 
 # アプリケーションURL
 ローカル環境
 http://localhost/attendance
-
 ＊自動的にログイン画面に移動します。会員登録してない方は、会員登録⇒メール認証となります
 
 # 機能一覧
