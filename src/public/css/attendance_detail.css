@@ -63,10 +63,19 @@
     font-weight: bold;
 }
 
-.edit-field {
+
+/* 出勤・退勤用（横並びのまま） */
+.edit-field-row {
     display: flex;
     align-items: center;
-    gap: 14px; /* 数値幅に合わせて調整 */
+    gap: 10px;
+}
+
+/* 休憩用（縦並び） */
+.edit-field-column {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
 /* 編集フィールド */
@@ -89,10 +98,40 @@ textarea {
     resize: vertical;
 }
 
-/* 休憩行 */
+/* 休憩行
 .rest-row {
-    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+} */
+
+.rest-label {
+    display: inline-block;
+    width: 60px;
+    font-weight: bold;
+    color: #333;
 }
+
+/* --- 出勤・退勤には影響を与えない構成 --- */
+.form-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    /* margin-bottom: 8px; */
+}
+
+.form-row label {
+    width: 60px;
+    font-weight: bold;
+    color: #333;
+}
+
+.time-range {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
 
 /* 承認待ちメッセージ（Figma仕様：右寄せ、赤字テキストのみ） */
 .pending-text {
@@ -166,4 +205,16 @@ textarea {
         width: 90%;
         margin-top: 10px;
     }
+}
+
+/* 出勤・退勤、休憩共通（横並び） */
+.edit-field-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* テーブル間のゆとり */
+.detail-table tr + tr {
+    margin-top: 10px;
 }

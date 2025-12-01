@@ -79,4 +79,31 @@ class AttendanceController extends Controller
             'attendance_id' => $attendance->id
         ]);
     }
+
+    public function listByUser($userId)
+    {
+        $month = request()->query('month', now()->format('Y-m'));
+        $start = $month . '-01';
+        $end   = date('Y-m-t', strtotime($start));
+
+        $records = Attendance::where('user_id', $userId)
+            ->whereBetween('date', [$start, $end])
+            ->orderBy('date', 'desc')
+            ->get()
+            ->map(function ($a) {
+                return [
+                    'id' => $a->id,
+                    'date' => $a->date,
+                    'clock_in_time' => $a->clock_in_time,
+                    'clock_out_time' => $a->clock_out_time,
+                    'rest_total' => $a->rest_total,
+                    'total_work' => $a->total_work,
+                ];
+            });
+
+        return response()->json([
+            'user_name' => User::find($userId)->name,
+            'records' => $records,
+        ]);
+    }
 }

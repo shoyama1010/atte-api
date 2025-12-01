@@ -37,3 +37,5 @@ Route::middleware(['auth:sanctum', 'admin'])
 Route::get('/admin/correction-requests/{id}', [AdminCorrectionRequestController::class, 'show']);
 Route::post('/admin/correction-requests/{id}/approve', [AdminCorrectionRequestController::class, 'approve']);
 
+Route::get('/attendances/user/{user}', [AttendanceController::class, 'listByUser']);
+
