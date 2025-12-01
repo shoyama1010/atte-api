@@ -1,11 +1,11 @@
 # atte-api（バックエンド）
-＊フロントは、Next.jsにて実装。API連携にて、SPA化します。
+＊フロントエンドもログイン機能以外は、Next.jsにて実装。API連携にて、SPA化。
 
-フロントエンド：https://github.com/shoyama1010/attendance-frontend
+フロントエンド(Next.js)：https://github.com/shoyama1010/attendance-frontend
 
 # 作成した目的
 
-ユーザーの勤怠打刻と、管理者での勤怠管理を目的としてます。
+ユーザーの勤怠打刻記録と、管理者での勤怠管理及びスタッフ管理を目的としてます。
 
 # アプリケーションURL
 ローカル環境
@@ -15,7 +15,7 @@ http://localhost/attendance
 
 # 機能一覧
 
-・ユーザー認証（登録＆ログイン）機能
+・ユーザー認証（登録＆ログイン）機能  ＊フロント側への補足で、最下位箇所に記載。
 
 ・メール認証機能（応用機能　＊詳細は、補足で最下位箇所に記載）
 
@@ -23,13 +23,14 @@ http://localhost/attendance
 
 ・管理者認証機能
 
-・ユーザー側ＣＲＵＤ機能
+・ユーザー側・ＣＲＵＤ機能（勤怠情報取得、月情報取得、詳細遷移）
 
-・管理側ＣＲＵＤ機能
+・管理側・ＣＲＵＤ機能（勤怠情報取得、月情報取得、日時変更、詳細遷移）
 
-・勤怠一覧＆詳細＆申請修正機能（ユーザー側）
+・ユーザー側・勤怠詳細⇒修正申請機能（承認待ち＝承認済情報取得、申請詳細表示）
 
-・勤怠の申請承認機能（管理側）
+・管理側・勤怠詳細⇒修正申請機能（承認待ち＝承認済情報取得、申請詳細表示
+＊管理側は、ユーザーの承認代行をした時（承認済）は、修正できないように設定している。
 
 ・CSVエクスポート機能（応用機能　＊詳細は、補足で最下位箇所に記載）
 
@@ -130,6 +131,9 @@ php artisan key:generate
 
 ## 8　各種機能についての補足
 
+＊Next側へのログイン：マルチログインページの「勤怠一覧（Next）」にて遷移。http://localhost:3000/attendances
+<img width="1253" height="671" alt="Image" src="https://github.com/user-attachments/assets/10148c8f-cd4a-44d4-a17d-20b5905a3ef4" />
+
 ・メール認証機能
 <img width="1190" height="675" alt="Image" src="https://github.com/user-attachments/assets/0f416545-107a-4715-bf93-7f205f1c0748" />
 
@@ -137,4 +141,5 @@ php artisan key:generate
 <img width="1176" height="679" alt="Image" src="https://github.com/user-attachments/assets/d882022e-6901-4e87-bbee-fb97deb44fd2" />
 
 ・打刻機能（status:①状態は、見た目わかるように、色を変えてます。②最初の出勤時のみ、誰かわかるように、ユーザー名を入れてます。）
-<img width="1213" height="675" alt="Image" src="https://github.com/user-attachments/assets/f755c14d-846e-4639-94c8-cb577ced8b97" />
+①<img width="1213" height="675" alt="Image" src="https://github.com/user-attachments/assets/f755c14d-846e-4639-94c8-cb577ced8b97" />
+②<img width="1366" height="687" alt="Image" src="https://github.com/user-attachments/assets/a57febb7-7525-4833-8bda-d51947f1cce7" />
