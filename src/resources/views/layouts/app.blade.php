@@ -26,9 +26,6 @@
             <a href="{{ url('/') }}">
                 <img src="{{ asset('img/logo.jpg') }}" alt="ロゴ" height="40">
             </a>
-            {{-- <div class="header-logo">
-                <a href="{{ url('/attendance') }}" style="color: #fff; text-decoration:none;">Coachtech</a>
-            </div> --}}
 
             {{-- 右側：ナビメニュー --}}
             <nav class="header-nav">
@@ -39,9 +36,14 @@
                         <li><a href="{{ route('attendance.list') }}">勤怠一覧</a></li>
                         <li><a href="{{ route('stamp_correction_request.list') }}">申請一覧</a></li>
                         <li>
-                            <form method="POST" action="{{ route('logout') }}">
+                            <a href="#"
+                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                                class="logout-link">
+                                ログアウト
+                            </a>
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                                 @csrf
-                                <button type="submit">ログアウト</button>
+                                {{-- <button type="submit">ログアウト</button> --}}
                             </form>
                         </li>
                         {{-- @endif --}}
@@ -52,9 +54,14 @@
                         <li><a href="{{ route('admin.staff.list') }}">スタッフ一覧</a></li>
                         <li><a href="{{ route('admin.stamp_correction_request.list') }}">申請一覧</a></li>
                         <li>
-                            <form method="POST" action="{{ route('admin.logout') }}">
+                            <a href="#"
+                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                                class="logout-link">
+                                ログアウト
+                            </a>
+                            <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
                                 @csrf
-                                <button type="submit">ログアウト</button>
+                                {{-- <button type="submit">ログアウト</button> --}}
                             </form>
                         </li>
                     @endif
@@ -65,7 +72,7 @@
                         <li><a href="{{ route('register') }}">新規登録</a></li>
                         <li><a href="{{ url('/admin/login') }}">管理者ログイン</a></li>
                         <li><a href="http://localhost:3000/attendances">勤怠一覧（Next）</a></li>
-                        @endif
+                    @endif
                 </ul>
             </nav>
         </div>
@@ -81,9 +88,9 @@
     {{-- ===============================
          フッター部
     ================================ --}}
-    <footer class="app-footer">
+    {{-- <footer class="app-footer">
         © 2025 Atte 勤怠管理システム
-    </footer>
+    </footer> --}}
 </body>
 
 </html>

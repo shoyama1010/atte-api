@@ -18,7 +18,6 @@ use App\Http\Controllers\Api\AdminCorrectionRequestController;
 */
 
 
-
 Route::get('/test', function () {
     return response()->json(['message' => 'API connected successfully!']);
 });
@@ -39,3 +38,4 @@ Route::post('/admin/correction-requests/{id}/approve', [AdminCorrectionRequestCo
 
 Route::get('/attendances/user/{user}', [AttendanceController::class, 'listByUser']);
 
+Route::get('/attendances/user/{id}', [AttendanceController::class, 'userMonthly']);

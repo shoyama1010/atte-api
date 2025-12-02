@@ -251,4 +251,5 @@ class AttendanceController extends Controller
     {
         return view('attendance.create');
     }
+
 }

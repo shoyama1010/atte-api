@@ -57,6 +57,11 @@ body {
     font-weight: 500;
 }
 
+/* 追加 */
+.logout-link:hover {
+  color: #007bff;
+}
+
 .logout-form {
     display: inline;
 }

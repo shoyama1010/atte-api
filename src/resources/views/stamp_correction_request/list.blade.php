@@ -28,9 +28,9 @@
                     <tr>
                         <th>状態</th>
                         <th>名前</th>
-                        <th>申請日時</th>
                         <th>対象日時</th>
                         <th>申請理由</th>
+                        <th>申請日時</th>
                         <th>詳細</th>
                     </tr>
                 </thead>
@@ -48,10 +48,17 @@
                                     <span>-</span>
                                 @endif
                             </td>
+                            {{-- 名前 --}}
                             <td>{{ $request->user->name }}</td>
-                            <td>{{ $request->created_at->format('Y/m/d') }}</td>
+                            {{-- 対象日時 --}}
                             <td>{{ optional($request->attendance)->clock_in_time?->format('Y/m/d') ?? '-' }}</td>
+
+                            {{-- 申請理由 --}}
                             <td>{{ $request->reason ?? '（理由なし）' }}</td>
+
+                            {{-- 申請日時 --}}
+                            <td>{{ $request->created_at->format('Y/m/d') }}</td>
+                            {{-- 詳細リンク --}}
                             <td>
                                 <a href="{{ route('attendance.detail', ['id' => $request->attendance->id]) }}"
                                     class="detail-link">
@@ -63,7 +70,6 @@
                 </tbody>
             </table>
         @endif
-
         <div class="button-area">
             <a href="{{ route('attendance.list') }}" class="btn-back">← 勤怠一覧へ戻る</a>
         </div>

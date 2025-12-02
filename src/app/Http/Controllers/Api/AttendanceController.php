@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Attendance;
 use Carbon\Carbon;
+use App\Models\User;
+use App\Models\Rest;
+use Illuminate\Support\Facades\DB;
 
 class AttendanceController extends Controller
 {
@@ -106,4 +109,126 @@ class AttendanceController extends Controller
             'records' => $records,
         ]);
     }
+
+    public function userList(Request $request, $id)
+    {
+        // -------- (1) ユーザー情報取得 -------- //
+        $user = User::findOrFail($id);
+
+        // -------- (2) 月の指定（?month=2025-11） -------- //
+        $month = $request->query('month');
+        if (!$month) {
+            $month = now()->format('Y-m'); // 指定なし → 今月
+        }
+
+        // 月の開始・終了日
+        $start = $month . '-01';
+        $end   = date('Y-m-t', strtotime($start));
+
+        // -------- (3) 月の勤怠データ取得 -------- //
+        $attendances = Attendance::where('user_id', $id)
+            ->whereDate('date', '>=', $start)
+            ->whereDate('date', '<=', $end)
+            ->orderBy('date', 'desc')
+            ->get();
+
+        // -------- (4) 整形して返す配列 -------- //
+        $result = $attendances->map(function ($a) {
+
+            // ★ 休憩合計
+            $restTotal = Rest::where('attendance_id', $a->id)
+                ->get()
+                ->map(function ($r) {
+                    // 休憩時間差分：start → end
+                    if (!$r->rest_start || !$r->rest_end) return 0;
+                    return strtotime($r->rest_end) - strtotime($r->rest_start);
+                })
+                ->sum();
+
+            // ★ 労働時間計算（退勤 - 出勤 - 休憩）
+            $totalWork = null;
+            if ($a->clock_in_time && $a->clock_out_time) {
+                $workSec = strtotime($a->clock_out_time) - strtotime($a->clock_in_time) - $restTotal;
+
+                if ($workSec > 0) {
+                    $h = floor($workSec / 3600);
+                    $m = floor(($workSec % 3600) / 60);
+                    $totalWork = sprintf('%02d:%02d', $h, $m);
+                }
+            }
+
+            return [
+                'id' => $a->id,
+                'date' => $a->date,
+                'clock_in_time' => $a->clock_in_time ?? null,
+                'clock_out_time' => $a->clock_out_time ?? null,
+                'rest_total' => gmdate('H:i', $restTotal) ?? null,
+                'total_work' => $totalWork ?? null,
+            ];
+        });
+
+        // -------- (5) Next.js 用レスポンス -------- //
+        return response()->json([
+            'user_name' => $user->name,
+            'attendances' => $result,
+        ]);
+    }
+
+    public function userMonthly($id, Request $request)
+    {
+        $user = User::findOrFail($id);
+
+        // (2) 月の指定
+        $month = $request->query('month');
+        if (!$month) {
+            $month = now()->format('Y-m');
+        }
+
+        // (3) 月の範囲
+        $start = $month . '-01';
+        $end = date('Y-m-t', strtotime($start));  // 月末
+
+        // (4) 月のデータ取得（clock_in_time基準）
+        $attendances = Attendance::where('user_id', $id)
+            ->whereDate('clock_in_time', '>=', $start)
+            ->whereDate('clock_in_time', '<=', $end)
+            ->orderBy('clock_in_time', 'desc')
+            ->get();
+
+        // (5) 整形して返す
+        $result = $attendances->map(function ($a) {
+            // 休憩合計
+            $restTotal = Rest::where('attendance_id', $a->id)
+                ->get()
+                ->map(function ($r) {
+                    if (!$r->rest_start || !$r->rest_end) return 0;
+                    return strtotime($r->rest_end) - strtotime($r->rest_start);
+                })
+                ->sum();
+
+            // 勤務合計
+            $totalWork = null;
+            if ($a->clock_in_time && $a->clock_out_time) {
+                $workSec = strtotime($a->clock_out_time) - strtotime($a->clock_in_time) - $restTotal;
+                $h = floor($workSec / 3600);
+                $m = floor(($workSec % 3600) / 60);
+                $totalWork = sprintf('%02d:%02d', $h, $m);
+            }
+
+            return [
+                'id' => $a->id,
+                'date' => substr($a->clock_in_time, 0, 10), // ←ここで日付を作る！
+                'clock_in_time' => $a->clock_in_time,
+                'clock_out_time' => $a->clock_out_time,
+                'rest_total' => gmdate('H:i', $restTotal),
+                'total_work' => $totalWork,
+            ];
+        });
+
+        return response()->json([
+            'user_name' => $user->name,
+            'attendances' => $result,
+        ]);
+    }
+
 }
