@@ -51,6 +51,8 @@ http://localhost/attendance
 
 ・formrequest（laravelバリデーション）
 
+・Sanctum　v2.14.1
+
 # テーブル設計
 
 <img width="396" height="519" alt="Image" src="https://github.com/user-attachments/assets/4143f58d-d6e3-4968-887a-053a66b90ccc" />
