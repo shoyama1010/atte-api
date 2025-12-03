@@ -35,6 +35,7 @@
                         <li><a href="{{ route('attendance.index') }}">勤怠</a></li>
                         <li><a href="{{ route('attendance.list') }}">勤怠一覧</a></li>
                         <li><a href="{{ route('stamp_correction_request.list') }}">申請一覧</a></li>
+                        <li><a href="http://localhost:3000/attendances">勤怠一覧（Next）</a></li>
                         <li>
                             <a href="#"
                                 onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
@@ -43,10 +44,8 @@
                             </a>
                             <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                                 @csrf
-                                {{-- <button type="submit">ログアウト</button> --}}
                             </form>
                         </li>
-                        {{-- @endif --}}
 
                         {{-- ▼ 管理者用メニュー（/admin/login でログインしたauth:admin） --}}
                     @elseif (Auth::guard('admin')->check())
@@ -59,9 +58,9 @@
                                 class="logout-link">
                                 ログアウト
                             </a>
-                            <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
+                            <form id="logout-form" action="{{ route('admin.logout') }}" method="POST"
+                                style="display: none;">
                                 @csrf
-                                {{-- <button type="submit">ログアウト</button> --}}
                             </form>
                         </li>
                     @endif
@@ -71,7 +70,7 @@
                         <li><a href="{{ route('login') }}">一般ログイン</a></li>
                         <li><a href="{{ route('register') }}">新規登録</a></li>
                         <li><a href="{{ url('/admin/login') }}">管理者ログイン</a></li>
-                        <li><a href="http://localhost:3000/attendances">勤怠一覧（Next）</a></li>
+                        {{-- <li><a href="http://localhost:3000/attendances">勤怠一覧（Next）</a></li> --}}
                     @endif
                 </ul>
             </nav>
