@@ -120,7 +120,7 @@
                         <tr>
                             <th>備考</th>
                             <td class="edit-field">
-                                <textarea name="note">{{ $attendance->note }}</textarea>
+                                <textarea name="note" placeholder="修正理由を入力してください" required>{{ $attendance->note }}</textarea>
                             </td>
                         </tr>
                     </table>

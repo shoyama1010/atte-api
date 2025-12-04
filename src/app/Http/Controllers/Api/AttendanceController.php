@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Rest;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class AttendanceController extends Controller
 {
@@ -56,7 +57,6 @@ class AttendanceController extends Controller
     public function updateApi(Request $request, $id)
     {
         $attendance = Attendance::with('rests')->findOrFail($id);
-
         // 出退勤の更新
         $attendance->clock_in_time  = $request->clock_in_time;
         $attendance->clock_out_time = $request->clock_out_time;
@@ -229,6 +229,32 @@ class AttendanceController extends Controller
             'user_name' => $user->name,
             'attendances' => $result,
         ]);
+    }
+
+    // ログイン中ユーザーの勤怠一覧取得 API
+    public function userAttendances(Request $request)
+    {
+        $user = $request->user();
+        // $user = Auth::user();
+
+        $records = Attendance::with('rests')
+            ->where('user_id', $user->id)
+            // ->where('user_id', 1)
+            ->orderBy('date', 'desc')
+            ->get()
+
+            ->map(function ($r) {
+                return [
+                    'id' => $r->id,
+                    'date' => $r->date->format('Y-m-d'),
+                    'clock_in_time' => $r->clock_in_time,
+                    'clock_out_time' => $r->clock_out_time,
+                    'rest_start' => optional($r->rests->first())->break_start,
+                    'rest_end' => optional($r->rests->first())->break_end,
+                ];
+            });
+
+        return response()->json($records);
     }
 
 }

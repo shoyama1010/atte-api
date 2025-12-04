@@ -38,4 +38,9 @@ Route::post('/admin/correction-requests/{id}/approve', [AdminCorrectionRequestCo
 
 Route::get('/attendances/user/{user}', [AttendanceController::class, 'listByUser']);
 
+// Route::middleware('auth:sanctum')->group(function () {
+Route::get('/attendances/user', [AttendanceController::class, 'userAttendances']);
+// });
+
+
 Route::get('/attendances/user/{id}', [AttendanceController::class, 'userMonthly']);

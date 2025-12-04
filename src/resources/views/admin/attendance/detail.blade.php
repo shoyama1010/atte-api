@@ -70,7 +70,7 @@
                     <p class="status-msg">※ 承認済みのため修正はできません。</p>
                 @endif
             @else
-            
+
                 {{-- ======================================================
                   修正可能（申請なし）
             ======================================================= --}}
@@ -133,7 +133,7 @@
                         @endif
 
                         <tr>
-                            <th>備考（修正理由）</th>
+                            <th>備考</th>
                             <td>
                                 <textarea name="note" placeholder="修正理由を入力してください" required>{{ $attendance->note }}</textarea>
                             </td>
@@ -141,9 +141,9 @@
                     </table>
 
                     <div class="btn-area">
-                        <button type="submit" class="btn-submit">修正する</button>
-                        <a href="{{ route('admin.attendance.list', ['date' => $attendance->created_at->format('Y-m-d')]) }}"
-                            class="btn-back">一覧に戻る</a>
+                        <button type="submit" class="btn-submit">修正</button>
+                        {{-- <a href="{{ route('admin.attendance.list', ['date' => $attendance->created_at->format('Y-m-d')]) }}"
+                            class="btn-back">一覧に戻る</a> --}}
                     </div>
                 </form>
 
