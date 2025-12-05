@@ -1,4 +1,4 @@
-# atte-api（バックエンド）
+# atte-api（勤怠管理：バックエンド）
 ＊フロントエンドもログイン機能以外は、Next.jsにて実装。API連携にて、SPA化。
 
 フロントエンド(Next.js)：https://github.com/shoyama1010/attendance-frontend
