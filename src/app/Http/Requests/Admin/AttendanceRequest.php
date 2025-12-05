@@ -11,39 +11,47 @@ class AttendanceRequest extends FormRequest
         return true; // 管理者は常に許可
     }
 
-    public function rules()
+    public function rules(): array
     {
         return [
             // 出勤・退勤
-            'clock_in_time'  => ['required', 'date_format:H:i'],
-            'clock_out_time' => ['required', 'date_format:H:i', 'after:clock_in_time'],
-
-            // 休憩時間
-            'break_start' => ['nullable', 'date_format:H:i', 'before:break_end'],
-            'break_end'   => ['nullable', 'date_format:H:i', 'after:break_start'],
-
+            'clock_in_time'  => 'nullable',
+            'date',
+            'before:clock_out_time',
+            'clock_out_time' => 'nullable',
+            'date',
+            // 休憩
+            'rests.*.break_start' => 'nullable',
+            'date',
+            'before_or_equal:clock_out_time',
+            'rests.*.break_end'   => 'nullable',
+            'date',
+            'before_or_equal:clock_out_time',
             // 備考
-            'remarks'        => ['required', 'string', 'max:255'],
-            // 'remarks' => ['nullable', 'string', 'max:255'],
+            'note'           => 'required',
+            'string',
+            'max:255',
         ];
     }
 
     public function messages()
     {
         return [
-            // 出勤・退勤
-            'clock_in_time.required'  => '出勤時刻を入力してください。',
-            'clock_in_time.date_format' => '出勤時刻の形式が正しくありません。',
-            'clock_out_time.required' => '退勤時刻を入力してください。',
-            'clock_out_time.after'    => '休憩時間もしくは退勤時間が不適切な値です。',
+            // --- 出勤・退勤 ---
+            'clock_in_time.before' => '出勤時間が不適切な値です。',
+            'clock_in_time.date_format'   => '出勤時間の形式が不正です。',
+            'clock_out_time.date_format'  => '退勤時間の形式が不正です。',
 
-            // 休憩
-            'break_start.before' => '休憩開始時刻は休憩終了時刻より前に設定してください。',
-            'break_end.after'    => '休憩終了時刻は休憩開始時刻より後である必要があります。',
+            // --- 休憩 ---
+            'rests.*.break_start.before_or_equal' => '休憩時間が不適切な値です。',
+            'rests.*.break_end.before_or_equal'   => '休憩時間もしくは退勤時間が不適切な値です。',
+            'rests.*.break_start.date_format' => '休憩開始時間の形式が不正です。',
+            'rests.*.break_end.date_format'   => '休憩終了時間の形式が不正です。',
 
-            // 備考
-            'remarks.required' => '備考を入力してください。',
-            'remarks.max' => '備考は255文字以内で入力してください。',
+            // --- 備考 ---
+            'note.required' => '備考を記入してください。',
+            'note.string'   => '備考は文字列で入力してください。',
+            'note.max'      => '備考は255文字以内で入力してください。',
         ];
     }
 }

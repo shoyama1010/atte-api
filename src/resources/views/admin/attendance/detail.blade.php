@@ -135,15 +135,16 @@
                         <tr>
                             <th>備考</th>
                             <td>
-                                <textarea name="note" placeholder="修正理由を入力してください" required>{{ $attendance->note }}</textarea>
+                                <textarea name="note" placeholder="備考を記入してください">{{ old('note', $attendance->note) }}</textarea>
                             </td>
                         </tr>
                     </table>
 
                     <div class="btn-area">
                         <button type="submit" class="btn-submit">修正</button>
-                        {{-- <a href="{{ route('admin.attendance.list', ['date' => $attendance->created_at->format('Y-m-d')]) }}"
-                            class="btn-back">一覧に戻る</a> --}}
+                        @error('note')
+                               <p class="error-message">{{ $message }}</p>
+                        @enderror
                     </div>
                 </form>
 

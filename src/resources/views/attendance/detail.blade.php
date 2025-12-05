@@ -68,7 +68,6 @@
                             <th>名前</th>
                             <td>{{ $user->name }}</td>
                         </tr>
-
                         <tr>
                             <th>日付</th>
                             <td>
@@ -77,20 +76,25 @@
                                 {{ \Carbon\Carbon::parse($attendance->created_at)->format('n月j日') }}
                             </td>
                         </tr>
-
                         <tr>
                             <th>出勤・退勤</th>
                             <td class="edit-field-row">
                                 <input type="time" name="clock_in_time"
-                                    value="{{ \Carbon\Carbon::parse($attendance->clock_in_time)->format('H:i') }}">
-
+                                    value="{{ old('clock_in_time', \Carbon\Carbon::parse($attendance->clock_in_time)->format('H:i')) }}">
                                 〜
 
                                 <input type="time" name="clock_out_time"
-                                    value="{{ \Carbon\Carbon::parse($attendance->clock_out_time)->format('H:i') }}">
+
+                                    value="{{ old('clock_out_time', \Carbon\Carbon::parse($attendance->clock_out_time)->format('H:i')) }}">
+
+                                @error('clock_in_time')
+                                    <p class="error-message">{{ $message }}</p>
+                                @enderror
+                                @error('clock_out_time')
+                                    <p class="error-message">{{ $message }}</p>
+                                @enderror
                             </td>
                         </tr>
-
                         {{-- ▼ 休憩（複数対応・行分割表示） --}}
                         @if ($attendance->rests && $attendance->rests->count() > 0)
                             @foreach ($attendance->rests as $index => $rest)
@@ -98,10 +102,18 @@
                                     <th>{{ $index === 0 ? '休憩' : '休憩' . ($index + 1) }}</th>
                                     <td class="edit-field-row">
                                         <input type="time" name="rests[{{ $index }}][break_start]"
-                                            value="{{ $rest->break_start ? \Carbon\Carbon::parse($rest->break_start)->format('H:i') : '' }}">
+                                            {{-- value="{{ $rest->break_start ? \Carbon\Carbon::parse($rest->break_start)->format('H:i') : '' }}"> --}}
+                                            value="{{ old('rests.' . $index . '.break_start', $rest->break_start ? \Carbon\Carbon::parse($rest->break_start)->format('H:i') : '') }}">
                                         〜
                                         <input type="time" name="rests[{{ $index }}][break_end]"
-                                            value="{{ $rest->break_end ? \Carbon\Carbon::parse($rest->break_end)->format('H:i') : '' }}">
+                                            {{-- value="{{ $rest->break_end ? \Carbon\Carbon::parse($rest->break_end)->format('H:i') : '' }}"> --}}
+                                            value="{{ old('rests.' . $index . '.break_end', $rest->break_end ? \Carbon\Carbon::parse($rest->break_end)->format('H:i') : '') }}">
+                                        @error('rests.' . $index . '.break_start')
+                                            <p class="error-message">{{ $message }}</p>
+                                        @enderror
+                                        @error('rests.' . $index . '.break_end')
+                                            <p class="error-message">{{ $message }}</p>
+                                        @enderror
                                     </td>
                                 </tr>
                             @endforeach
@@ -113,6 +125,13 @@
                                     <input type="time" name="rests[0][break_start]" value="">
                                     〜
                                     <input type="time" name="rests[0][break_end]" value="">
+
+                                    @error('rests.0.break_start')
+                                        <p class="error-message">{{ $message }}</p>
+                                    @enderror
+                                    @error('rests.0.break_end')
+                                        <p class="error-message">{{ $message }}</p>
+                                    @enderror
                                 </td>
                             </tr>
                         @endif
@@ -120,7 +139,10 @@
                         <tr>
                             <th>備考</th>
                             <td class="edit-field">
-                                <textarea name="note" placeholder="修正理由を入力してください" required>{{ $attendance->note }}</textarea>
+                                <textarea name="note" placeholder="備考を記入してください">{{ old('note', $attendance->note) }}</textarea>
+                                @error('note')
+                                    <p class="error-message">{{ $message }}</p>
+                                @enderror
                             </td>
                         </tr>
                     </table>

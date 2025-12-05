@@ -8,6 +8,7 @@ use App\Models\Attendance;
 use Carbon\Carbon;
 use App\Models\Rest;
 use App\Models\CorrectionRequest;
+use App\Http\Requests\AttendanceRequest;
 
 class AttendanceController extends Controller
 {
@@ -158,31 +159,29 @@ class AttendanceController extends Controller
     }
 
     // ▼ 修正申請の送信（勤怠詳細画面から直接申請）
-    public function update(Request $request, $id)
+    // public function update(Request $request, $id)
+    public function update(AttendanceRequest $request, $id)
     {
         $attendance = Attendance::with('rests')->findOrFail($id);
-
         // 🔹 BEFORE（元データ保持）
         $beforeClockIn  = $attendance->clock_in_time;
         $beforeClockOut = $attendance->clock_out_time;
-
         $beforeRests = $attendance->rests->map(function ($r) {
             return [
                 'break_start' => $r->break_start,
                 'break_end'   => $r->break_end,
             ];
         })->toArray();
-
         // 🔹 AFTER（フォーム入力）
         $attendance->clock_in_time  = $request->clock_in_time;
         $attendance->clock_out_time = $request->clock_out_time;
         $attendance->note           = $request->note;
         $attendance->save();
-
         // 🔹 休憩の更新（全削除→再登録）
         $attendance->rests()->delete();
 
-        if ($request->has('rests')) {
+        // if ($request->has('rests')) {
+        if (!empty($request->rests)) {
             $date = Carbon::parse($attendance->clock_in_time)->format('Y-m-d');
 
             foreach ($request->rests as $rest) {
@@ -194,7 +193,6 @@ class AttendanceController extends Controller
                 }
             }
         }
-
         // 🔹 CorrectionRequest（修正申請）
         CorrectionRequest::create([
             'attendance_id'     => $attendance->id,
@@ -202,23 +200,18 @@ class AttendanceController extends Controller
             'admin_id'          => null,
             'request_type'      => 'time_change',
             'reason'            => $attendance->note,
-
             // BEFORE
             'before_clock_in'    => $beforeClockIn,
             'before_clock_out'   => $beforeClockOut,
             'before_break_start' => $beforeRests[0]['break_start'] ?? null,
             'before_break_end'   => $beforeRests[0]['break_end'] ?? null,
-
             // AFTER（1件目）
             'after_break_start'  => $request->rests[0]['break_start'] ?? null,
             'after_break_end'    => $request->rests[0]['break_end'] ?? null,
-
             'after_clock_in'     => $attendance->clock_in_time,
             'after_clock_out'    => $attendance->clock_out_time,
-
             'status' => 'pending',
         ]);
-
         return redirect()
             ->route('attendance.detail', $attendance->id)
             ->with('success', '修正申請を送信しました。');
