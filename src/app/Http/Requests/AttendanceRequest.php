@@ -45,6 +45,36 @@ class AttendanceRequest extends FormRequest
         ];
     }
 
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $data = $this->all();
+
+            // 出勤 > 退勤
+            if (!empty($data['clock_in_time']) && !empty($data['clock_out_time'])) {
+                if ($data['clock_in_time'] > $data['clock_out_time']) {
+                    $validator->errors()->add('clock_in_time', '出勤時間が不適切な値です。');
+                }
+            }
+
+            // 休憩 > 退勤
+            if (!empty($data['rests'])) {
+                foreach ($data['rests'] as $index => $rest) {
+                    if (!empty($rest['break_start']) && !empty($data['clock_out_time'])) {
+                        if ($rest['break_start'] > $data['clock_out_time']) {
+                            $validator->errors()->add("rests.$index.break_start", '休憩時間が不適切な値です。');
+                        }
+                    }
+                    if (!empty($rest['break_end']) && !empty($data['clock_out_time'])) {
+                        if ($rest['break_end'] > $data['clock_out_time']) {
+                            $validator->errors()->add("rests.$index.break_end", '休憩時間もしくは退勤時間が不適切な値です。');
+                        }
+                    }
+                }
+            }
+        });
+    }
+
     public function messages()
     {
         return [
