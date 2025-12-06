@@ -76,6 +76,7 @@
                                 {{ \Carbon\Carbon::parse($attendance->created_at)->format('n月j日') }}
                             </td>
                         </tr>
+                        
                         <tr>
                             <th>出勤・退勤</th>
                             <td class="edit-field-row">
@@ -84,7 +85,6 @@
                                 〜
 
                                 <input type="time" name="clock_out_time"
-
                                     value="{{ old('clock_out_time', \Carbon\Carbon::parse($attendance->clock_out_time)->format('H:i')) }}">
 
                                 @error('clock_in_time')
@@ -108,6 +108,7 @@
                                         <input type="time" name="rests[{{ $index }}][break_end]"
                                             {{-- value="{{ $rest->break_end ? \Carbon\Carbon::parse($rest->break_end)->format('H:i') : '' }}"> --}}
                                             value="{{ old('rests.' . $index . '.break_end', $rest->break_end ? \Carbon\Carbon::parse($rest->break_end)->format('H:i') : '') }}">
+
                                         @error('rests.' . $index . '.break_start')
                                             <p class="error-message">{{ $message }}</p>
                                         @enderror
