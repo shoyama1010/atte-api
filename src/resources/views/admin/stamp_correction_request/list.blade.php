@@ -28,10 +28,16 @@
                     <tr>
                         <th>状態</th>
                         <th>名前</th>
+                        <th>対象日時</th>
+                        <th>申請理由</th>
+                        <th>申請日時</th>
+                        <th>詳細</th>
+                        {{-- <th>状態</th>
+                        <th>名前</th>
                         <th>申請日時</th>
                         <th>対象日時</th>
                         <th>申請理由</th>
-                        <th>詳細</th>
+                        <th>詳細</th> --}}
                     </tr>
                 </thead>
                 <tbody>
@@ -51,12 +57,21 @@
                             </td>
                             {{-- 名前 --}}
                             <td>{{ $request->attendance->user->name ?? '―' }}</td>
+
+                            {{-- 対象日時 --}}
+                            <td>{{ optional($request->attendance)->clock_in_time?->format('Y/m/d') ?? '-' }}</td>
+
+                            {{-- 申請理由 --}}
+                            <td>{{ $request->reason ?? '（理由なし）' }}</td>
+
                             {{-- 申請日時 --}}
                             <td>{{ $request->created_at->format('Y/m/d') }}</td>
-                            {{-- 修正対象日（打刻日） --}}
+                            {{-- <td>{{ $request->created_at->format('Y/m/d') }}</td>
+
                             <td>{{ optional($request->attendance)->clock_in_time?->format('Y/m/d') ?? '-' }}</td>
-                            {{-- 理由 --}}
-                            <td>{{ $request->reason ?? '（理由なし）' }}</td>
+
+                            <td>{{ $request->reason ?? '（理由なし）' }}</td> --}}
+
                             {{-- 詳細ボタン --}}
                             <td>
                                 <a href="{{ route('admin.correction_request.show', $request->id) }}" class="detail-link">
