@@ -22,6 +22,8 @@ class AttendanceController extends Controller
             ->map(function ($r) {
                 return [
                     'id' => $r->id,
+                    'user_id' => $r->user_id,
+
                     'user_name' => $r->user->name,
                     'date' => $r->created_at->format('Y-m-d'),
                     'clock_in_time' => $r->clock_in_time,
@@ -176,58 +178,51 @@ class AttendanceController extends Controller
 
     public function userMonthly($id, Request $request)
     {
-        $user = User::findOrFail($id);
-
-        // (2) 月の指定
-        $month = $request->query('month');
-        if (!$month) {
-            $month = now()->format('Y-m');
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
         }
 
-        // (3) 月の範囲
+        $month = $request->query('month') ?? now()->format('Y-m');
         $start = $month . '-01';
-        $end = date('Y-m-t', strtotime($start));  // 月末
-
-        // (4) 月のデータ取得（clock_in_time基準）
+        $end = date('Y-m-t', strtotime($start));
+        // ✅ clock_in_time を期間条件に使用
         $attendances = Attendance::where('user_id', $id)
-            ->whereDate('clock_in_time', '>=', $start)
-            ->whereDate('clock_in_time', '<=', $end)
+            ->whereBetween('clock_in_time', [$start, $end])
+            ->with('rests')
             ->orderBy('clock_in_time', 'desc')
             ->get();
 
-        // (5) 整形して返す
-        $result = $attendances->map(function ($a) {
-            // 休憩合計
-            $restTotal = Rest::where('attendance_id', $a->id)
-                ->get()
-                ->map(function ($r) {
-                    if (!$r->rest_start || !$r->rest_end) return 0;
-                    return strtotime($r->rest_end) - strtotime($r->rest_start);
-                })
-                ->sum();
+        $records = $attendances->map(function ($a) {
+            $restTotalSec = $a->rests->reduce(function ($carry, $r) {
+                if (!$r->break_start || !$r->break_end) return $carry;
+                return $carry + (strtotime($r->break_end) - strtotime($r->break_start));
+            }, 0);
 
-            // 勤務合計
             $totalWork = null;
             if ($a->clock_in_time && $a->clock_out_time) {
-                $workSec = strtotime($a->clock_out_time) - strtotime($a->clock_in_time) - $restTotal;
+                $workSec = strtotime($a->clock_out_time) - strtotime($a->clock_in_time) - $restTotalSec;
                 $h = floor($workSec / 3600);
                 $m = floor(($workSec % 3600) / 60);
                 $totalWork = sprintf('%02d:%02d', $h, $m);
             }
-
             return [
                 'id' => $a->id,
-                'date' => substr($a->clock_in_time, 0, 10), // ←ここで日付を作る！
+                'date' => substr($a->clock_in_time, 0, 10),
                 'clock_in_time' => $a->clock_in_time,
                 'clock_out_time' => $a->clock_out_time,
-                'rest_total' => gmdate('H:i', $restTotal),
+                'rest_total' => gmdate('H:i', $restTotalSec),
                 'total_work' => $totalWork,
+                'rest_start' => optional($a->rests->first())->break_start,
+                'rest_end' => optional($a->rests->first())->break_end,
             ];
         });
-
         return response()->json([
-            'user_name' => $user->name,
-            'attendances' => $result,
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+            ],
+            'records' => $records,
         ]);
     }
 
