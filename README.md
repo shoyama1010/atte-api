@@ -102,6 +102,7 @@ MAIL_HOST=mailhog
 
 MAIL_PORT=1025
 
+MAIL_FROM_ADDRESS=no-reply@atte.com
 
 ## 5 テーブルの作成
 
