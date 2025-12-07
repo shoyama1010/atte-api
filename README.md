@@ -52,7 +52,7 @@ http://localhost/attendance
 
 ・formrequest（laravelバリデーション）
 
-・API連携のため： Sanctum　v2.14.1（バージョンダウン⇒将来的に、PHPのバージョンアップにより、こちらもバックアップ予定）
+・API連携のため： Sanctum　v2.14.1（バージョンダウン⇒将来的に、PHPのバージョンアップにより、Sanctumもバージョンアップ予定）
 
 # テーブル設計
 
