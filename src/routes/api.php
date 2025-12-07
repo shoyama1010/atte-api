@@ -22,25 +22,26 @@ Route::get('/test', function () {
     return response()->json(['message' => 'API connected successfully!']);
 });
 
-Route::get('/attendances', [AttendanceController::class, 'index']);
 
-Route::get('/attendances/{id}', [AttendanceController::class, 'show']);
-Route::get('/correction-requests', [CorrectionRequestController::class, 'index']);
-Route::get('/correction-requests/{id}', [CorrectionRequestController::class, 'show']);
+    Route::get('/attendances', [AttendanceController::class, 'index']);
 
-Route::put('/attendances/{id}', [AttendanceController::class, 'updateApi']);
+    Route::get('/attendances/{id}', [AttendanceController::class, 'show']);
+    Route::get('/correction-requests', [CorrectionRequestController::class, 'index']);
+    Route::get('/correction-requests/{id}', [CorrectionRequestController::class, 'show']);
 
-Route::middleware(['auth:sanctum', 'admin'])
-    ->put('/correction_requests/{id}/approve', [CorrectionRequestController::class, 'approve']);
+    Route::put('/attendances/{id}', [AttendanceController::class, 'updateApi']);
 
-Route::get('/admin/correction-requests/{id}', [AdminCorrectionRequestController::class, 'show']);
-Route::post('/admin/correction-requests/{id}/approve', [AdminCorrectionRequestController::class, 'approve']);
+    Route::middleware(['auth:sanctum', 'admin'])
+        ->put('/correction_requests/{id}/approve', [CorrectionRequestController::class, 'approve']);
 
-Route::get('/attendances/user/{user}', [AttendanceController::class, 'listByUser']);
+    Route::get('/admin/correction-requests/{id}', [AdminCorrectionRequestController::class, 'show']);
+    Route::post('/admin/correction-requests/{id}/approve', [AdminCorrectionRequestController::class, 'approve']);
 
-// Route::middleware('auth:sanctum')->group(function () {
-Route::get('/attendances/user', [AttendanceController::class, 'userAttendances']);
-// });
+    Route::get('/attendances/user/{user}', [AttendanceController::class, 'listByUser']);
 
+    // Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/attendances/user', [AttendanceController::class, 'userAttendances']);
+    // });
 
-Route::get('/attendances/user/{id}', [AttendanceController::class, 'userMonthly']);
+    Route::get('/attendances/user/{id}', [AttendanceController::class, 'userMonthly']);
+

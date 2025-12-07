@@ -32,12 +32,6 @@
                         <th>申請理由</th>
                         <th>申請日時</th>
                         <th>詳細</th>
-                        {{-- <th>状態</th>
-                        <th>名前</th>
-                        <th>申請日時</th>
-                        <th>対象日時</th>
-                        <th>申請理由</th>
-                        <th>詳細</th> --}}
                     </tr>
                 </thead>
                 <tbody>
@@ -66,11 +60,6 @@
 
                             {{-- 申請日時 --}}
                             <td>{{ $request->created_at->format('Y/m/d') }}</td>
-                            {{-- <td>{{ $request->created_at->format('Y/m/d') }}</td>
-
-                            <td>{{ optional($request->attendance)->clock_in_time?->format('Y/m/d') ?? '-' }}</td>
-
-                            <td>{{ $request->reason ?? '（理由なし）' }}</td> --}}
 
                             {{-- 詳細ボタン --}}
                             <td>

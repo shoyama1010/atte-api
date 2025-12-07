@@ -41,11 +41,13 @@ class RouteServiceProvider extends ServiceProvider
         $this->routes(function () {
             // 🔹 APIルート（既存のまま）
             Route::prefix('api')
+
                 ->middleware('api')
                 ->namespace($this->namespace)
                 ->group(base_path('routes/api.php'));
 
-            // 🔹 一般ユーザー（Fortify）ルート（既存のまま）
+
+                // 🔹 一般ユーザー（Fortify）ルート（既存のまま）
             Route::middleware('web')
                 ->namespace($this->namespace)
                 ->group(base_path('routes/web.php'));

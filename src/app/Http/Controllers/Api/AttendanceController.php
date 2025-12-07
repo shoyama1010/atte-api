@@ -236,7 +236,6 @@ class AttendanceController extends Controller
     {
         $user = $request->user();
         // $user = Auth::user();
-
         $records = Attendance::with('rests')
             ->where('user_id', $user->id)
             // ->where('user_id', 1)
@@ -253,8 +252,6 @@ class AttendanceController extends Controller
                     'rest_end' => optional($r->rests->first())->break_end,
                 ];
             });
-
         return response()->json($records);
     }
-
 }
