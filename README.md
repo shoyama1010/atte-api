@@ -117,6 +117,8 @@ php artisan migrate
 PHPコンテナにログインした状態で
 
 php artisan db:seed
+＊UserSeeder.phpにて、Factoryを使ってランダム10人分 登録済
+*AttendanceSeeder.phpにて、30日分自動生成済。
 
 ## 7 アプリケーション起動キーの作成
 
