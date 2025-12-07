@@ -136,7 +136,7 @@ http://localhost:3000/attendances
 ２．バリデーション機能（退勤及び休憩の両方に不適切な値になれば、両方バリデーション出すようにしてる）
 <img width="1166" height="669" alt="Image" src="https://github.com/user-attachments/assets/e69f90fd-bf0e-46dc-8060-dd7a82448e6f" />
 
-３．メール認証機能
+３．メール認証機能(ローカル環境：http://localhost:8025)
 <img width="1190" height="675" alt="Image" src="https://github.com/user-attachments/assets/0f416545-107a-4715-bf93-7f205f1c0748" />
 
 ４．CSV出力機能
