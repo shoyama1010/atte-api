@@ -44,7 +44,7 @@ http://localhost/attendance
 
 ・html
 
-・css
+・css (レスポンシブ対応)
 
 ・mysql 8.0.26
 
