@@ -102,15 +102,6 @@ MAIL_HOST=mailhog
 
 MAIL_PORT=1025
 
-MAIL_USERNAME=null
-
-MAIL_PASSWORD=null
-
-MAIL_ENCRYPTION=null
-
-MAIL_FROM_ADDRESS=noreply@example.com 
-
-MAIL_FROM_NAME="laravel"
 
 ## 5 テーブルの作成
 
@@ -153,3 +144,54 @@ http://localhost:3000/attendances
 ・打刻機能（① statusは見た目わかるように、色を変えてます。②最初の出勤時のみ、誰かわかるように、ユーザー名を入れてます。）
 ①<img width="1213" height="675" alt="Image" src="https://github.com/user-attachments/assets/f755c14d-846e-4639-94c8-cb577ced8b97" />
 ②<img width="1366" height="687" alt="Image" src="https://github.com/user-attachments/assets/a57febb7-7525-4833-8bda-d51947f1cce7" />
+
+
+## テストの実行方法
+
+このプロジェクトでは、ユニットテストにPHPUnitを使用しており、データベース操作を含むテストにはMySQLが必要です。
+
+### 1. テスト用データベースの準備
+
+テストを実行する前に、以下の手順でテスト専用のMySQLデータベースをセットアップしてください。
+
+1.  **MySQLデータベースの作成**: MySQLクライアントを使用して、`laravel_testing`という名前の新しいデータベースを作成します。
+
+    ```bash
+    mysql -u [your_username] -p
+    # パスワードを入力
+    CREATE DATABASE laravel_testing;
+    EXIT;
+    ```
+
+2.  **.env.testing ファイルの設定**: プロジェクトのルートディレクトリにある `.env` ファイルを複製し、ファイル名を `.env.testing` に変更します。このファイルはテスト実行時に自動的に読み込まれます。
+
+    ```bash
+    cp .env .env.testing
+    ```
+
+3.  **.env.testing の編集**: `.env.testing` ファイルを開き、データベース接続情報をテスト用のものに変更します。
+
+    ```ini
+    DB_CONNECTION=mysql
+    DB_HOST=127.0.0.1
+    DB_PORT=3306
+    DB_DATABASE=laravel_testing
+    DB_USERNAME=[your_username]
+    DB_PASSWORD=[your_password]
+    ```
+
+4.  **マイグレーションの実行**: テストデータベースにテーブルを作成するため、マイグレーションを実行します。`--env=testing` オプションを付けることで、`.env.testing` ファイルの設定が使用されます。
+
+    ```bash
+    php artisan migrate --env=testing
+    ```
+
+### 2. テストの実行
+
+データベースの準備ができたら、以下のコマンドでテストスイート全体を実行できます。
+
+```bash
+php artisan test
+# または
+./vendor/bin/phpunit
+
