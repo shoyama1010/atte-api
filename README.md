@@ -149,7 +149,6 @@ http://localhost:3000/attendances
 ## テストの実行方法
 
 このプロジェクトでは、ユニットテストにPHPUnitを使用しており、データベース操作を含むテストにはMySQLが必要です。
-
 ### 1. テスト用データベースの準備
 
 テストを実行する前に、以下の手順でテスト専用のMySQLデータベースをセットアップしてください。
@@ -160,32 +159,51 @@ http://localhost:3000/attendances
     mysql -u [your_username] -p
     # パスワードを入力
     CREATE DATABASE laravel_testing;
-    EXIT;
-    ```
+    SHOW DATABASES;
+
+    *configファイルの変更
+
+    // mysql_test作成
+        'mysql_test' => [
+            'driver' => 'mysql',
+            'url' => env('DATABASE_URL'),
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'port' => env('DB_PORT', '3306'),
+            'database' => env('DB_DATABASE', 'forge'),
+            'username' => env('DB_USERNAME', 'forge'),
+            'password' => env('DB_PASSWORD', ''),
+            'unix_socket' => env('DB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
 
 2.  **.env.testing ファイルの設定**: プロジェクトのルートディレクトリにある `.env` ファイルを複製し、ファイル名を `.env.testing` に変更します。このファイルはテスト実行時に自動的に読み込まれます。
 
     ```bash
-    cp .env .env.testing
+    cp .env .env.testing --env=testing
     ```
 
 3.  **.env.testing の編集**: `.env.testing` ファイルを開き、データベース接続情報をテスト用のものに変更します。
 
-    ```ini
-    DB_CONNECTION=mysql
-    DB_HOST=127.0.0.1
+    DB_CONNECTION=mysql_test
+    DB_HOST=mysql
     DB_PORT=3306
-    DB_DATABASE=laravel_testing
-    DB_USERNAME=[your_username]
-    DB_PASSWORD=[your_password]
-    ```
+    DB_DATABASE=laravel_test
+    DB_DATABASE=demo_test
+    DB_USERNAME=root
+    DB_PASSWORD=root
 
-4.  **マイグレーションの実行**: テストデータベースにテーブルを作成するため、マイグレーションを実行します。`--env=testing` オプションを付けることで、`.env.testing` ファイルの設定が使用されます。
+5.  **マイグレーションの実行**: テストデータベースにテーブルを作成するため、マイグレーションを実行します。
 
-    ```bash
-    php artisan migrate --env=testing
-    ```
-
+    php artisan migrate 
+    
 ### 2. テストの実行
 
 データベースの準備ができたら、以下のコマンドでテストスイート全体を実行できます。
