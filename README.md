@@ -68,7 +68,7 @@ http://localhost/attendance
 # 環境構築
 ## 1 Gitファイルをクローンする
 
-git clone github.com/shoyama1010/atte-api.git
+git clone git@github.com:shoyama1010/atte-api.git
 
 ## 2 Dockerコンテナを作成する
 
