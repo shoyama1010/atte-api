@@ -135,7 +135,7 @@ http://localhost:3000/attendances
 
 <img width="1277" height="670" alt="Image" src="https://github.com/user-attachments/assets/d3569c47-07de-448b-826e-82a5137ce2a2" />
 
-1.1 管理側ログイン（email -> admin@eexample.com,password -> password123）
+1.1 管理側ログイン（email -> admin@eexample.com　　password -> password123）
 <img width="1238" height="673" alt="Image" src="https://github.com/user-attachments/assets/1b4a7636-6912-463b-b964-745ad25bd30f" />
 
 ２．バリデーション機能（退勤及び休憩の両方に不適切な値になれば、両方バリデーション出すようにしてる）
