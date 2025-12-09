@@ -63,6 +63,7 @@ return [
             ]) : [],
         ],
 
+        // mysql_test作成
         'mysql_test' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),

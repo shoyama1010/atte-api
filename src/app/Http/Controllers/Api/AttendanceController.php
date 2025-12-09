@@ -36,7 +36,7 @@ class AttendanceController extends Controller
         return response()->json($records);
     }
 
-    // 勤務詳細 API
+    // 勤務詳細 API-
     public function show($id)
     {
         $attendance = Attendance::with(['user', 'rests'])   // ← user もロード
@@ -60,17 +60,17 @@ class AttendanceController extends Controller
     {
         $attendance = Attendance::with('rests')->findOrFail($id);
         // 出退勤の更新
-        $attendance->clock_in_time  = $request->clock_in_time;
-        $attendance->clock_out_time = $request->clock_out_time;
-        $attendance->note           = $request->note;
-        $attendance->status         = 'pending';
-        $attendance->save();
+        $attendance->update([
+            'clock_in_time' => $request->clock_in_time,
+            'clock_out_time' => $request->clock_out_time,
+            'note' => $request->note,
+            'status' => 'pending',
+        ]);
 
         // 休憩を再登録
         $attendance->rests()->delete();
 
         if ($request->rest_start && $request->rest_end) {
-
             $date = Carbon::parse($attendance->clock_in_time)->format('Y-m-d');
 
             $attendance->rests()->create([
@@ -92,13 +92,16 @@ class AttendanceController extends Controller
         $end   = date('Y-m-t', strtotime($start));
 
         $records = Attendance::where('user_id', $userId)
-            ->whereBetween('date', [$start, $end])
-            ->orderBy('date', 'desc')
+            // ->whereBetween('date', [$start, $end])
+            ->whereBetween('clock_in_time', [$start, $end])
+            // ->orderBy('date', 'desc')
+            ->orderBy('clock_in_time', 'desc')
             ->get()
             ->map(function ($a) {
                 return [
                     'id' => $a->id,
-                    'date' => $a->date,
+                    // 'date' => $a->date,
+                    'date' => substr($a->clock_in_time, 0, 10),
                     'clock_in_time' => $a->clock_in_time,
                     'clock_out_time' => $a->clock_out_time,
                     'rest_total' => $a->rest_total,
@@ -116,22 +119,23 @@ class AttendanceController extends Controller
     {
         // -------- (1) ユーザー情報取得 -------- //
         $user = User::findOrFail($id);
-
         // -------- (2) 月の指定（?month=2025-11） -------- //
-        $month = $request->query('month');
-        if (!$month) {
-            $month = now()->format('Y-m'); // 指定なし → 今月
-        }
-
+        $month = $request->query('month', now()->format('Y-m'));
+        // $month = $request->query('month');
+        // if (!$month) {
+        //     $month = now()->format('Y-m'); // 指定なし → 今月
+        // }
         // 月の開始・終了日
         $start = $month . '-01';
         $end   = date('Y-m-t', strtotime($start));
 
         // -------- (3) 月の勤怠データ取得 -------- //
         $attendances = Attendance::where('user_id', $id)
-            ->whereDate('date', '>=', $start)
-            ->whereDate('date', '<=', $end)
-            ->orderBy('date', 'desc')
+            // ->whereDate('date', '>=', $start)
+            ->whereBetween('clock_in_time', [$start, $end])
+            // ->whereDate('date', '<=', $end)
+            // ->orderBy('date', 'desc')
+            ->orderBy('clock_in_time', 'desc')
             ->get();
 
         // -------- (4) 整形して返す配列 -------- //
@@ -161,18 +165,20 @@ class AttendanceController extends Controller
 
             return [
                 'id' => $a->id,
-                'date' => $a->date,
-                'clock_in_time' => $a->clock_in_time ?? null,
-                'clock_out_time' => $a->clock_out_time ?? null,
-                'rest_total' => gmdate('H:i', $restTotal) ?? null,
-                'total_work' => $totalWork ?? null,
+                // 'date' => $a->date,
+                'date' => substr($a->clock_in_time, 0, 10),
+                'clock_in_time' => $a->clock_in_time ,
+                'clock_out_time' => $a->clock_out_time ,
+                'rest_total' => gmdate('H:i', $restTotal),
+                'total_work' => $totalWork ,
             ];
         });
 
         // -------- (5) Next.js 用レスポンス -------- //
         return response()->json([
             'user_name' => $user->name,
-            'attendances' => $result,
+            // 'attendances' => $result,
+            'records' => $result,
         ]);
     }
 
@@ -186,6 +192,7 @@ class AttendanceController extends Controller
         $month = $request->query('month') ?? now()->format('Y-m');
         $start = $month . '-01';
         $end = date('Y-m-t', strtotime($start));
+
         // ✅ clock_in_time を期間条件に使用
         $attendances = Attendance::where('user_id', $id)
             ->whereBetween('clock_in_time', [$start, $end])
@@ -194,11 +201,28 @@ class AttendanceController extends Controller
             ->get();
 
         $records = $attendances->map(function ($a) {
+            // 休憩が複数ある場合すべて合計を算出
+            $restRanges = $a->rests->map(function ($r) {
+                if ($r->break_start && $r->break_end) {
+                    return substr($r->break_start, 11, 5) . ' ～ ' . substr($r->break_end, 11, 5);
+                }
+                return null;
+            })->filter()->values()->toArray();
+
+            // 複数休憩を「／」で連結
+            $restDisplay = count($restRanges) ? implode(' ／ ', $restRanges) : '―';
+
+            // 合計休憩秒数
             $restTotalSec = $a->rests->reduce(function ($carry, $r) {
                 if (!$r->break_start || !$r->break_end) return $carry;
                 return $carry + (strtotime($r->break_end) - strtotime($r->break_start));
             }, 0);
+            // $restTotalSec = $a->rests->reduce(function ($carry, $r) {
+            //     if (!$r->break_start || !$r->break_end) return $carry;
+            //     return $carry + (strtotime($r->break_end) - strtotime($r->break_start));
+            // }, 0);
 
+            // 労働時間
             $totalWork = null;
             if ($a->clock_in_time && $a->clock_out_time) {
                 $workSec = strtotime($a->clock_out_time) - strtotime($a->clock_in_time) - $restTotalSec;
@@ -209,12 +233,15 @@ class AttendanceController extends Controller
             return [
                 'id' => $a->id,
                 'date' => substr($a->clock_in_time, 0, 10),
-                'clock_in_time' => $a->clock_in_time,
-                'clock_out_time' => $a->clock_out_time,
+                // 'clock_in_time' => $a->clock_in_time,
+                'clock_in_time' => substr($a->clock_in_time, 11, 5),
+                // 'clock_out_time' => $a->clock_out_time,
+                'clock_out_time' => substr($a->clock_out_time, 11, 5),
+                'rest_display' => $restDisplay,
                 'rest_total' => gmdate('H:i', $restTotalSec),
                 'total_work' => $totalWork,
-                'rest_start' => optional($a->rests->first())->break_start,
-                'rest_end' => optional($a->rests->first())->break_end,
+                // 'rest_start' => optional($a->rests->first())->break_start,
+                // 'rest_end' => optional($a->rests->first())->break_end,
             ];
         });
         return response()->json([
@@ -233,14 +260,14 @@ class AttendanceController extends Controller
         // $user = Auth::user();
         $records = Attendance::with('rests')
             ->where('user_id', $user->id)
-            // ->where('user_id', 1)
-            ->orderBy('date', 'desc')
+            // ->orderBy('date', 'desc')
+            ->orderBy('clock_in_time', 'desc')
             ->get()
 
             ->map(function ($r) {
                 return [
                     'id' => $r->id,
-                    'date' => $r->date->format('Y-m-d'),
+                    'date' => substr($r->clock_in_time, 0, 10),
                     'clock_in_time' => $r->clock_in_time,
                     'clock_out_time' => $r->clock_out_time,
                     'rest_start' => optional($r->rests->first())->break_start,
