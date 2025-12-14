@@ -193,7 +193,7 @@ class AttendanceController extends Controller
         $start = $month . '-01';
         $end = date('Y-m-t', strtotime($start));
 
-        // ✅ clock_in_time を期間条件に使用
+        // ✅ rests リレーション付きで取得
         $attendances = Attendance::where('user_id', $id)
             ->whereBetween('clock_in_time', [$start, $end])
             ->with('rests')
@@ -201,28 +201,25 @@ class AttendanceController extends Controller
             ->get();
 
         $records = $attendances->map(function ($a) {
-            // 休憩が複数ある場合すべて合計を算出
-            $restRanges = $a->rests->map(function ($r) {
+            // ✅ 休憩時間を文字列に整形
+            $restDisplay = $a->rests->map(function ($r) {
                 if ($r->break_start && $r->break_end) {
-                    return substr($r->break_start, 11, 5) . ' ～ ' . substr($r->break_end, 11, 5);
+                    return substr($r->break_start, 0, 5) . ' ～ ' . substr($r->break_end, 0, 5);
                 }
                 return null;
-            })->filter()->values()->toArray();
+            })->filter()->implode(' ／ ');
 
-            // 複数休憩を「／」で連結
-            $restDisplay = count($restRanges) ? implode(' ／ ', $restRanges) : '―';
+            if ($restDisplay === '') {
+                $restDisplay = '―';
+            }
 
-            // 合計休憩秒数
+            // ✅ 合計休憩時間を算出
             $restTotalSec = $a->rests->reduce(function ($carry, $r) {
                 if (!$r->break_start || !$r->break_end) return $carry;
                 return $carry + (strtotime($r->break_end) - strtotime($r->break_start));
             }, 0);
-            // $restTotalSec = $a->rests->reduce(function ($carry, $r) {
-            //     if (!$r->break_start || !$r->break_end) return $carry;
-            //     return $carry + (strtotime($r->break_end) - strtotime($r->break_start));
-            // }, 0);
 
-            // 労働時間
+            // ✅ 労働時間
             $totalWork = null;
             if ($a->clock_in_time && $a->clock_out_time) {
                 $workSec = strtotime($a->clock_out_time) - strtotime($a->clock_in_time) - $restTotalSec;
@@ -230,20 +227,17 @@ class AttendanceController extends Controller
                 $m = floor(($workSec % 3600) / 60);
                 $totalWork = sprintf('%02d:%02d', $h, $m);
             }
+
             return [
                 'id' => $a->id,
                 'date' => substr($a->clock_in_time, 0, 10),
-                // 'clock_in_time' => $a->clock_in_time,
                 'clock_in_time' => substr($a->clock_in_time, 11, 5),
-                // 'clock_out_time' => $a->clock_out_time,
                 'clock_out_time' => substr($a->clock_out_time, 11, 5),
-                'rest_display' => $restDisplay,
-                'rest_total' => gmdate('H:i', $restTotalSec),
+                'rest_display' => $restDisplay, // ← ここで返す
                 'total_work' => $totalWork,
-                // 'rest_start' => optional($a->rests->first())->break_start,
-                // 'rest_end' => optional($a->rests->first())->break_end,
             ];
         });
+
         return response()->json([
             'user' => [
                 'id' => $user->id,

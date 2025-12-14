@@ -60,7 +60,9 @@ class Attendance extends Model
 
     public function rests()
     {
-        return $this->hasMany(Rest::class);
+        return $this->hasMany(Rest::class,
+            'attendance_id',
+            'id');
     }
 
     public function getTotalRestTimeAttribute()

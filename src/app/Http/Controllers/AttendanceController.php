@@ -27,11 +27,25 @@ class AttendanceController extends Controller
     {
         $user = Auth::user();
 
-        Attendance::create([
-            'user_id' => $user->id,
-            'clock_in_time' => Carbon::now(),
-            'status' => 'working',
-        ]);
+        // 今日の出勤レコードを取得（created_atではなく、whereDateで比較）
+        $attendance = Attendance::where('user_id', $user->id)
+            ->whereDate('created_at', Carbon::today())
+            ->first();
+
+        if (!$attendance) {
+            // 新規作成（初出勤）
+            $attendance = Attendance::create([
+                'user_id' => $user->id,
+                'clock_in_time' => Carbon::now(),
+                'status' => 'working',
+            ]);
+        } else {
+            // 既存データがある場合 → ステータスだけ更新
+            $attendance->update([
+                'clock_in_time' => Carbon::now(),
+                'status' => 'working',
+            ]);
+        }
 
         return redirect()->route('attendance.index')->with('message', '出勤しました');
     }
@@ -90,7 +104,7 @@ class AttendanceController extends Controller
             ]);
 
             // 状態を「出勤中」に戻す
-            $attendance->update(['status' => 'working']);
+            $attendance->update(['status' => 'working_after_break']);
 
             return redirect()->route('attendance.index')->with('message', '休憩を終了しました。');
         }
@@ -112,6 +126,7 @@ class AttendanceController extends Controller
 
         return redirect()->route('attendance.index')->with('message', '退勤しました');
     }
+
 
     public function list(Request $request)
     {
@@ -226,6 +241,7 @@ class AttendanceController extends Controller
             'clock_in_time' => $request->clock_in_time,
             'clock_out_time' => $request->clock_out_time,
         ]);
+
         if ($request->has('rests')) { // 休憩の登録（複数対応）
             foreach ($request->rests as $rest) {
                 if (!empty($rest['break_start']) && !empty($rest['break_end'])) {
@@ -236,6 +252,7 @@ class AttendanceController extends Controller
                 }
             }
         }
+
         return redirect()->route('attendance.index')
             ->with('success', '勤務を登録しました');
     }

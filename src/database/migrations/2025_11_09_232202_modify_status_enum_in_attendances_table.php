@@ -15,8 +15,18 @@ class ModifyStatusEnumInAttendancesTable extends Migration
     public function up()
     {
         Schema::table('attendances', function (Blueprint $table) {
-            // ✅ ENUM に pending, approved, editable を追加
-            DB::statement("ALTER TABLE attendances MODIFY COLUMN status ENUM('working','rest','finished','pending','editable','approved') DEFAULT 'editable'");
+            // ✅ ENUM に none を追加し、既存のステータスも統一
+            DB::statement("
+                ALTER TABLE attendances
+                MODIFY COLUMN status ENUM(
+                    'none',
+                    'working',
+                    'on_break',
+                    'working_after_break',
+                    'left',
+                    'editable'
+                ) NOT NULL DEFAULT 'none'
+            ");
         });
     }
 
@@ -28,7 +38,16 @@ class ModifyStatusEnumInAttendancesTable extends Migration
     public function down()
     {
         Schema::table('attendances', function (Blueprint $table) {
-            DB::statement("ALTER TABLE attendances MODIFY COLUMN status ENUM('working','rest','finished') DEFAULT 'working'");
+            DB::statement("
+                ALTER TABLE attendances
+                MODIFY COLUMN status ENUM(
+                    'working',
+                    'on_break',
+                    'working_after_break',
+                    'left',
+                    'editable'
+                ) NOT NULL DEFAULT 'working'
+            ");
         });
     }
 }

@@ -9,19 +9,23 @@
         {{-- =============================
          ステータスラベル（日付より上に配置）
        ============================= --}}
-        @if (!$attendance || $attendance->status === 'none')
+       @if (!$attendance || in_array($attendance->status, ['none', 'editable']))
+        {{-- @if (!$attendance || $attendance->status === 'none') --}}
             <div class="status-label status-none">勤務外</div>
         @elseif($attendance->status === 'working')
             <div class="status-label status-working">出勤中</div>
         @elseif($attendance->status === 'on_break')
             <div class="status-label status-break">休憩中</div>
         @elseif($attendance->status === 'working_after_break')
-            <div class="status-label status-working">出勤中</div>
+            <div class="status-label status-working-after-break">出勤中</div>
         @elseif($attendance->status === 'left')
             <div class="status-label status-left">退勤済</div>
+        {{-- @elseif($attendance->status === 'editable')
+            <div class="status-label status-none">勤務外</div> --}}
         @else
             <div class="status-label status-unknown">不明</div>
         @endif
+
         {{-- =============================
          日付・時刻表示
        ============================= --}}
@@ -33,10 +37,12 @@
         <h2>{{ $date->format('Y年m月d日') }}（{{ $dayOfWeek }}）</h2>
         {{-- <h2>{{ now()->format('Y年m月d日 (D)') }}</h2> --}}
         <h1>{{ now()->format('H:i') }}</h1>
+
         {{-- =============================
          ステータス別の操作表示
        ============================= --}}
-        @if (!$attendance || $attendance->status === 'none')
+        {{-- @if (!$attendance || $attendance->status === 'none') --}}
+        @if (!$attendance || in_array($attendance->status, ['none', 'editable']))
             {{-- ✅ 勤務前(外) --}}
             <h3>{{ $user->name }}さん、お疲れ様です!</h3>
             <form action="{{ route('attendance.clockIn') }}" method="POST">

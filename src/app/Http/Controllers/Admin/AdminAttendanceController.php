@@ -18,25 +18,40 @@ class AdminAttendanceController extends Controller
     {
         // 日付を取得（指定がなければ今日）
         $date = $request->input('date', Carbon::today()->toDateString());
-
         // 該当日の勤怠一覧を取得
-        $attendances = Attendance::with('user')
-            ->whereDate('clock_in_time', $date) // ←ここを変更
-            // ->whereDate('date', $date)
+        $attendances = Attendance::with(['user', 'rests'])
+            // ->whereDate('clock_in_time', $date)
+            ->whereDate('created_at', $date)
+            ->orderBy('clock_in_time')
             ->get();
+
+        // 🔹 各勤務日の休憩合計を計算
+        foreach ($attendances as $attendance) {
+            $totalMinutes = 0;
+
+            foreach ($attendance->rests as $rest) {
+                // if (!empty($rest->break_start) && !empty($rest->break_end)) {
+                if ($rest->break_start && $rest->break_end) {
+                    $start = Carbon::parse($rest->break_start);
+                    $end   = Carbon::parse($rest->break_end);
+                    $totalMinutes += $end->diffInMinutes($start);
+                }
+            }
+            // HH:mm形式に整形
+            $attendance->break_total = $totalMinutes > 0
+                ? sprintf('%02d:%02d', floor($totalMinutes / 60), $totalMinutes % 60)
+                : '00:00';
+            // $attendance->total_rest_time = sprintf('%02d:%02d', floor($totalMinutes / 60), $totalMinutes % 60);
+        }
 
         return view('admin.attendance.list', compact('attendances', 'date'));
     }
-
     // 既存: 勤怠修正画面（スタッフ詳細扱い）
     public function show($id)
     {
         // 特定ユーザーの勤怠データを取得
         $attendance = Attendance::with('user', 'rests')->findOrFail($id);
-        // 勤務者（ユーザー情報）
-        $staff = $attendance->user;
-
-
+        $staff = $attendance->user; // 勤務者（ユーザー情報）
         // 出退勤データ
         $clockIn  = $attendance->clock_in_time ? Carbon::parse($attendance->clock_in_time)->format('H:i') : '--:--';
         $clockOut = $attendance->clock_out_time ? Carbon::parse($attendance->clock_out_time)->format('H:i') : '--:--';
@@ -49,24 +64,48 @@ class AdminAttendanceController extends Controller
                 $breakMinutes += $end->diffInMinutes($start);
             }
         }
-
-        $breakHours = sprintf('%02d:%02d', floor($breakMinutes / 60), $breakMinutes % 60);
-        // return view('admin.attendance.edit', compact('attendance'));
-
+        // $breakHours = sprintf('%02d:%02d', floor($breakMinutes / 60), $breakMinutes % 60);
+        $breakHours = $breakMinutes > 0
+            ? sprintf('%02d:%02d', floor($breakMinutes / 60), $breakMinutes % 60)
+            : '00:00';
         // ★ 最新の修正申請を取得（あれば）
         $correctionRequest = CorrectionRequest::where('attendance_id', $attendance->id)
-            ->orderBy('id', 'desc')
-            ->first();
+            ->orderBy('id', 'desc')->first();
 
         return view('admin.attendance.detail', compact(
-            'attendance',
-            'staff',
-            'clockIn',
-            'clockOut',
-            'breakHours',
-            'correctionRequest'
+            'attendance','staff','clockIn','clockOut','breakHours','correctionRequest'
         ));
     }
+    // スタッフ別勤怠一覧
+    public function staffList($id)
+    {
+        // 対象スタッフ情報を取得（存在しない場合は404）
+        $staff = User::findOrFail($id);
+        $date = now()->toDateString(); // ← デフォルトで今日
+
+        // 🔸休憩データもまとめて取得
+        $attendances = Attendance::with('rests')->where('user_id', $id)
+            ->orderBy('clock_in_time', 'desc')->paginate(20);
+
+        // 🔸各出勤日の休憩合計を計算して Blade に渡す
+        foreach ($attendances as $attendance) {
+            $totalMinutes = 0;
+            foreach ($attendance->rests as $rest) {
+                if ($rest->break_start && $rest->break_end) {
+                    $start = \Carbon\Carbon::parse($rest->break_start);
+                    $end   = \Carbon\Carbon::parse($rest->break_end);
+                    $totalMinutes += $end->diffInMinutes($start);
+                }
+            }
+            // HH:mm形式で算出
+            $attendance->break_total = $totalMinutes > 0
+                ? sprintf('%02d:%02d', floor($totalMinutes / 60), $totalMinutes % 60)
+                : '00:00';
+        }
+        // ✅ Blade にスタッフ情報＋勤怠一覧を渡す
+        return view('admin.attendance.staff_list', compact('staff', 'attendances'));
+    }
+
 
     public function edit($id)
     {
@@ -157,35 +196,6 @@ class AdminAttendanceController extends Controller
     }
 
 
-    // スタッフ別勤怠一覧
-    public function staffList($id)
-    {
-        $staff = User::findOrFail($id);
-        $date = now()->toDateString(); // ← デフォルトで今日
-
-        // 🔸休憩データもまとめて取得
-        $attendances = Attendance::with('rests')
-            ->where('user_id', $id)
-            ->orderBy('clock_in_time', 'desc')
-            ->paginate(20);
-
-        // 🔸各出勤日の休憩合計を計算して Blade に渡す
-        foreach ($attendances as $attendance) {
-            $totalMinutes = 0;
-            foreach ($attendance->rests as $rest) {
-                if ($rest->break_start && $rest->break_end) {
-                    $start = \Carbon\Carbon::parse($rest->break_start);
-                    $end   = \Carbon\Carbon::parse($rest->break_end);
-                    $totalMinutes += $end->diffInMinutes($start);
-                }
-            }
-            $attendance->break_total = $totalMinutes > 0
-                ? sprintf('%02d:%02d', floor($totalMinutes / 60), $totalMinutes % 60)
-                : '-';
-        }
-
-        return view('admin.attendance.staff_list', compact('staff', 'attendances'));
-    }
 
     // CSVエクスポート
     public function exportStaff($id)
