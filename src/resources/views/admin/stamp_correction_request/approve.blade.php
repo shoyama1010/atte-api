@@ -39,7 +39,37 @@
             <tr>
     <th>休憩</th>
     <td>
-        {{-- 複数休憩をループで表示 --}}
+        @php
+            // after_rests（JSON形式のカラム）を配列に変換
+            $rests = $requestData->after_rests ? json_decode($requestData->after_rests, true) : [];
+        @endphp
+
+        {{-- ▼ 複数休憩が存在する場合 --}}
+        @if(!empty($rests))
+            @foreach ($rests as $i => $rest)
+                休憩{{ $i + 1 }}：
+                {{ !empty($rest['break_start']) ? \Carbon\Carbon::parse($rest['break_start'])->format('H:i') : 'ーー' }}
+                〜
+                {{ !empty($rest['break_end']) ? \Carbon\Carbon::parse($rest['break_end'])->format('H:i') : 'ーー' }}
+                <br>
+            @endforeach
+
+        {{-- ▼ 旧データ形式（after_break_start／end）をフォールバック表示 --}}
+        @elseif ($requestData->after_break_start && $requestData->after_break_end)
+            {{ \Carbon\Carbon::parse($requestData->after_break_start)->format('H:i') }}
+            〜
+            {{ \Carbon\Carbon::parse($requestData->after_break_end)->format('H:i') }}
+
+        {{-- ▼ 休憩データが存在しない場合 --}}
+        @else
+            ーー 〜 ーー
+        @endif
+    </td>
+</tr>
+
+            {{-- <tr>
+    <th>休憩</th>
+    <td>
         @if ($attendance->rests && $attendance->rests->count() > 0)
             @foreach ($attendance->rests as $i => $rest)
                 休憩{{ $i + 1 }}：
@@ -52,8 +82,7 @@
             ーー 〜 ーー
         @endif
     </td>
-</tr>
-
+</tr> --}}
             <tr>
                 <th>備考</th>
                 <td>{{ $requestData->reason }}</td>
