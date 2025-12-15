@@ -117,9 +117,13 @@ php artisan migrate
 
 ## 6 ダミーデータ作成
 
-PHPコンテナにログインした状態で
+（通常は、php artisan db:seedですが）
 
-php artisan db:seed
+※ 本プロジェクトはカラム削除・ENUM変更を含むため、 環境構築時は必ず以下を実行してください。
+
+php artisan migrate:fresh --seed
+
+（理由：①break_start / break_end を削除→ rests テーブルへ分離、②status ENUM を拡張→editable, approved, on_break, left 追加したため）
 
 ＊UserSeeder.phpにて、Factoryを使ってランダム10人分 登録済
 
