@@ -165,7 +165,6 @@ class AttendanceController extends Controller
         $correctionRequest = $attendance->correctionRequest()->latest()->first();
         // ステータス（pending / approved / null）
         $correctionStatus = $correctionRequest->status ?? null;
-
         return view('attendance.detail', compact(
             'user',
             'attendance',
@@ -175,7 +174,6 @@ class AttendanceController extends Controller
     }
 
     // ▼ 修正申請の送信（勤怠詳細画面から直接申請）
-    // public function update(Request $request, $id)
     public function update(AttendanceRequest $request, $id)
     {
         $attendance = Attendance::with('rests')->findOrFail($id);
@@ -233,7 +231,6 @@ class AttendanceController extends Controller
             ->with('success', '修正申請を送信しました。');
     }
 
-
     // 休憩回数分のレコードを保存
     public function store(Request $request)
     {
@@ -253,7 +250,6 @@ class AttendanceController extends Controller
                 }
             }
         }
-
         return redirect()->route('attendance.index')
             ->with('success', '勤務を登録しました');
     }

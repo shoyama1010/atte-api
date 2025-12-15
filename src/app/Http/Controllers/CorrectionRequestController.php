@@ -35,9 +35,10 @@ class CorrectionRequestController extends Controller
     {
         $user = Auth::user();
         $attendance = Attendance::with('rests')->findOrFail($attendanceId);
-        
+
         return view('attendance.request', compact('user', 'attendance'));
     }
+    
     /**
      * 勤務修正申請を送信
      */

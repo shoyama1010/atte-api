@@ -30,7 +30,6 @@ class AdminAttendanceController extends Controller
             $totalMinutes = 0;
 
             foreach ($attendance->rests as $rest) {
-                // if (!empty($rest->break_start) && !empty($rest->break_end)) {
                 if ($rest->break_start && $rest->break_end) {
                     $start = Carbon::parse($rest->break_start);
                     $end   = Carbon::parse($rest->break_end);
@@ -41,7 +40,6 @@ class AdminAttendanceController extends Controller
             $attendance->break_total = $totalMinutes > 0
                 ? sprintf('%02d:%02d', floor($totalMinutes / 60), $totalMinutes % 60)
                 : '00:00';
-            // $attendance->total_rest_time = sprintf('%02d:%02d', floor($totalMinutes / 60), $totalMinutes % 60);
         }
 
         return view('admin.attendance.list', compact('attendances', 'date'));
@@ -64,7 +62,7 @@ class AdminAttendanceController extends Controller
                 $breakMinutes += $end->diffInMinutes($start);
             }
         }
-        // $breakHours = sprintf('%02d:%02d', floor($breakMinutes / 60), $breakMinutes % 60);
+        
         $breakHours = $breakMinutes > 0
             ? sprintf('%02d:%02d', floor($breakMinutes / 60), $breakMinutes % 60)
             : '00:00';
@@ -194,8 +192,6 @@ class AdminAttendanceController extends Controller
             ->route('admin.attendance.detail', $attendance->id)
             ->with('success', '勤務情報を修正しました。');
     }
-
-
 
     // CSVエクスポート
     public function exportStaff($id)

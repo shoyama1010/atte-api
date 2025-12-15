@@ -92,22 +92,17 @@
                                 {{ \Carbon\Carbon::parse($attendance->created_at)->format('n月j日') }}
                             </td>
                         </tr>
-
                         {{-- ▼ 出勤・退勤 --}}
                         <tr>
                             <th>出勤・退勤</th>
                             <td class="edit-field-row">
                                 <input type="time" name="clock_in_time"
-                                    {{-- value="{{ \Carbon\Carbon::parse($attendance->clock_in_time)->format('H:i') }}"> --}}
                                     value="{{ old('clock_in_time', \Carbon\Carbon::parse($attendance->clock_in_time)->format('H:i')) }}">
                                 〜
                                 <input type="time" name="clock_out_time"
-                                    {{-- value="{{ \Carbon\Carbon::parse($attendance->clock_out_time)->format('H:i') }}"> --}}
                                     value="{{ old('clock_out_time', \Carbon\Carbon::parse($attendance->clock_out_time)->format('H:i')) }}">
-
                                 </td>
                         </tr>
-
                         {{-- ▼ 休憩（複数対応・行分割表示） --}}
                         @if ($attendance->rests && $attendance->rests->count() > 0)
                             @foreach ($attendance->rests as $index => $rest)

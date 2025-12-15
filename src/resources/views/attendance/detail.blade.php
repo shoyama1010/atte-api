@@ -39,7 +39,8 @@
                     <tr>
                         <th>休憩</th>
                         <td>
-                            @foreach ($attendance->rests as $rest)
+                            {{-- @foreach ($attendance->rests as $rest) --}}
+                            @foreach ($attendance->rests as $index => $rest)
                                 {{ \Carbon\Carbon::parse($rest->break_start)->format('H:i') }}
                                 〜
                                 {{ \Carbon\Carbon::parse($rest->break_end)->format('H:i') }}
@@ -47,7 +48,6 @@
                             @endforeach
                         </td>
                     </tr>
-
                     <tr>
                         <th>備考</th>
                         <td>{{ $attendance->note }}</td>
@@ -62,7 +62,6 @@
                 <form action="{{ route('attendance.update', $attendance->id) }}" method="POST">
                     @csrf
                     @method('PUT')
-
                     <table class="detail-table">
                         <tr>
                             <th>名前</th>
@@ -76,17 +75,14 @@
                                 {{ \Carbon\Carbon::parse($attendance->created_at)->format('n月j日') }}
                             </td>
                         </tr>
-                        
                         <tr>
                             <th>出勤・退勤</th>
                             <td class="edit-field-row">
                                 <input type="time" name="clock_in_time"
                                     value="{{ old('clock_in_time', \Carbon\Carbon::parse($attendance->clock_in_time)->format('H:i')) }}">
                                 〜
-
                                 <input type="time" name="clock_out_time"
                                     value="{{ old('clock_out_time', \Carbon\Carbon::parse($attendance->clock_out_time)->format('H:i')) }}">
-
                                 @error('clock_in_time')
                                     <p class="error-message">{{ $message }}</p>
                                 @enderror
@@ -102,11 +98,9 @@
                                     <th>{{ $index === 0 ? '休憩' : '休憩' . ($index + 1) }}</th>
                                     <td class="edit-field-row">
                                         <input type="time" name="rests[{{ $index }}][break_start]"
-                                            {{-- value="{{ $rest->break_start ? \Carbon\Carbon::parse($rest->break_start)->format('H:i') : '' }}"> --}}
                                             value="{{ old('rests.' . $index . '.break_start', $rest->break_start ? \Carbon\Carbon::parse($rest->break_start)->format('H:i') : '') }}">
                                         〜
                                         <input type="time" name="rests[{{ $index }}][break_end]"
-                                            {{-- value="{{ $rest->break_end ? \Carbon\Carbon::parse($rest->break_end)->format('H:i') : '' }}"> --}}
                                             value="{{ old('rests.' . $index . '.break_end', $rest->break_end ? \Carbon\Carbon::parse($rest->break_end)->format('H:i') : '') }}">
 
                                         @error('rests.' . $index . '.break_start')

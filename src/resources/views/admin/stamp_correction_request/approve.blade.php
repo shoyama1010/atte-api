@@ -37,17 +37,22 @@
             </tr>
 
             <tr>
-                <th>休憩</th>
-                <td>
-                    @if ($requestData->after_break_start)
-                        {{ \Carbon\Carbon::parse($requestData->after_break_start)->format('H:i') }}
-                        &nbsp;&nbsp;〜&nbsp;&nbsp;
-                        {{ \Carbon\Carbon::parse($requestData->after_break_end)->format('H:i') }}
-                    @else
-                        ーー &nbsp;&nbsp;〜&nbsp;&nbsp; ーー
-                    @endif
-                </td>
-            </tr>
+    <th>休憩</th>
+    <td>
+        {{-- 複数休憩をループで表示 --}}
+        @if ($attendance->rests && $attendance->rests->count() > 0)
+            @foreach ($attendance->rests as $i => $rest)
+                休憩{{ $i + 1 }}：
+                {{ \Carbon\Carbon::parse($rest->break_start)->format('H:i') }}
+                〜
+                {{ \Carbon\Carbon::parse($rest->break_end)->format('H:i') }}
+                <br>
+            @endforeach
+        @else
+            ーー 〜 ーー
+        @endif
+    </td>
+</tr>
 
             <tr>
                 <th>備考</th>

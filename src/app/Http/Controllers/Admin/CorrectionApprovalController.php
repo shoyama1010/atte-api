@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\CorrectionRequest;
 use App\Models\Attendance;
+use App\Models\Rest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
@@ -21,37 +22,53 @@ class CorrectionApprovalController extends Controller
             'attendance.user'
             ])->findOrFail($id);
 
-        return view('admin.stamp_correction_request.approve', compact('requestData'));
+            $attendance = $requestData->attendance;
+
+        return view('admin.stamp_correction_request.approve', compact('requestData', 'attendance'));
     }
+
     /**
      * 承認ボタン押下処理
      */
     public function approve(Request $request, $id)
     {
-        // 申請データ
+        // 申請データを取得
         $correction = CorrectionRequest::findOrFail($id);
-        // 対象の勤怠
+
+        // 対象の勤怠データを取得（休憩含む）
         $attendance = Attendance::with('rests')->findOrFail($correction->attendance_id);
-        // ▼ 1. 勤怠の基本項目を更新
+
+        // ▼ 勤怠の基本項目を更新
         $attendance->update([
             'clock_in_time'  => $correction->after_clock_in,
             'clock_out_time' => $correction->after_clock_out,
             'note'           => $correction->reason,
         ]);
-        // ▼ 2. 既存の休憩データを削除
+
+        // ▼ 既存の休憩データを削除（再登録のため）
         $attendance->rests()->delete();
-        // ▼ 3. after の休憩が存在する場合のみ登録
-        if ($correction->after_break_start && $correction->after_break_end) {
-            $attendance->rests()->create([
-                'break_start' => $correction->after_break_start,
-                'break_end'   => $correction->after_break_end,
-            ]);
+
+        // ▼ 新しい休憩データを再登録
+        // correction_requests には休憩情報を保持しない構成なので、
+        // 対象 attendance_id の rests テーブルに登録済みの内容を再利用
+        $existingRests = Rest::where('attendance_id', $attendance->id)->get();
+
+        if ($existingRests->count() > 0) {
+            foreach ($existingRests as $rest) {
+                $attendance->rests()->create([
+                    'break_start' => $rest->break_start,
+                    'break_end'   => $rest->break_end,
+                ]);
+            }
         }
-        // ▼ 4. 申請データのステータス更新
+
+        // ▼ 申請データのステータスを「承認済み」に更新
         $correction->update([
             'status'   => 'approved',
             'admin_id' => Auth::guard('admin')->id(),
         ]);
+
+        // ▼ 完了メッセージを返す
         return redirect()
             ->route('admin.stamp_correction_request.list')
             ->with('success', '修正申請を承認し、勤怠情報を更新しました。');
