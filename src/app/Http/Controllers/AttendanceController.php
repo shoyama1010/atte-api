@@ -104,7 +104,8 @@ class AttendanceController extends Controller
             ]);
 
             // 状態を「出勤中」に戻す
-            $attendance->update(['status' => 'working_after_break']);
+            // $attendance->update(['status' => 'working_after_break']);
+            $attendance->update(['status' => 'working']);
 
             return redirect()->route('attendance.index')->with('message', '休憩を終了しました。');
         }

@@ -16,12 +16,10 @@
             <div class="status-label status-working">出勤中</div>
         @elseif($attendance->status === 'on_break')
             <div class="status-label status-break">休憩中</div>
-        @elseif($attendance->status === 'working_after_break')
-            <div class="status-label status-working-after-break">出勤中</div>
+        {{-- @elseif($attendance->status === 'working_after_break') --}}
+            {{-- <div class="status-label status-working-after-break">出勤中</div> --}}
         @elseif($attendance->status === 'left')
             <div class="status-label status-left">退勤済</div>
-        {{-- @elseif($attendance->status === 'editable')
-            <div class="status-label status-none">勤務外</div> --}}
         @else
             <div class="status-label status-unknown">不明</div>
         @endif
@@ -67,18 +65,8 @@
                 @csrf
                 <button type="submit" class="btn btn-work">休憩戻</button>
             </form>
-        @elseif ($attendance->status === 'working_after_break')
-            {{-- ✅ 出勤再開（休憩後） --}}
-            <div class="attendance-buttons">
-                <form action="{{ route('attendance.breakStart') }}" method="POST">
-                    @csrf
-                    <button type="submit" class="btn btn-break">休憩入</button>
-                </form>
-                <form action="{{ route('attendance.clockOut') }}" method="POST">
-                    @csrf
-                    <button type="submit" class="btn btn-leave">退勤</button>
-                </form>
-            </div>
+
+        
         @elseif($attendance->status === 'left')
             {{-- ✅ 退勤後 --}}
             <p class="status-text">お疲れさまでした。</p>
