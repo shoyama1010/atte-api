@@ -64,6 +64,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // 修正申請送信 POST
     // Route::post('/attendance/detail/{id}', [CorrectionRequestController::class, 'update'])
     // ->name('attendance.update');
+
     //  勤怠詳細から修正申請する（PUT）
     Route::put('/attendance/update/{id}', [AttendanceController::class, 'update'])
         ->name('attendance.update');
@@ -121,17 +122,14 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin'])->group(functi
     // 🔹 申請一覧（管理者版）
     Route::get('/stamp_correction_request/list', [CorrectionRequestListController::class, 'adminList'])
         ->name('stamp_correction_request.list');
-
     // 🔹 承認機能
     Route::get('/stamp_correction_request/approve/{id}', [CorrectionApprovalController::class, 'show'])
         ->name('correction_request.show');
 
     Route::post('/stamp_correction_request/approve/{id}', [CorrectionApprovalController::class, 'approve'])
         ->name('correction_request.approve');
-
     // スタッフ管理
     Route::get('/staff/list', [AdminStaffController::class, 'index'])->name('staff.list');
-
     // --- スタッフ別勤怠一覧 ---
     Route::get('/attendance/staff/{id}', [AdminAttendanceController::class, 'staffList'])
         ->name('attendance.staff.list');

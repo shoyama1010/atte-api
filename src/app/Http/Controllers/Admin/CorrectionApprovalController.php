@@ -45,24 +45,16 @@ class CorrectionApprovalController extends Controller
             'note'           => $correction->reason,
         ]);
 
-        // ▼ 既存の休憩データを削除（再登録のため）
-        $attendance->rests()->delete();
+        // $attendance->rests()->delete(); // rests は「既に一般側で修正済み」として使う
 
         // ▼ 新しい休憩データを再登録
         // correction_requests には休憩情報を保持しない構成なので、
         // 対象 attendance_id の rests テーブルに登録済みの内容を再利用
         $existingRests = Rest::where('attendance_id', $attendance->id)->get();
 
-        if ($existingRests->count() > 0) {
-            foreach ($existingRests as $rest) {
-                $attendance->rests()->create([
-                    'break_start' => $rest->break_start,
-                    'break_end'   => $rest->break_end,
-                ]);
-            }
-        }
 
-        // ▼ 申請データのステータスを「承認済み」に更新
+        // // ▼ 申請データのステータスを「承認済み」に更新
+        // ※ ここをコメントアウトすると画面遷移だけ行われてDB反映されなくなるので注意！
         $correction->update([
             'status'   => 'approved',
             'admin_id' => Auth::guard('admin')->id(),
