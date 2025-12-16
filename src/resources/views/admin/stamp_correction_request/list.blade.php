@@ -5,9 +5,9 @@
 @endsection
 
 @section('content')
-    <h1>申請一覧（管理者）</h1>
-
+    {{-- <h1>申請一覧（管理者）</h1> --}}
     <div class="correction-list-container">
+        <h1 class="page-title">申請一覧（管理者）</h1>
         {{-- ▼ 上部タブメニュー --}}
         <div class="status-tabs">
             <ul>
@@ -37,7 +37,6 @@
                 <tbody>
                     @foreach ($requests as $request)
                         <tr>
-                            {{-- 状態表示 --}}
                             <td>
                                 @if ($request->status === 'pending')
                                     <span class="status pending">承認待ち</span>
@@ -51,17 +50,12 @@
                             </td>
                             {{-- 名前 --}}
                             <td>{{ $request->attendance->user->name ?? '―' }}</td>
-
                             {{-- 対象日時 --}}
                             <td>{{ optional($request->attendance)->clock_in_time?->format('Y/m/d') ?? '-' }}</td>
-
                             {{-- 申請理由 --}}
                             <td>{{ $request->reason ?? '（理由なし）' }}</td>
-
                             {{-- 申請日時 --}}
                             <td>{{ $request->created_at->format('Y/m/d') }}</td>
-
-                            {{-- 詳細ボタン --}}
                             <td>
                                 <a href="{{ route('admin.correction_request.show', $request->id) }}" class="detail-link">
                                     詳細

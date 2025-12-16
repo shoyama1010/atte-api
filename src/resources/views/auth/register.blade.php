@@ -3,7 +3,7 @@
 @section('content')
     <div class="auth-container">
         <div class="auth-card">
-            <h2>会員登録</h2>
+            <h2 class="h2-page-title">会員登録</h2>
 
             {{-- バリデーションエラー --}}
             <form method="POST" action="{{ route('register') }}">

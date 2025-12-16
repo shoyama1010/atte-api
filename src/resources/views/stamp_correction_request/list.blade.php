@@ -5,8 +5,9 @@
 @endsection
 
 @section('content')
-    <h1>申請一覧</h1>
+    {{-- <h1>申請一覧</h1> --}}
     <div class="correction-list-container">
+        <h1 class="page-title">申請一覧</h1>
         {{-- ▼ 上部タブメニュー --}}
         <div class="status-tabs">
             <ul>

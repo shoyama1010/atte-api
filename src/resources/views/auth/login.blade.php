@@ -3,7 +3,7 @@
 @section('content')
     <div class="auth-container">
         <div class="auth-card">
-            <h2>ログイン</h2>
+            <h2 class="h2-page-title">ログイン</h2>
 
             {{-- 全体エラーメッセージ（例：認証失敗など） --}}
             @if (session('status'))
