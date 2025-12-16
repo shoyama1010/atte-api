@@ -112,8 +112,6 @@ MAIL_FROM_ADDRESS=no-reply@atte.com
 
 docker-compose exec php bash
 
-PHPコンテナにログインし(ログインしたままであれば上記コマンドは実行しなくて良いです。)
-
 php artisan migrate
 
 ## 6 ダミーデータ作成
@@ -138,14 +136,14 @@ php artisan key:generate
 
 ## 8　各種機能についての補足
 
-１．Next側へのログイン：マルチログインページの「ログイン」からユーザーで入る⇒メインページ(打刻画面)のヘッダー部の「勤怠一覧（Next）」にて遷移。
+1.1 Next側へのログイン：マルチログインページの「ログイン」からユーザーで入る⇒メインページ(打刻画面)のヘッダー部の「勤怠一覧（Next）」にて遷移。
 
 http://localhost:3000/attendances
 <img width="1290" height="669" alt="Image" src="https://github.com/user-attachments/assets/f07e10b9-9c4b-4a96-b515-4cec692e9087" />
 
 <img width="1277" height="670" alt="Image" src="https://github.com/user-attachments/assets/d3569c47-07de-448b-826e-82a5137ce2a2" />
 
-1.1 管理側ログイン（email -> admin@example.com　　password -> password123）
+1.2 管理側ログイン（email -> admin@example.com　　password -> password123）
 <img width="1238" height="673" alt="Image" src="https://github.com/user-attachments/assets/1b4a7636-6912-463b-b964-745ad25bd30f" />
 
 ２．バリデーション機能（退勤及び休憩の両方に不適切な値になれば、両方バリデーション出すようにしてる）
