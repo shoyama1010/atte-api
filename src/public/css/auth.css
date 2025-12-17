@@ -31,6 +31,17 @@
     font-size: 1.5rem;
     font-weight: 600;
     margin-bottom: 25px;
+    text-align: center;
+}
+
+/* ラベル部分（メールアドレス、パスワード、氏名など） */
+.auth-card label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #333;
+    margin-bottom: 6px;
+    text-align: left; /* ← ラベルを左寄せ */
 }
 
 .auth-card input[type="email"],
@@ -42,6 +53,7 @@
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 1rem;
+    text-align: left; /* ← 入力テキストも左寄せ */
 }
 
 .auth-card button {
@@ -79,6 +91,7 @@
 
 .link-area {
     margin-top: 15px;
+    text-align: center;
 }
 
 .link-area a {

@@ -23,7 +23,6 @@ class AttendanceController extends Controller
                 return [
                     'id' => $r->id,
                     'user_id' => $r->user_id,
-
                     'user_name' => $r->user->name,
                     'date' => $r->created_at->format('Y-m-d'),
                     'clock_in_time' => $r->clock_in_time,
