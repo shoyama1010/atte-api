@@ -250,12 +250,21 @@ class AttendanceController extends Controller
             return [
                 'id' => $a->id,
                 'date' => Carbon::parse($a->clock_in_time)->format('Y-m-d'),
-                'clock_in_time' => Carbon::parse($a->clock_in_time)->format('H:i'),
-                'clock_out_time' => Carbon::parse($a->clock_out_time)->format('H:i'),
-                // 'date' => substr($a->clock_in_time, 0, 10),
-                // 'clock_in_time' => substr($a->clock_in_time, 11, 5),
-                // 'clock_out_time' => substr($a->clock_out_time, 11, 5),
-                'rest_display' => $restDisplay, // ← ここで返す
+
+                // ★ H:i に整形して返す（ここが重要）
+                'clock_in_time' => $a->clock_in_time
+                    ? Carbon::parse($a->clock_in_time)->format('H:i')
+                    : null,
+
+                'clock_out_time' => $a->clock_out_time
+                    ? Carbon::parse($a->clock_out_time)->format('H:i')
+                    : null,
+
+                // 'rest_display' => $restDisplay,
+                'rest_total' => $restTotalSec > 0
+                    ? sprintf('%02d:%02d', floor($restTotalSec / 3600), floor(($restTotalSec % 3600) / 60))
+                    : '00:00',
+                // 労働時間合計（HH:MM）
                 'total_work' => $totalWork,
             ];
         });
