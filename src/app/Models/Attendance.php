@@ -35,6 +35,11 @@ class Attendance extends Model
         'updated_at',
     ];
 
+    protected $casts = [
+        'break_start' => 'datetime',
+        'break_end'   => 'datetime',
+    ];
+
     /**
      * リレーション：Attendance は 1人のUserに属する
      */

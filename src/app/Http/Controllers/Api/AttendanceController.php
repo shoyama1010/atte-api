@@ -10,6 +10,8 @@ use App\Models\User;
 use App\Models\Rest;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Exception;
 
 class AttendanceController extends Controller
 {
@@ -199,11 +201,14 @@ class AttendanceController extends Controller
             ->orderBy('clock_in_time', 'desc')
             ->get();
 
+        // JSON用に整形
         $records = $attendances->map(function ($a) {
             // ✅ 休憩時間を文字列に整形
             $restDisplay = $a->rests->map(function ($r) {
                 if ($r->break_start && $r->break_end) {
-                    return substr($r->break_start, 0, 5) . ' ～ ' . substr($r->break_end, 0, 5);
+                    // return substr($r->break_start, 0, 5) . ' ～ ' . substr($r->break_end, 0, 5);
+                    return Carbon::parse($r->break_start)->format('H:i') . ' ～ ' .
+                        Carbon::parse($r->break_end)->format('H:i');
                 }
                 return null;
             })->filter()->implode(' ／ ');
@@ -215,23 +220,41 @@ class AttendanceController extends Controller
             // ✅ 合計休憩時間を算出
             $restTotalSec = $a->rests->reduce(function ($carry, $r) {
                 if (!$r->break_start || !$r->break_end) return $carry;
-                return $carry + (strtotime($r->break_end) - strtotime($r->break_start));
+                $start = Carbon::parse($r->break_start);
+                $end   = Carbon::parse($r->break_end);
+                return $carry + $end->diffInSeconds($start);
             }, 0);
 
-            // ✅ 労働時間
-            $totalWork = null;
-            if ($a->clock_in_time && $a->clock_out_time) {
-                $workSec = strtotime($a->clock_out_time) - strtotime($a->clock_in_time) - $restTotalSec;
-                $h = floor($workSec / 3600);
-                $m = floor(($workSec % 3600) / 60);
-                $totalWork = sprintf('%02d:%02d', $h, $m);
+        // ✅ 労働時間
+        $totalWork = null;
+        if ($a->clock_in_time && $a->clock_out_time) {
+            try {
+                $clockIn  = Carbon::parse($a->clock_in_time);
+                $clockOut = Carbon::parse($a->clock_out_time);
+                    // ✅ 差分計算
+                    // $workSec = $clockOut->diffInSeconds($clockIn) - $restTotalSec;
+                    $workSec = abs($clockOut->diffInSeconds($clockIn) - $restTotalSec);
+
+                    // Log::info('WorkSec:', ['value' => $workSec]);
+
+                if ($workSec > 0) {
+                    $h = floor($workSec / 3600);
+                    $m = floor(($workSec % 3600) / 60);
+                    $totalWork = sprintf('%02d:%02d', $h, $m);
+                }
+            } catch (Exception $e) {
+                $totalWork = null; // parseエラー対策
             }
+        }
 
             return [
                 'id' => $a->id,
-                'date' => substr($a->clock_in_time, 0, 10),
-                'clock_in_time' => substr($a->clock_in_time, 11, 5),
-                'clock_out_time' => substr($a->clock_out_time, 11, 5),
+                'date' => Carbon::parse($a->clock_in_time)->format('Y-m-d'),
+                'clock_in_time' => Carbon::parse($a->clock_in_time)->format('H:i'),
+                'clock_out_time' => Carbon::parse($a->clock_out_time)->format('H:i'),
+                // 'date' => substr($a->clock_in_time, 0, 10),
+                // 'clock_in_time' => substr($a->clock_in_time, 11, 5),
+                // 'clock_out_time' => substr($a->clock_out_time, 11, 5),
                 'rest_display' => $restDisplay, // ← ここで返す
                 'total_work' => $totalWork,
             ];
