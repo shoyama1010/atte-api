@@ -39,6 +39,8 @@ http://localhost/attendance
 
 ・CSVエクスポート機能（応用機能　補足４にて記載）
 
+・休憩時間複数機能（補足６）
+
 # 使用技術
 ・Laravel 8
 
@@ -158,6 +160,11 @@ http://localhost:3000/attendances
 ５．打刻機能（① statusは見た目わかるように、色を変えてます。②最初の出勤時のみ、誰かわかるように、ユーザー名を入れてます。）
 ①<img width="1213" height="675" alt="Image" src="https://github.com/user-attachments/assets/f755c14d-846e-4639-94c8-cb577ced8b97" />
 ②<img width="1366" height="687" alt="Image" src="https://github.com/user-attachments/assets/a57febb7-7525-4833-8bda-d51947f1cce7" />
+
+６．休憩複数機能
+<img width="1160" height="675" alt="Image" src="https://github.com/user-attachments/assets/327db922-8560-4486-8987-e01e10903d53" />
+
+<img width="1169" height="681" alt="Image" src="https://github.com/user-attachments/assets/84203133-a777-4b0c-8d8a-f8ee07e630bb" />
 
 
 ## テストの実行方法
