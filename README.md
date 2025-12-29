@@ -169,17 +169,20 @@ http://localhost:3000/attendances
 
 ## テストの実行方法
 
-このプロジェクトでは、ユニットテストにPHPUnitを使用しており、データベース操作を含むテストにはMySQLが必要です。
+本アプリでは Laravel 標準の PHPUnit を使用して、
+勤怠情報修正機能（一般ユーザー）などの 自動テスト（Feature Test / Unit Test） を実装しています。
+以下は開発者および評価者が同一環境でテストを実行できるようにまとめた手順です。
+
 ### 1. テスト用データベースの準備
 
 テストを実行する前に、以下の手順でテスト専用のMySQLデータベースをセットアップしてください。
 
-1.  **MySQLデータベースの作成**: MySQLクライアントを使用して、`laravel_testing`という名前の新しいデータベースを作成します。
+1.  **MySQLデータベースの作成**: MySQLクライアントを使用して、`laravel.testing`という名前の新しいデータベースを作成します。
 
     ```bash
     mysql -u [your_username] -p
     # パスワードを入力
-    CREATE DATABASE laravel_testing;
+    CREATE DATABASE laravel_testing CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;;
     SHOW DATABASES;
 
     *configファイルの変更
@@ -211,17 +214,31 @@ http://localhost:3000/attendances
     cp .env .env.testing --env=testing
     ```
 
-3.  **.env.testing の編集**: `.env.testing` ファイルを開き、データベース接続情報をテスト用のものに変更します。
+3.  **.env.testing の作成と設定**: `.env.testing`
+4. プロジェクト直下に .env.testing ファイルを作成し、以下を設定します。（本番 .env とは完全に分離されたテスト専用設定）
+5.  ファイルを開き、データベース接続情報をテスト用のものに変更します。
 
-    DB_CONNECTION=mysql_test
-    DB_HOST=mysql
-    DB_PORT=3306
-    DB_DATABASE=laravel_test
-    DB_DATABASE=demo_test
-    DB_USERNAME=root
-    DB_PASSWORD=root
+   APP_ENV=testing
+APP_KEY=base64:4tANb4lpS8mAJoleyoDj3iRGhWzhWBm9hkRWN8=
+APP_DEBUG=true
+APP_URL=http://localhost
 
-5.  **マイグレーションの実行**: テストデータベースにテーブルを作成するため、マイグレーションを実行します。
+DB_CONNECTION=mysql
+DB_HOST=mysql
+DB_PORT=3306
+DB_DATABASE=laravel_testing  # ← テスト専用DB
+DB_USERNAME=root
+DB_PASSWORD=root
+
+CACHE_DRIVER=array
+SESSION_DRIVER=array
+QUEUE_CONNECTION=sync
+MAIL_MAILER=array
+
+.env.testing は PHPUnit 実行時に自動で読み込まれ、
+開発用DB（laravel_db）を保護したままテストが行われます。
+
+6.  **マイグレーションの実行**: テストデータベースにテーブルを作成するため、マイグレーションを実行します。
 
     php artisan migrate 
     
