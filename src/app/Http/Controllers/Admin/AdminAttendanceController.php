@@ -62,7 +62,7 @@ class AdminAttendanceController extends Controller
                 $breakMinutes += $end->diffInMinutes($start);
             }
         }
-        
+
         $breakHours = $breakMinutes > 0
             ? sprintf('%02d:%02d', floor($breakMinutes / 60), $breakMinutes % 60)
             : '00:00';
@@ -203,18 +203,26 @@ class AdminAttendanceController extends Controller
             fputcsv($handle, ['日付', '出勤', '退勤', '休憩開始', '休憩終了', '備考']);
 
             $attendances = Attendance::where('user_id', $staff->id)
-                ->orderBy('date', 'desc')
-                // ->orderBy('clock_in_time', 'desc')
+                // ->orderBy('date', 'desc')
+                ->orderBy('clock_in_time', 'desc')
                 ->get();
 
             foreach ($attendances as $a) {
                 fputcsv($handle, [
-                    $a->date,
-                    $a->clock_in_time,
-                    $a->clock_out_time,
-                    $a->break_start,
-                    $a->break_end,
+                    // ✅ 1. 出勤日時を「Y/m/d」形式に整形
+                    \Carbon\Carbon::parse($a->clock_in_time)->format('Y/m/d'),
+                    // ✅ 2. 出勤・退勤・休憩も時刻表示
+                    optional($a->clock_in_time)->format('H:i'),
+                    optional($a->clock_out_time)->format('H:i'),
+                    optional($a->break_start)->format('H:i'),
+                    optional($a->break_end)->format('H:i'),
                     $a->note ?? '',
+                    // $a->date,
+                    // $a->clock_in_time,
+                    // $a->clock_out_time,
+                    // $a->break_start,
+                    // $a->break_end,
+                    // $a->note ?? '',
                 ]);
             }
 

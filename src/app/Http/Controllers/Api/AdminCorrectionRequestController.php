@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\CorrectionRequest;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class AdminCorrectionRequestController extends Controller
 {
@@ -13,24 +14,32 @@ class AdminCorrectionRequestController extends Controller
         $requestData = CorrectionRequest::with(['attendance.rests', 'user'])
             ->findOrFail($id);
 
+        $attendance = $requestData->attendance;
+        $rest = $attendance->rests->first();
+
+        // 安全に時間を H:i に変換するヘルパー
+        $toHM = function ($time) {
+            if (!$time) return null;
+            return Carbon::parse($time)->format('H:i');
+        };
+
         return response()->json([
             'id' => $requestData->id,
             'user_name' => $requestData->user->name,
-            'request_date' => $requestData->created_at->format('Y-m-d'),
-            'target_date' => $requestData->attendance->created_at->format('Y-m-d'),
+            'target_date' => Carbon::parse($attendance->clock_in_time)->format('Y-m-d'),
             'reason' => $requestData->reason,
 
-            // before
-            'before_clock_in'  => optional($requestData->before_clock_in)->format('H:i'),
-            'before_clock_out' => optional($requestData->before_clock_out)->format('H:i'),
-            'before_break_start' => optional($requestData->before_break_start)->format('H:i'),
-            'before_break_end'   => optional($requestData->before_break_end)->format('H:i'),
+            // 修正前（元の勤怠）
+            'before_clock_in'  => $toHM($attendance->clock_in_time),
+            'before_clock_out' => $toHM($attendance->clock_out_time),
+            'before_break_start' => $toHM($rest?->break_start),
+            'before_break_end'   => $toHM($rest?->break_end),
 
-            // after 修正後
-            'after_clock_in'  => optional($requestData->after_clock_in)->format('H:i'),
-            'after_clock_out' => optional($requestData->after_clock_out)->format('H:i'),
-            'after_break_start' => optional($requestData->after_break_start)->format('H:i'),
-            'after_break_end'   => optional($requestData->after_break_end)->format('H:i'),
+            // 修正後（管理者が確認する値）
+            'after_clock_in'  => $toHM($requestData->after_clock_in),
+            'after_clock_out' => $toHM($requestData->after_clock_out),
+            'after_break_start' => $toHM($requestData->after_break_start),
+            'after_break_end'   => $toHM($requestData->after_break_end),
         ]);
     }
 

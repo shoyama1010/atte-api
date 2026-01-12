@@ -28,9 +28,10 @@ class AttendanceValidationTest extends TestCase
         ];
         // Validatorを実行
         $validator = Validator::make($data, $rules);
-        
+
         // 結果の検証（失敗しているはず）
         $this->assertTrue($validator->fails());
         $this->assertArrayHasKey('clock_in_time', $validator->errors()->toArray());
     }
 }
+

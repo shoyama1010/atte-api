@@ -1,6 +1,7 @@
 <?php
 
-namespace Tests\Unit;
+// namespace Tests\Unit;
+namespace Tests\Feature;
 
 use Tests\TestCase; // LaravelのTestCaseを使用する
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -10,7 +11,6 @@ use App\Models\Attendance;
 class AttendanceUpdateTest extends TestCase
 {
     use RefreshDatabase;
-
     /**
      * 出勤時間が退勤時間より後の場合のバリデーションテスト
      */
@@ -18,14 +18,12 @@ class AttendanceUpdateTest extends TestCase
     {
         // テストユーザー作成
         $user = User::factory()->create();
-
-        // ログイン状態でリクエストを送る
-        $response = $this->actingAs($user)
-            ->post('/attendance/update', [
-                'clock_in_time'  => '18:00',
-                'clock_out_time' => '09:00',
-                'reason'         => 'テスト理由',
-            ]);
+        
+        $response = $this->actingAs($user)->post('/attendance/update', [
+            'clock_in_time'  => '18:00',
+            'clock_out_time' => '09:00',
+            'reason'         => 'テスト理由',
+        ]);
 
         // バリデーションエラー（出勤時間）を検証
         $response->assertSessionHasErrors(['clock_in_time']);
@@ -38,12 +36,11 @@ class AttendanceUpdateTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->actingAs($user)
-            ->post('/attendance/update', [
-                'clock_in_time'  => '09:00',
-                'clock_out_time' => '18:00',
-                'reason'         => '', // 空
-            ]);
+        $response = $this->actingAs($user)->post('/attendance/update', [
+            'clock_in_time'  => '09:00',
+            'clock_out_time' => '18:00',
+            'reason'         => '',
+        ]);
 
         $response->assertSessionHasErrors(['reason']);
     }
@@ -61,12 +58,11 @@ class AttendanceUpdateTest extends TestCase
             'clock_out_time' => '17:00',
         ]);
 
-        $response = $this->actingAs($user)
-            ->post('/attendance/update', [
-                'clock_in_time'  => '08:30',
-                'clock_out_time' => '17:30',
-                'reason'         => 'テスト更新',
-            ]);
+        $response = $this->actingAs($user)->post('/attendance/update', [
+            'clock_in_time'  => '08:30',
+            'clock_out_time' => '17:30',
+            'reason'         => 'テスト更新',
+        ]);
 
         $response->assertStatus(302); // リダイレクト確認
         $this->assertDatabaseHas('attendances', [

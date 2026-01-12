@@ -12,7 +12,7 @@
             <table class="staff-table">
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        {{-- <th>ID</th> --}}
                         <th>名前</th>
                         <th>メール</th>
                         <th>詳細</th>
@@ -21,7 +21,7 @@
                 <tbody>
                     @foreach ($staffs as $staff)
                         <tr>
-                            <td>{{ $staff->id }}</td>
+                            {{-- <td>{{ $staff->id }}</td> --}}
                             <td>{{ $staff->name }}</td>
                             <td>{{ $staff->email }}</td>
                             <td>
