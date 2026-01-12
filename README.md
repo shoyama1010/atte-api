@@ -173,7 +173,8 @@ http://localhost:3000/attendances
 
 本アプリでは Laravel 標準の PHPUnit を使用して、
 勤怠情報修正機能（一般ユーザー）などの 自動テスト（Feature Test / Unit Test） を実装しています。
-以下は開発者および評価者が同一環境でテストを実行できるようにまとめた手順です。
+
+＊＊ ユニットテストは、今後見直しがあり、習得御、記載いたします。（「Target class [validator] does not exist.」などのエラーによりPASSの確認ができてない箇所あり）
 
 ### 1. テスト用データベースの準備
 
