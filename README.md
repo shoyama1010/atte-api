@@ -166,6 +166,8 @@ http://localhost:3000/attendances
 
 <img width="1169" height="681" alt="Image" src="https://github.com/user-attachments/assets/84203133-a777-4b0c-8d8a-f8ee07e630bb" />
 
+７．スタッフ一覧機能
+<img width="1150" height="677" alt="Image" src="https://github.com/user-attachments/assets/1ed364e0-0183-4976-916b-f4f160942dde" />
 
 ## テストの実行方法
 
