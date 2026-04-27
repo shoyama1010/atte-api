@@ -90,8 +90,8 @@ Route::post('/logout', function (Request $request) {
     Auth::guard('web')->logout();
     $request->session()->invalidate();
     $request->session()->regenerateToken();
-    return redirect('/login'); // ✅ ログアウト後はログイン画面へ
-})->middleware('web')->name('logout');
+    return redirect('/admin/login'); // ✅ ログアウト後はログイン画面へ
+})->middleware('web')->name('admin.logout');
 /*
 |--------------------------------------------------------------------------
 | 管理者（adminガード）
@@ -132,7 +132,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin'])->group(functi
     Route::get('/staff/list', [AdminStaffController::class, 'index'])->name('staff.list');
     // --- スタッフ別勤怠一覧 ---
     Route::get('/attendance/staff/{id}', [AdminAttendanceController::class, 'staffList'])
-        ->name('attendance.staff.list');
+        ->name('attendance.staff_list');
 
     Route::get('/attendance/staff/{id}/export', [AdminAttendanceController::class, 'exportStaff'])
         ->name('attendance.staff.export');

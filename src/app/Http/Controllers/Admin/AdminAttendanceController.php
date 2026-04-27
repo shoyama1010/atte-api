@@ -71,28 +71,46 @@ class AdminAttendanceController extends Controller
             ->orderBy('id', 'desc')->first();
 
         return view('admin.attendance.detail', compact(
-            'attendance','staff','clockIn','clockOut','breakHours','correctionRequest'
+            'attendance',
+            'staff',
+            'clockIn',
+            'clockOut',
+            'breakHours',
+            'correctionRequest'
         ));
     }
     // スタッフ別勤怠一覧
-    public function staffList($id)
+    public function staffList($id, Request $request)
     {
         // 対象スタッフ情報を取得（存在しない場合は404）
         $staff = User::findOrFail($id);
-        $date = now()->toDateString(); // ← デフォルトで今日
+        // 🔥 月を取得
+    $month = $request->input('month', now()->format('Y-m'));
+
+    // 月の開始・終了
+    $start = $month . '-01';
+    $end = date('Y-m-t', strtotime($start));
 
         // 🔸休憩データもまとめて取得
-        $attendances = Attendance::with('rests')->where('user_id', $id)
-            ->orderBy('clock_in_time', 'desc')->paginate(20);
+        $attendances = Attendance::with('rests')
+            ->where('user_id', $id)
+            ->whereBetween('clock_in_time', [$start, $end]) // ← ここ重要
+            ->orderBy('clock_in_time', 'desc')
+            ->get();
+            // ->paginate(20);
 
         // 🔸各出勤日の休憩合計を計算して Blade に渡す
         foreach ($attendances as $attendance) {
             $totalMinutes = 0;
             foreach ($attendance->rests as $rest) {
                 if ($rest->break_start && $rest->break_end) {
-                    $start = \Carbon\Carbon::parse($rest->break_start);
-                    $end   = \Carbon\Carbon::parse($rest->break_end);
-                    $totalMinutes += $end->diffInMinutes($start);
+                    $startTime = \Carbon\Carbon::parse($rest->break_start);
+                    $endTime   = \Carbon\Carbon::parse($rest->break_end);
+
+                    if ($startTime && $endTime) {
+            $totalMinutes += $endTime->diffInMinutes($startTime);
+        }
+                    // $totalMinutes += $end->diffInMinutes($startTime);
                 }
             }
             // HH:mm形式で算出
@@ -101,7 +119,7 @@ class AdminAttendanceController extends Controller
                 : '00:00';
         }
         // ✅ Blade にスタッフ情報＋勤怠一覧を渡す
-        return view('admin.attendance.staff_list', compact('staff', 'attendances'));
+        return view('admin.attendance.staff_list', compact('staff', 'attendances', 'month'));
     }
 
 
@@ -200,6 +218,8 @@ class AdminAttendanceController extends Controller
 
         $response = new StreamedResponse(function () use ($staff) {
             $handle = fopen('php://output', 'w');
+            // ★これ追加（超重要）
+fwrite($handle, "\xEF\xBB\xBF");
             fputcsv($handle, ['日付', '出勤', '退勤', '休憩開始', '休憩終了', '備考']);
 
             $attendances = Attendance::where('user_id', $staff->id)
@@ -217,12 +237,7 @@ class AdminAttendanceController extends Controller
                     optional($a->break_start)->format('H:i'),
                     optional($a->break_end)->format('H:i'),
                     $a->note ?? '',
-                    // $a->date,
-                    // $a->clock_in_time,
-                    // $a->clock_out_time,
-                    // $a->break_start,
-                    // $a->break_end,
-                    // $a->note ?? '',
+                   
                 ]);
             }
 

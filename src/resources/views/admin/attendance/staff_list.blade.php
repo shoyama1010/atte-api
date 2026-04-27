@@ -8,6 +8,36 @@
 @section('content')
     <div class="attendance-container">
         <h2>>{{ $staff->name }} さんの勤怠一覧</h2>
+        
+         {{-- 月切替バー --}}
+<div class="month-bar">
+
+    {{-- 前月 --}}
+    <a href="{{ route('admin.attendance.staff_list', [
+        'id' => $staff->id,
+        'month' => \Carbon\Carbon::parse($month)->subMonth()->format('Y-m')
+    ]) }}" class="month-arrow">
+        ＜ 前月
+    </a>
+
+    {{-- 中央（月表示） --}}
+    <div class="month-center">
+        <span class="calendar-icon">📅</span>
+        <span class="month-text">
+            {{ \Carbon\Carbon::parse($month)->format('Y年m月') }}
+        </span>
+    </div>
+
+    {{-- 翌月 --}}
+    <a href="{{ route('admin.attendance.staff_list', [
+        'id' => $staff->id,
+        'month' => \Carbon\Carbon::parse($month)->addMonth()->format('Y-m')
+    ]) }}" class="month-arrow">
+        翌月 ＞
+    </a>
+
+</div>
+
         {{-- 勤怠テーブル --}}
         <table class="attendance-table">
             <thead>
@@ -84,3 +114,4 @@
         </div>
     </div>
 @endsection
+
