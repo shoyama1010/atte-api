@@ -12,26 +12,41 @@ class CorrectionRequestController extends Controller
 {
     public function index(Request $request)
     {
-        // $user = Auth::user();
         $status = $request->query('status', 'pending');
 
-        $requests = CorrectionRequest::with(['attendance', 'attendance.user'])
-            // ->whereHas('attendance', fn($q) => $q->where('user_id', $user->id))
-            ->where('status', $status)
-            ->orderBy('created_at', 'desc')
-            ->get()
-            ->map(fn($r) => [
-                'id' => $r->id,
-                'status' => $r->status,
-                'user_name' => $r->attendance->user->name,
-                'request_date' => $r->created_at->format('Y-m-d'),
-                'target_date' => $r->attendance->created_at->format('Y-m-d'),
-                'reason' => $r->reason,
-            ]);
+        try {
+            $requests = CorrectionRequest::with(['attendance.user'])
+                ->where('status', $status)
+                ->orderBy('created_at', 'desc')
+                ->get()
+                ->map(function ($r) {
+                    return [
+                        'id' => $r->id,
+                        'status' => $r->status,
 
-        return response()->json($requests);
+                        'user_name' => optional(optional($r->attendance)->user)->name ?? '不明',
+
+                        'request_date' => optional($r->created_at)?->format('Y-m-d'),
+
+                        'target_date' => $r->attendance->clock_in_time
+                            ? \Carbon\Carbon::parse($r->attendance->clock_in_time)->format('Y-m-d')
+                            : '不明',
+                        // 'target_date' => optional($r->attendance)?->date
+                        //     ? \Carbon\Carbon::parse($r->attendance->date)->format('Y-m-d')
+                        //     : '不明',
+
+                        'reason' => $r->reason,
+                    ];
+                });
+
+            return response()->json($requests);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
-
+    
     public function show($id)
     {
         $request = CorrectionRequest::with(['attendance.user'])->findOrFail($id);
@@ -81,8 +96,8 @@ class CorrectionRequestController extends Controller
             'admin_id' => Auth::guard('admin')->id(),
         ]);
 
-        // 🔥 Blade 用 正しい戻り方
-        return redirect()->route('admin.stamp_correction_request.list')
-            ->with('success', '承認しました');
+        return response()->json([
+            'message' => 'approved'
+        ]);
     }
 }

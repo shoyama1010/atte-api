@@ -44,11 +44,19 @@ class AdminAttendanceController extends Controller
 
         return view('admin.attendance.list', compact('attendances', 'date'));
     }
+
     // 既存: 勤怠修正画面（スタッフ詳細扱い）
     public function show($id)
     {
         // 特定ユーザーの勤怠データを取得
-        $attendance = Attendance::with('user', 'rests')->findOrFail($id);
+        // $attendance = Attendance::with('user', 'rests')->findOrFail($id);
+        $attendance = Attendance::with([
+            'user',
+            'rests' => function ($q) {
+                $q->orderBy('break_start');
+            }
+        ])->findOrFail($id);
+
         $staff = $attendance->user; // 勤務者（ユーザー情報）
         // 出退勤データ
         $clockIn  = $attendance->clock_in_time ? Carbon::parse($attendance->clock_in_time)->format('H:i') : '--:--';
@@ -79,17 +87,18 @@ class AdminAttendanceController extends Controller
             'correctionRequest'
         ));
     }
+
     // スタッフ別勤怠一覧
     public function staffList($id, Request $request)
     {
         // 対象スタッフ情報を取得（存在しない場合は404）
         $staff = User::findOrFail($id);
         // 🔥 月を取得
-    $month = $request->input('month', now()->format('Y-m'));
+        $month = $request->input('month', now()->format('Y-m'));
 
-    // 月の開始・終了
-    $start = $month . '-01';
-    $end = date('Y-m-t', strtotime($start));
+        // 月の開始・終了
+        $start = $month . '-01';
+        $end = date('Y-m-t', strtotime($start));
 
         // 🔸休憩データもまとめて取得
         $attendances = Attendance::with('rests')
@@ -97,7 +106,6 @@ class AdminAttendanceController extends Controller
             ->whereBetween('clock_in_time', [$start, $end]) // ← ここ重要
             ->orderBy('clock_in_time', 'desc')
             ->get();
-            // ->paginate(20);
 
         // 🔸各出勤日の休憩合計を計算して Blade に渡す
         foreach ($attendances as $attendance) {
@@ -108,8 +116,8 @@ class AdminAttendanceController extends Controller
                     $endTime   = \Carbon\Carbon::parse($rest->break_end);
 
                     if ($startTime && $endTime) {
-            $totalMinutes += $endTime->diffInMinutes($startTime);
-        }
+                        $totalMinutes += $endTime->diffInMinutes($startTime);
+                    }
                     // $totalMinutes += $end->diffInMinutes($startTime);
                 }
             }
@@ -121,7 +129,6 @@ class AdminAttendanceController extends Controller
         // ✅ Blade にスタッフ情報＋勤怠一覧を渡す
         return view('admin.attendance.staff_list', compact('staff', 'attendances', 'month'));
     }
-
 
     public function edit($id)
     {
@@ -135,13 +142,10 @@ class AdminAttendanceController extends Controller
                 $totalRestMinutes += $end->diffInMinutes($start);
             }
         }
-
         $attendance->total_rest_time = sprintf('%02d:%02d', floor($totalRestMinutes / 60), $totalRestMinutes % 60);
         return view('admin.attendance.edit', compact('attendance'));
     }
 
-
-    // public function update(Request $request, $id)
     public function update(AttendanceRequest $request, $id)
     {
         // 対象勤怠データ取得（休憩も含む）
@@ -217,27 +221,66 @@ class AdminAttendanceController extends Controller
         $staff = User::findOrFail($id);
 
         $response = new StreamedResponse(function () use ($staff) {
-            $handle = fopen('php://output', 'w');
-            // ★これ追加（超重要）
-fwrite($handle, "\xEF\xBB\xBF");
-            fputcsv($handle, ['日付', '出勤', '退勤', '休憩開始', '休憩終了', '備考']);
 
-            $attendances = Attendance::where('user_id', $staff->id)
-                // ->orderBy('date', 'desc')
+            $handle = fopen('php://output', 'w');
+
+            // ★ 文字化け防止（Excel対応）
+            fwrite($handle, "\xEF\xBB\xBF");
+
+            // ▼ ヘッダー（修正済み）
+            fputcsv($handle, ['日付', '出勤', '退勤', '休憩', '合計時間', '備考']);
+
+            // ▼ restsを一緒に取得（N+1防止）
+            $attendances = Attendance::with('rests')
+                ->where('user_id', $staff->id)
                 ->orderBy('clock_in_time', 'desc')
                 ->get();
 
             foreach ($attendances as $a) {
+
+                // ▼ 出勤・退勤
+                $clockIn  = $a->clock_in_time ? \Carbon\Carbon::parse($a->clock_in_time) : null;
+                $clockOut = $a->clock_out_time ? \Carbon\Carbon::parse($a->clock_out_time) : null;
+
+                // ▼ 勤務時間（分）
+                $workMinutes = 0;
+                if ($clockIn && $clockOut) {
+                    $workMinutes = $clockOut->diffInMinutes($clockIn);
+                }
+
+                // ▼ 休憩時間（分）
+                $breakMinutes = 0;
+                foreach ($a->rests as $r) {
+                    if ($r->break_start && $r->break_end) {
+                        $start = \Carbon\Carbon::parse($r->break_start);
+                        $end   = \Carbon\Carbon::parse($r->break_end);
+                        $breakMinutes += $end->diffInMinutes($start);
+                    }
+                }
+
+                // ▼ 実働時間
+                $actualMinutes = max(0, $workMinutes - $breakMinutes);
+
+                // ▼ HH:MM形式
+                $workHours = $actualMinutes > 0
+                    ? sprintf('%02d:%02d', floor($actualMinutes / 60), $actualMinutes % 60)
+                    : '';
+
+                // ▼ 休憩表示（まとめ）
+                $breaks = $a->rests->map(function ($r) {
+                    return \Carbon\Carbon::parse($r->break_start)->format('H:i')
+                        . '〜'
+                        . \Carbon\Carbon::parse($r->break_end)->format('H:i');
+                })->implode(' / ');
+
+                // ▼ CSV出力
                 fputcsv($handle, [
-                    // ✅ 1. 出勤日時を「Y/m/d」形式に整形
-                    \Carbon\Carbon::parse($a->clock_in_time)->format('Y/m/d'),
-                    // ✅ 2. 出勤・退勤・休憩も時刻表示
-                    optional($a->clock_in_time)->format('H:i'),
-                    optional($a->clock_out_time)->format('H:i'),
-                    optional($a->break_start)->format('H:i'),
-                    optional($a->break_end)->format('H:i'),
+                    $clockIn ? $clockIn->format('Y/m/d') : '',
+                    $clockIn ? $clockIn->format('H:i') : '',
+                    $clockOut ? $clockOut->format('H:i') : '',
+                    $breaks,
+                    $workHours, // ★ 合計時間
                     $a->note ?? '',
-                   
                 ]);
             }
 
@@ -245,6 +288,7 @@ fwrite($handle, "\xEF\xBB\xBF");
         });
 
         $fileName = 'attendance_' . $staff->name . '.csv';
+
         $response->headers->set('Content-Type', 'text/csv');
         $response->headers->set('Content-Disposition', 'attachment; filename="' . $fileName . '"');
 

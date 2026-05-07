@@ -50,8 +50,14 @@ class AttendanceController extends Controller
             'date' => $attendance->created_at->format('Y-m-d'),
             'clock_in_time' => $attendance->clock_in_time,
             'clock_out_time' => $attendance->clock_out_time,
-            'rest_start' => optional($attendance->rests->first())->break_start,
-            'rest_end' => optional($attendance->rests->first())->break_end,
+            // 👇 必須
+            'rests' => $attendance->rests->map(function ($rest) {
+                return [
+                    'break_start' => $rest->break_start,
+                    'break_end'   => $rest->break_end,
+                ];
+            }),
+           
             'note' => $attendance->note,
             'status' => $attendance->status,
         ]);
@@ -60,24 +66,29 @@ class AttendanceController extends Controller
     public function updateApi(Request $request, $id)
     {
         $attendance = Attendance::with('rests')->findOrFail($id);
-        // 出退勤の更新
+
         $attendance->update([
-            'clock_in_time' => $request->clock_in_time,
+            'clock_in_time'  => $request->clock_in_time,
             'clock_out_time' => $request->clock_out_time,
-            'note' => $request->note,
-            'status' => 'pending',
+            'note'           => $request->note,
+            'status'         => 'pending',
         ]);
 
-        // 休憩を再登録
-        $attendance->rests()->delete();
+        // ✅ restsがあるときだけ削除＆再作成
+        if (!empty($request->rests)) {
 
-        if ($request->rest_start && $request->rest_end) {
+            $attendance->rests()->delete();
+
             $date = Carbon::parse($attendance->clock_in_time)->format('Y-m-d');
 
-            $attendance->rests()->create([
-                'break_start' => Carbon::parse("{$date} {$request->rest_start}"),
-                'break_end'   => Carbon::parse("{$date} {$request->rest_end}"),
-            ]);
+            foreach ($request->rests as $rest) {
+                if (!empty($rest['break_start']) && !empty($rest['break_end'])) {
+                    $attendance->rests()->create([
+                        'break_start' => "{$date} {$rest['break_start']}",
+                        'break_end'   => "{$date} {$rest['break_end']}",
+                    ]);
+                }
+            }
         }
 
         return response()->json([
@@ -95,7 +106,6 @@ class AttendanceController extends Controller
         $records = Attendance::where('user_id', $userId)
             // ->whereBetween('date', [$start, $end])
             ->whereBetween('clock_in_time', [$start, $end])
-            // ->orderBy('date', 'desc')
             ->orderBy('clock_in_time', 'desc')
             ->get()
             ->map(function ($a) {
@@ -168,10 +178,10 @@ class AttendanceController extends Controller
                 'id' => $a->id,
                 // 'date' => $a->date,
                 'date' => substr($a->clock_in_time, 0, 10),
-                'clock_in_time' => $a->clock_in_time ,
-                'clock_out_time' => $a->clock_out_time ,
+                'clock_in_time' => $a->clock_in_time,
+                'clock_out_time' => $a->clock_out_time,
                 'rest_total' => gmdate('H:i', $restTotal),
-                'total_work' => $totalWork ,
+                'total_work' => $totalWork,
             ];
         });
 
@@ -206,7 +216,6 @@ class AttendanceController extends Controller
             // ✅ 休憩時間を文字列に整形
             $restDisplay = $a->rests->map(function ($r) {
                 if ($r->break_start && $r->break_end) {
-                    // return substr($r->break_start, 0, 5) . ' ～ ' . substr($r->break_end, 0, 5);
                     return Carbon::parse($r->break_start)->format('H:i') . ' ～ ' .
                         Carbon::parse($r->break_end)->format('H:i');
                 }
@@ -225,27 +234,24 @@ class AttendanceController extends Controller
                 return $carry + $end->diffInSeconds($start);
             }, 0);
 
-        // ✅ 労働時間
-        $totalWork = null;
-        if ($a->clock_in_time && $a->clock_out_time) {
-            try {
-                $clockIn  = Carbon::parse($a->clock_in_time);
-                $clockOut = Carbon::parse($a->clock_out_time);
+            // ✅ 労働時間
+            $totalWork = null;
+            if ($a->clock_in_time && $a->clock_out_time) {
+                try {
+                    $clockIn  = Carbon::parse($a->clock_in_time);
+                    $clockOut = Carbon::parse($a->clock_out_time);
                     // ✅ 差分計算
-                    // $workSec = $clockOut->diffInSeconds($clockIn) - $restTotalSec;
                     $workSec = abs($clockOut->diffInSeconds($clockIn) - $restTotalSec);
 
-                    // Log::info('WorkSec:', ['value' => $workSec]);
-
-                if ($workSec > 0) {
-                    $h = floor($workSec / 3600);
-                    $m = floor(($workSec % 3600) / 60);
-                    $totalWork = sprintf('%02d:%02d', $h, $m);
+                    if ($workSec > 0) {
+                        $h = floor($workSec / 3600);
+                        $m = floor(($workSec % 3600) / 60);
+                        $totalWork = sprintf('%02d:%02d', $h, $m);
+                    }
+                } catch (Exception $e) {
+                    $totalWork = null; // parseエラー対策
                 }
-            } catch (Exception $e) {
-                $totalWork = null; // parseエラー対策
             }
-        }
 
             return [
                 'id' => $a->id,
@@ -282,21 +288,26 @@ class AttendanceController extends Controller
     public function userAttendances(Request $request)
     {
         $user = $request->user();
-        // $user = Auth::user();
+
         $records = Attendance::with('rests')
             ->where('user_id', $user->id)
-            // ->orderBy('date', 'desc')
             ->orderBy('clock_in_time', 'desc')
             ->get()
-
             ->map(function ($r) {
                 return [
                     'id' => $r->id,
                     'date' => substr($r->clock_in_time, 0, 10),
                     'clock_in_time' => $r->clock_in_time,
                     'clock_out_time' => $r->clock_out_time,
-                    'rest_start' => optional($r->rests->first())->break_start,
-                    'rest_end' => optional($r->rests->first())->break_end,
+                    // 👇 ここが最重要
+                    'rests' => $r->rests->map(function ($rest) {
+                        return [
+                            'break_start' => $rest->break_start,
+                            'break_end'   => $rest->break_end,
+                        ];
+                    }),
+                    
+                    'note' => $r->note ?? null,
                 ];
             });
         return response()->json($records);

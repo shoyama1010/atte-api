@@ -104,7 +104,6 @@ class AttendanceController extends Controller
             ]);
 
             // 状態を「出勤中」に戻す
-            // $attendance->update(['status' => 'working_after_break']);
             $attendance->update(['status' => 'working']);
 
             return redirect()->route('attendance.index')->with('message', '休憩を終了しました。');
@@ -192,9 +191,9 @@ class AttendanceController extends Controller
         $attendance->note           = $request->note;
         $attendance->save();
         // 🔹 休憩の更新（全削除→再登録）
+
         $attendance->rests()->delete();
 
-        // if ($request->has('rests')) {
         if (!empty($request->rests)) {
             $date = Carbon::parse($attendance->clock_in_time)->format('Y-m-d');
 

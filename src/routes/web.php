@@ -104,7 +104,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('/login', [LoginController::class, 'login'])->name('login.submit');
 });
 // 🔒 管理者認証後のページ
-// Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function () {
 Route::prefix('admin')->name('admin.')->middleware(['auth:admin'])->group(function () {
 
     // 勤怠一覧・詳細

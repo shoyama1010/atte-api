@@ -44,7 +44,7 @@ class CorrectionApprovalController extends Controller
             'clock_out_time' => $correction->after_clock_out,
             'note'           => $correction->reason,
         ]);
-        // $attendance->rests()->delete(); // rests は「既に一般側で修正済み」として使う
+        
         // ▼ 新しい休憩データを再登録
         // correction_requests には休憩情報を保持しない構成なので、
         // 対象 attendance_id の rests テーブルに登録済みの内容を再利用

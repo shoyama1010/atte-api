@@ -37,7 +37,6 @@ class FortifyServiceProvider extends ServiceProvider
         RateLimiter::for('login', function (Request $request) {
             // 1分間に100回までに緩和（または Limit::none() で完全解除）
             return Limit::perMinute(100)->by(Str::lower($request->email) . $request->ip());
-            return Limit::none();  // 完全に無制限にする場合
         });
 
         // 🔹 新規登録処理

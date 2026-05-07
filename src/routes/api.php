@@ -31,13 +31,14 @@ Route::get('/correction-requests/{id}', [CorrectionRequestController::class, 'sh
 
 Route::put('/attendances/{id}', [AttendanceController::class, 'updateApi']);
 
-Route::middleware(['auth:sanctum', 'admin'])
-    ->put('/correction_requests/{id}/approve', [CorrectionRequestController::class, 'approve']);
-
-Route::get('/admin/correction/{id}', [AdminCorrectionRequestController::class, 'show']);
-Route::post('/admin/correction-requests/{id}/approve', [AdminCorrectionRequestController::class, 'approve']);
+Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+        // ->put('/correction_requests/{id}/approve', [CorrectionRequestController::class, 'approve']);
+        Route::get('/admin/corrections/{id}', [AdminCorrectionRequestController::class, 'show']);
+        // Route::post('/admin/correction-requests/{id}/approve', [AdminCorrectionRequestController::class, 'approve']);
+        Route::post('/admin/corrections/{id}/approve', [CorrectionRequestController::class, 'approve']);
+    }
+);
 
 Route::get('/attendances/user/{id}', [AttendanceController::class, 'listByUser']);
 // 月別（休憩付き）
 Route::get('/attendances/user/{id}/monthly', [AttendanceController::class, 'userMonthly']);
-    // Route::get('/attendances/user/{id}', [AttendanceController::class, 'userMonthly']);

@@ -16,7 +16,7 @@ class AuthenticatedSessionController extends Controller
             $request->session()->regenerate();
 
             // ✅ メール認証済みかチェック
-            if (!Auth::user()->hasVerifiedEmail()) {
+            if (!Auth::user()->email_verified_at) {
                 Auth::logout();
                 return redirect()->route('verification.notice')
                     ->with('status', 'メールアドレスの確認がまだ完了していません。');

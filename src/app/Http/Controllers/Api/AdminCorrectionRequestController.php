@@ -15,7 +15,8 @@ class AdminCorrectionRequestController extends Controller
             ->findOrFail($id);
 
         $attendance = $requestData->attendance;
-        $rest = $attendance->rests->first();
+        // $rest = $attendance->rests->first();
+
 
         // 安全に時間を H:i に変換するヘルパー
         $toHM = function ($time) {
@@ -32,14 +33,29 @@ class AdminCorrectionRequestController extends Controller
             // 修正前（元の勤怠）
             'before_clock_in'  => $toHM($attendance->clock_in_time),
             'before_clock_out' => $toHM($attendance->clock_out_time),
-            'before_break_start' => $toHM($rest?->break_start),
-            'before_break_end'   => $toHM($rest?->break_end),
+
+            // 🔥 （配列で返す）
+            'before_rests' => $attendance->rests->map(function ($rest) use ($toHM) {
+                return [
+                    'break_start' => $toHM($rest->break_start),
+                    'break_end'   => $toHM($rest->break_end),
+                ];
+            })->toArray(),
+            // 'before_break_start' => $toHM($rest?->break_start),
+            // 'before_break_end'   => $toHM($rest?->break_end),
 
             // 修正後（管理者が確認する値）
             'after_clock_in'  => $toHM($requestData->after_clock_in),
             'after_clock_out' => $toHM($requestData->after_clock_out),
-            'after_break_start' => $toHM($requestData->after_break_start),
-            'after_break_end'   => $toHM($requestData->after_break_end),
+
+            // 🔥 ここを統一
+            'rests' => $attendance->rests->map(function ($rest) use ($toHM) {
+                return [
+                    'break_start' => $toHM($rest->break_start),
+                    'break_end'   => $toHM($rest->break_end),
+                ];
+            }),
+
         ]);
     }
 
