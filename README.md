@@ -156,6 +156,8 @@ http://localhost:3000/attendances
 
 ４．CSV出力機能
 <img width="1176" height="679" alt="Image" src="https://github.com/user-attachments/assets/d882022e-6901-4e87-bbee-fb97deb44fd2" />
+-出力イメージ
+<img width="806" height="360" alt="Image" src="https://github.com/user-attachments/assets/24328e2a-f1ad-415e-963a-c9520a78a25d" />
 
 ５．打刻機能（① statusは見た目わかるように、色を変えてます。②最初の出勤時のみ、誰かわかるように、ユーザー名を入れてます。）
 ①<img width="1213" height="675" alt="Image" src="https://github.com/user-attachments/assets/f755c14d-846e-4639-94c8-cb577ced8b97" />
