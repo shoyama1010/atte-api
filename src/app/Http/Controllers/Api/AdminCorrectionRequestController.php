@@ -15,24 +15,23 @@ class AdminCorrectionRequestController extends Controller
             ->findOrFail($id);
 
         $attendance = $requestData->attendance;
-        // $rest = $attendance->rests->first();
-
 
         // 安全に時間を H:i に変換するヘルパー
         $toHM = function ($time) {
             if (!$time) return null;
-            return Carbon::parse($time)->format('H:i');
+            return \Carbon\Carbon::parse($time)->format('H:i');
         };
 
         return response()->json([
             'id' => $requestData->id,
             'user_name' => $requestData->user->name,
-            'target_date' => Carbon::parse($attendance->clock_in_time)->format('Y-m-d'),
+
+            'target_date' => \Carbon\Carbon::parse($requestData->created_at)->format('Y-m-d'),
             'reason' => $requestData->reason,
 
             // 修正前（元の勤怠）
-            'before_clock_in'  => $toHM($attendance->clock_in_time),
-            'before_clock_out' => $toHM($attendance->clock_out_time),
+            'before_clock_in'  => $toHM($requestData->clock_in_time),
+            'before_clock_out' => $toHM($requestData->clock_out_time),
 
             // 🔥 （配列で返す）
             'before_rests' => $attendance->rests->map(function ($rest) use ($toHM) {
@@ -41,20 +40,20 @@ class AdminCorrectionRequestController extends Controller
                     'break_end'   => $toHM($rest->break_end),
                 ];
             })->toArray(),
-            // 'before_break_start' => $toHM($rest?->break_start),
-            // 'before_break_end'   => $toHM($rest?->break_end),
 
             // 修正後（管理者が確認する値）
             'after_clock_in'  => $toHM($requestData->after_clock_in),
             'after_clock_out' => $toHM($requestData->after_clock_out),
 
             // 🔥 ここを統一
-            'rests' => $attendance->rests->map(function ($rest) use ($toHM) {
-                return [
-                    'break_start' => $toHM($rest->break_start),
-                    'break_end'   => $toHM($rest->break_end),
-                ];
-            }),
+            'rests' => (
+                $requestData->after_break_start && $requestData->after_break_end
+            )
+                ? [[
+                    'break_start' => $toHM($requestData->after_break_start),
+                    'break_end'   => $toHM($requestData->after_break_end),
+                ]]
+                : [],
 
         ]);
     }
@@ -83,7 +82,8 @@ class AdminCorrectionRequestController extends Controller
         // 申請ステータス更新
         $correction->update([
             'status' => 'approved',
-            'admin_id' => auth('admin')->id(),
+            // 'admin_id' => auth('admin')->id(),
+            'admin_id' => 1, // ←一旦これでOK
         ]);
 
         return response()->json([
