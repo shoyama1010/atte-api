@@ -135,12 +135,10 @@ php artisan key:generate
 
 ## 8　各種機能についての補足
 
-1.1 Next側へのログイン
-- ①マルチログイン(一般、新規登録、管理者)ページの「Next版」から仮ログインページに遷移
-- ②仮ログインページの「一般ユーザー」を選択し入る。
-- ③「勤怠一覧（Next）」ページにて遷移。
+* Next側へのログイン
+マルチログイン(一般、新規登録、管理者)ページの「Next版」(http://localhost/3000/login)から仮ログインページに遷移します。
+- 詳細は、フロント（Next）実装のReadMeを参考に。
 
-http://localhost:3000/attendances
 <img width="1290" height="669" alt="Image" src="https://github.com/user-attachments/assets/f07e10b9-9c4b-4a96-b515-4cec692e9087" />
 
 <img width="1277" height="670" alt="Image" src="https://github.com/user-attachments/assets/d3569c47-07de-448b-826e-82a5137ce2a2" />
