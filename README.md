@@ -135,7 +135,7 @@ php artisan key:generate
 
 ## 8　各種機能についての補足
 
-* Next側へのログイン
+* Next側へのログイン方法（まず、フロント起動：yarn dev）
 - マルチログイン(一般、新規登録、管理者)ページの「Next版」の
 - http://localhost/3000/login : 仮ログインページに遷移します。
 - 詳細は、フロント（Next）実装のReadMeを参考に。
