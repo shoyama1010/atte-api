@@ -148,9 +148,12 @@ php artisan key:generate
 
 ３．打刻機能
 <img width="1277" height="670" alt="Image" src="https://github.com/user-attachments/assets/d3569c47-07de-448b-826e-82a5137ce2a2" />
-  3.1（① statusは見た目わかるように、色を変えてます。②最初の出勤時のみ、誰かわかるように、ユーザー名を入れてます。）
+
+  3.1　① statusは見た目わかるように、色を変えてます。
   ①<img width="1213" height="675" alt="Image" src="https://github.com/user-attachments/assets/f755c14d-846e-4639-94c8-cb577ced8b97" />
-  ②<img width="1366" height="687" alt="Image" src="https://github.com/user-attachments/assets/a57febb7-7525-4833-8bda-d51947f1cce7" />
+  
+  3.2　②最初の出勤時のみ、誰かわかるように、ユーザー名を入れてます。
+  <img width="1366" height="687" alt="Image" src="https://github.com/user-attachments/assets/a57febb7-7525-4833-8bda-d51947f1cce7" />
 
 ４． 管理側ログイン（email -> admin@example.com　　password -> password123）
 <img width="1238" height="673" alt="Image" src="https://github.com/user-attachments/assets/1b4a7636-6912-463b-b964-745ad25bd30f" />
