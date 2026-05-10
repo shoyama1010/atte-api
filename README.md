@@ -1,9 +1,8 @@
 # atte-api（勤怠管理アプリ）
-＊フロントエンド側はUIにて、ログイン機能以外は、Next.jsにて実装予定。API連携にて、SPA化。
+laravelのバックエンドのみでの勤退管理アプリの開発です。残業管理などは順次準備していく予定です。
 
-(バックエンドは完成・API化済)
-
-フロントエンド(Next.js)：https://github.com/shoyama1010/attendance-frontend
+-フロントエンド側はUIにて、ログイン機能以外は、Next.jsにて実装予定。API連携にて、SPA化予定。
+-フロントエンド(Next.js)：https://github.com/shoyama1010/attendance-frontend
 
 # 作成した目的
 
