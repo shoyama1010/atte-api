@@ -135,7 +135,10 @@ php artisan key:generate
 
 ## 8　各種機能についての補足
 
-1.1 Next側へのログイン：マルチログインページの「ログイン」からユーザーで入る⇒メインページ(打刻画面)のヘッダー部の「勤怠一覧（Next）」にて遷移。
+1.1 Next側へのログイン
+- ①マルチログイン(一般、新規登録、管理者)ページの「Next版」から仮ログインページに遷移
+- ②仮ログインページの「一般ユーザー」を選択し入る。
+- ③「勤怠一覧（Next）」ページにて遷移。
 
 http://localhost:3000/attendances
 <img width="1290" height="669" alt="Image" src="https://github.com/user-attachments/assets/f07e10b9-9c4b-4a96-b515-4cec692e9087" />
