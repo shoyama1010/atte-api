@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Exception;
+use App\Models\CorrectionRequest;
 
 class AttendanceController extends Controller
 {
@@ -41,23 +42,21 @@ class AttendanceController extends Controller
     public function show($id)
     {
         $attendance = Attendance::with(['user', 'rests'])   // ← user もロード
-            ->where('id', $id)
-            ->firstOrFail();
+            ->findOrFail($id);
 
         return response()->json([
             'id' => $attendance->id,
-            'user_name' => $attendance->user->name,
-            'date' => $attendance->created_at->format('Y-m-d'),
+            'user_name' => optional($attendance->user)->name,
+            'date' => optional($attendance->created_at)?->format('Y-m-d'),
             'clock_in_time' => $attendance->clock_in_time,
             'clock_out_time' => $attendance->clock_out_time,
-            // 👇 必須
             'rests' => $attendance->rests->map(function ($rest) {
                 return [
                     'break_start' => $rest->break_start,
-                    'break_end'   => $rest->break_end,
+                    'break_end' => $rest->break_end,
                 ];
-            }),
-           
+            })->values()->all(),
+
             'note' => $attendance->note,
             'status' => $attendance->status,
         ]);
@@ -65,37 +64,123 @@ class AttendanceController extends Controller
 
     public function updateApi(Request $request, $id)
     {
-        $attendance = Attendance::with('rests')->findOrFail($id);
+        $attendance = Attendance::with(['rests', 'user'])->findOrFail($id);
 
-        $attendance->update([
-            'clock_in_time'  => $request->clock_in_time,
-            'clock_out_time' => $request->clock_out_time,
-            'note'           => $request->note,
-            'status'         => 'pending',
+        $validated = $request->validate([
+            'clock_in_time' => ['nullable', 'date_format:H:i'],
+            'clock_out_time' => ['nullable', 'date_format:H:i'],
+            'note' => ['nullable', 'string'],
+            'rests' => ['nullable', 'array'],
+            'rests.*.break_start' => ['nullable', 'date_format:H:i'],
+            'rests.*.break_end' => ['nullable', 'date_format:H:i'],
         ]);
 
-        // ✅ restsがあるときだけ削除＆再作成
-        if (!empty($request->rests)) {
+        return DB::transaction(
+            function () use ($attendance, $validated) {
+                $baseDate = $attendance->created_at->format('Y-m-d');
+                $beforeClockIn = $attendance->clock_in_time;
+                $beforeClockOut = $attendance->clock_out_time;
+                $beforeFirstRest = $attendance->rests->first();
+                $baseDate = $attendance->created_at->format('Y-m-d');
 
-            $attendance->rests()->delete();
+                $afterClockIn = !empty($validated['clock_in_time'])
+                    ? Carbon::parse("{$baseDate} {$validated['clock_in_time']}:00")
+                    : null;
 
-            $date = Carbon::parse($attendance->clock_in_time)->format('Y-m-d');
+                $afterClockOut = !empty($validated['clock_out_time'])
+                    ? Carbon::parse("{$baseDate} {$validated['clock_out_time']}:00")
+                    : null;
 
-            foreach ($request->rests as $rest) {
-                if (!empty($rest['break_start']) && !empty($rest['break_end'])) {
+                $rests = collect($validated['rests'] ?? [])
+                    ->filter(function ($rest) {
+                        return !empty($rest['break_start']) && !empty($rest['break_end']);
+                    })
+                    ->values();
+
+                $firstRest = $rests->first();
+
+                $afterBreakStart = $firstRest && !empty($firstRest['break_start'])
+                    ? Carbon::parse("{$baseDate} {$firstRest['break_start']}:00")
+                    : null;
+
+                $afterBreakEnd = $firstRest && !empty($firstRest['break_end'])
+                    ? Carbon::parse("{$baseDate} {$firstRest['break_end']}:00")
+                    : null;
+
+                $attendance->update([
+                    'clock_in_time' => $afterClockIn,
+                    'clock_out_time' => $afterClockOut,
+                    'note' => $validated['note'] ?? null,
+                    'status' => 'pending',
+                ]);
+
+                $attendance->rests()->delete();
+
+                foreach ($rests as $rest) {
                     $attendance->rests()->create([
-                        'break_start' => "{$date} {$rest['break_start']}",
-                        'break_end'   => "{$date} {$rest['break_end']}",
+                        'break_start' => Carbon::parse("{$baseDate} {$rest['break_start']}:00"),
+                        'break_end' => Carbon::parse("{$baseDate} {$rest['break_end']}:00"),
                     ]);
                 }
-            }
-        }
 
-        return response()->json([
-            'message' => 'updated',
-            'attendance_id' => $attendance->id
-        ]);
+                CorrectionRequest::create([
+                    'attendance_id' => $attendance->id,
+                    'user_id' => $attendance->user_id,
+                    'reason' => $validated['note'] ?? null,
+                    'request_type' => 'attendance_change',
+                    // 'request_date' => now()->format('Y-m-d'),
+                    'before_clock_in' => $beforeClockIn,
+                    'before_clock_out' => $beforeClockOut,
+                    'before_break_start' => optional($beforeFirstRest)->break_start,
+                    'before_break_end' => optional($beforeFirstRest)->break_end,
+
+                    'after_clock_in' => $afterClockIn,
+                    'after_clock_out' => $afterClockOut,
+                    'after_break_start' => $afterBreakStart,
+                    'after_break_end' => $afterBreakEnd,
+                    'status' => 'pending',
+                ]);
+
+                return response()->json([
+                    'message' => 'updated',
+                    'attendance_id' => $attendance->id,
+                ]);
+            }
+        );
     }
+    // public function updateApi(Request $request, $id)
+    // {
+    //     $attendance = Attendance::with('rests')->findOrFail($id);
+
+    //     $attendance->update([
+    //         'clock_in_time'  => $request->clock_in_time,
+    //         'clock_out_time' => $request->clock_out_time,
+    //         'note'           => $request->note,
+    //         'status'         => 'pending',
+    //     ]);
+
+    //     // ✅ restsがあるときだけ削除＆再作成
+    //     if (!empty($request->rests)) {
+
+    //         $attendance->rests()->delete();
+
+    //         $date = Carbon::parse($attendance->clock_in_time)->format('Y-m-d');
+
+    //         foreach ($request->rests as $rest) {
+    //             if (!empty($rest['break_start']) && !empty($rest['break_end'])) {
+    //                 $attendance->rests()->create([
+    //                     'break_start' => "{$date} {$rest['break_start']}",
+    //                     'break_end'   => "{$date} {$rest['break_end']}",
+    //                 ]);
+    //             }
+    //         }
+    //     }
+
+    //     return response()->json([
+    //         'message' => 'updated',
+    //         'attendance_id' => $attendance->id
+    //     ]);
+    // }
 
     public function listByUser($userId)
     {
@@ -306,7 +391,7 @@ class AttendanceController extends Controller
                             'break_end'   => $rest->break_end,
                         ];
                     }),
-                    
+
                     'note' => $r->note ?? null,
                 ];
             });

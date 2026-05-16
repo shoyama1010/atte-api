@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\CorrectionRequest;
 use App\Models\Attendance;
+use Carbon\Carbon;
 
 class CorrectionRequestController extends Controller
 {
@@ -14,37 +15,22 @@ class CorrectionRequestController extends Controller
     {
         $status = $request->query('status', 'pending');
 
-        try {
-            $requests = CorrectionRequest::with(['attendance.user'])
-                ->where('status', $status)
-                ->orderBy('created_at', 'desc')
-                ->get()
-                ->map(function ($r) {
-                    return [
-                        'id' => $r->id,
-                        'status' => $r->status,
+        $requests = CorrectionRequest::with(['attendance', 'attendance.user'])
+            ->where('status', $status)
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($r) {
+                return [
+                    'id' => $r->id,
+                    'status' => $r->status,
+                    'user_name' => optional($r->attendance->user)->name,
+                    'request_date' => optional($r->created_at)?->format('Y-m-d'),
+                    'target_date' => optional($r->attendance->created_at)?->format('Y-m-d'),
+                    'reason' => $r->reason,
+                ];
+            });
 
-                        'user_name' => optional(optional($r->attendance)->user)->name ?? '不明',
-
-                        'request_date' => optional($r->created_at)?->format('Y-m-d'),
-
-                        'target_date' => $r->attendance->clock_in_time
-                            ? \Carbon\Carbon::parse($r->attendance->clock_in_time)->format('Y-m-d')
-                            : '不明',
-                        // 'target_date' => optional($r->attendance)?->date
-                        //     ? \Carbon\Carbon::parse($r->attendance->date)->format('Y-m-d')
-                        //     : '不明',
-
-                        'reason' => $r->reason,
-                    ];
-                });
-
-            return response()->json($requests);
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => $e->getMessage()
-            ], 500);
-        }
+        return response()->json($requests);
     }
     
     public function show($id)
@@ -53,29 +39,24 @@ class CorrectionRequestController extends Controller
 
         return response()->json([
             'id' => $request->id,
+            'user_id' => $request->attendance->user->id,
             'user_name' => $request->attendance->user->name,
 
-            // ステータス
             'status' => $request->status,
             'request_date' => $request->created_at->format('Y-m-d'),
-
-            // 対象勤務日
             'target_date' => $request->attendance->created_at->format('Y-m-d'),
 
-            // 修正理由
             'reason' => $request->reason,
 
-            // before (元の値)
-            'before_clock_in'     => $request->before_clock_in,
-            'before_clock_out'    => $request->before_clock_out,
-            'before_break_start'  => $request->before_break_start,
-            'before_break_end'    => $request->before_break_end,
+            'before_clock_in' => optional($request->before_clock_in)?->format('H:i'),
+            'before_clock_out' => optional($request->before_clock_out)?->format('H:i'),
+            'before_break_start' => optional($request->before_break_start)?->format('H:i'),
+            'before_break_end' => optional($request->before_break_end)?->format('H:i'),
 
-            // after (修正後)
-            'after_clock_in'      => $request->after_clock_in,
-            'after_clock_out'     => $request->after_clock_out,
-            'after_break_start'   => $request->after_break_start,
-            'after_break_end'     => $request->after_break_end,
+            'after_clock_in' => optional($request->after_clock_in)?->format('H:i'),
+            'after_clock_out' => optional($request->after_clock_out)?->format('H:i'),
+            'after_break_start' => optional($request->after_break_start)?->format('H:i'),
+            'after_break_end' => optional($request->after_break_end)?->format('H:i'),
         ]);
     }
 
@@ -98,6 +79,60 @@ class CorrectionRequestController extends Controller
 
         return response()->json([
             'message' => 'approved'
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        // dd($request->all()); // ← ★ここに入れる（最初の行）
+
+        $attendance = Attendance::findOrFail($request->attendance_id);
+
+        // 日付を取得（ここ超重要）
+        $date = Carbon::parse($attendance->clock_in_time)->format('Y-m-d');
+
+        // datetimeに変換
+        $afterClockIn = $request->after_clock_in
+            ? Carbon::parse($date . ' ' . $request->after_clock_in)->format('Y-m-d H:i:s')
+            : null;
+
+        $afterClockOut = $request->after_clock_out
+            ? Carbon::parse($date . ' ' . $request->after_clock_out)->format('Y-m-d H:i:s')
+            : null;
+        
+        // 休憩（配列対応）
+        $rests = $request->rests ?? [];
+
+        $afterBreakStart = null;
+        $afterBreakEnd = null;
+
+        if (!empty($rests)) {
+            // 1件目を保存（DB構造に合わせる）
+            $firstRest = $rests[0] ?? null;
+            $afterBreakStart = isset($firstRest['break_start'])
+                ? Carbon::parse($date . ' ' . $firstRest['break_start'])->format('Y-m-d H:i:s')
+                : null;
+
+            $afterBreakEnd = isset($firstRest['break_end'])
+                ? Carbon::parse($date . ' ' . $firstRest['break_end'])->format('Y-m-d H:i:s')
+                : null;
+        }
+
+        $correction = CorrectionRequest::create([
+            'attendance_id'   => $attendance->id,
+            // 'user_id'         => auth()->id(),
+            'user_id' => $attendance->user_id, // ← ★ここに変更
+            'after_clock_in'  => $afterClockIn,
+            'after_clock_out' => $afterClockOut,
+            'after_break_start' => $afterBreakStart,
+            'after_break_end'   => $afterBreakEnd,
+            'reason' => $request->reason,
+            'status' => 'pending',
+        ]);
+
+        return response()->json([
+            'message' => '申請完了',
+            'data' => $correction
         ]);
     }
 }

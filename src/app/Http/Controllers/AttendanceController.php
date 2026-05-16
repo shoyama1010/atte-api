@@ -179,6 +179,7 @@ class AttendanceController extends Controller
         // 🔹 BEFORE（元データ保持）
         $beforeClockIn  = $attendance->clock_in_time;
         $beforeClockOut = $attendance->clock_out_time;
+
         $beforeRests = $attendance->rests->map(function ($r) {
             return [
                 'break_start' => $r->break_start,
@@ -206,6 +207,7 @@ class AttendanceController extends Controller
                 }
             }
         }
+            
         // 🔹 CorrectionRequest（修正申請）
         CorrectionRequest::create([
             'attendance_id'     => $attendance->id,

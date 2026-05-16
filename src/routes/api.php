@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AttendanceController;
 use App\Http\Controllers\Api\CorrectionRequestController;
 use App\Http\Controllers\Api\AdminCorrectionRequestController;
+use App\Http\Controllers\Api\AdminAttendanceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,19 +27,24 @@ Route::get('/test', function () {
 Route::get('/attendances', [AttendanceController::class, 'index']);
 
 Route::get('/attendances/{id}', [AttendanceController::class, 'show']);
+
 Route::get('/correction-requests', [CorrectionRequestController::class, 'index']);
+Route::post('/correction-requests', [CorrectionRequestController::class, 'store']);
+
 Route::get('/correction-requests/{id}', [CorrectionRequestController::class, 'show']);
 
 Route::put('/attendances/{id}', [AttendanceController::class, 'updateApi']);
 
-Route::middleware(['auth:sanctum', 'admin'])->group(function () {
-        // ->put('/correction_requests/{id}/approve', [CorrectionRequestController::class, 'approve']);
-        Route::get('/admin/corrections/{id}', [AdminCorrectionRequestController::class, 'show']);
-        // Route::post('/admin/correction-requests/{id}/approve', [AdminCorrectionRequestController::class, 'approve']);
-        Route::post('/admin/corrections/{id}/approve', [CorrectionRequestController::class, 'approve']);
-    }
-);
+
+// ->put('/correction_requests/{id}/approve', [CorrectionRequestController::class, 'approve']);
+Route::get('/admin/corrections/{id}', [AdminCorrectionRequestController::class, 'show']);
+Route::post('/admin/corrections/{id}/approve', [AdminCorrectionRequestController::class, 'approve']);
+
 
 Route::get('/attendances/user/{id}', [AttendanceController::class, 'listByUser']);
 // 月別（休憩付き）
 Route::get('/attendances/user/{id}/monthly', [AttendanceController::class, 'userMonthly']);
+
+Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+    Route::get('/admin/attendance/list', [AdminAttendanceController::class, 'list']);
+});

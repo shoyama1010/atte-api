@@ -36,6 +36,8 @@ class Attendance extends Model
     ];
 
     protected $casts = [
+        'clock_in_time' => 'datetime',
+        'clock_out_time' => 'datetime',
         'break_start' => 'datetime',
         'break_end'   => 'datetime',
     ];
@@ -65,9 +67,11 @@ class Attendance extends Model
 
     public function rests()
     {
-        return $this->hasMany(Rest::class,
+        return $this->hasMany(
+            Rest::class,
             'attendance_id',
-            'id');
+            'id'
+        );
     }
 
     public function getTotalRestTimeAttribute()

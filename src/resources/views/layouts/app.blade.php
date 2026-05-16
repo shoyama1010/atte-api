@@ -35,7 +35,7 @@
                         <li><a href="{{ route('attendance.index') }}">勤怠</a></li>
                         <li><a href="{{ route('attendance.list') }}">勤怠一覧</a></li>
                         <li><a href="{{ route('stamp_correction_request.list') }}">申請一覧</a></li>
-                        <li><a href="http://localhost:3000/attendances">勤怠一覧（Next）</a></li>
+                        <!-- <li><a href="http://localhost:3000/attendances">勤怠一覧（Next）</a></li> -->
                         <li>
                             <a href="#"
                                 onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
@@ -70,7 +70,7 @@
                         <li><a href="{{ route('login') }}">一般ログイン</a></li>
                         <li><a href="{{ route('register') }}">新規登録</a></li>
                         <li><a href="{{ url('/admin/login') }}">管理者ログイン</a></li>
-                        {{-- <li><a href="http://localhost:3000/attendances">勤怠一覧（Next）</a></li> --}}
+                        <li><a href="http://localhost:3000/attendances">Next.js版（開発中）</a></li>
                     @endif
                 </ul>
             </nav>

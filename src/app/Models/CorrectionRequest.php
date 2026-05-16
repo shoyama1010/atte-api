@@ -26,6 +26,17 @@ class CorrectionRequest extends Model
         'status',
     ];
 
+    protected $casts = [
+        'before_clock_in' => 'datetime:H:i',
+        'before_clock_out' => 'datetime:H:i',
+        'before_break_start' => 'datetime:H:i',
+        'before_break_end' => 'datetime:H:i',
+        'after_clock_in' => 'datetime:H:i',
+        'after_clock_out' => 'datetime:H:i',
+        'after_break_start' => 'datetime:H:i',
+        'after_break_end' => 'datetime:H:i',
+    ];
+
     public function attendance()
     {
         return $this->belongsTo(Attendance::class);
