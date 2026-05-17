@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\AttendanceController;
 use App\Http\Controllers\Api\CorrectionRequestController;
 use App\Http\Controllers\Api\AdminCorrectionRequestController;
 use App\Http\Controllers\Api\AdminAttendanceController;
+use App\Http\Controllers\Api\AdminStaffController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,6 +46,11 @@ Route::get('/attendances/user/{id}', [AttendanceController::class, 'listByUser']
 // 月別（休憩付き）
 Route::get('/attendances/user/{id}/monthly', [AttendanceController::class, 'userMonthly']);
 
-Route::middleware(['auth:sanctum', 'admin'])->group(function () {
-    Route::get('/admin/attendance/list', [AdminAttendanceController::class, 'list']);
-});
+// Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+Route::get('/admin/attendance/list', [AdminAttendanceController::class, 'list']);
+Route::get('/admin/attendance/{id}', [AdminAttendanceController::class, 'show']);
+// });
+
+Route::get('/admin/staff/list', [AdminStaffController::class, 'list']);
+Route::get('/admin/attendance/staff/{id}', [AdminAttendanceController::class, 'staffMonthly']);
+Route::get('/admin/attendance/staff/{id}/csv', [AdminAttendanceController::class, 'staffMonthlyCsv']);
