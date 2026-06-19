@@ -254,9 +254,8 @@ MAIL_MAILER=array
 
 データベースの準備ができたら、以下のコマンドでテストスイート全体を実行できます。
 
-```bash
-php artisan test
-# または
+php artisan test または
+
 ./vendor/bin/phpunit
 
 # 工夫した点(バックエンド)
