@@ -41,19 +41,17 @@ laravelのバックエンドのみでの勤退管理アプリの開発です。�
 # 使用技術
 ・Laravel 8
 
-・nginx 1.21.1
+・Nginx 1.21.1
 
-・php 8.0
+・PHP 8.0
 
-・html
+・html/css (レスポンシブ対応)
 
-・css (レスポンシブ対応)
+・Mysql 8.0.26
 
-・mysql 8.0.26
+・Fortfy（laravel認証）
 
-・fortfy（laravel認証）
-
-・formrequest（laravelバリデーション）
+・FormRequest（laravelバリデーション）
 
 ・Sanctum　v2.14.1（API連携のため：version・downしてます⇒将来的にPHPのversion・upにより、Sanctumもversion・up予定）
 
@@ -275,7 +273,6 @@ rests[0][break_start] のような配列形式の入力に対して、バリデ�
 
 複数の休憩時間をどのようにCSVに出力するか悩み、最終的に「/区切り」でまとめることで解決しました。
 
-- フロントエンド
 ## 承認状態による画面制御
 
 「承認待ちの場合は編集不可」とし、条件分岐によってフォームと閲覧画面を切り替えることで、ユーザーの操作ミスを防ぐ設計にしました。
@@ -286,6 +283,7 @@ rests[0][break_start] のような配列形式の入力に対して、バリデ�
 
 ## 苦労した点
 ## 配列入力フォームの実装
+
 name="rests[0][break_start]" のような構造を理解し、Controller側と連携させる部分で苦労しました。
 
 ## 表示とデータの整合性
