@@ -70,7 +70,7 @@
                         <li><a href="{{ route('login') }}">一般ログイン</a></li>
                         <li><a href="{{ route('register') }}">新規登録</a></li>
                         <li><a href="{{ url('/admin/login') }}">管理者ログイン</a></li>
-                        <li><a href="http://localhost:3000/attendances">Next.js版（開発中）</a></li>
+                        <!-- <li><a href="http://localhost:3000/attendances">Next.js版（開発中）</a></li> -->
                     @endif
                 </ul>
             </nav>
