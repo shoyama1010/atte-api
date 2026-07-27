@@ -155,7 +155,7 @@ php artisan key:generate
 
 ## 公開環境
 
-バックエンドを Railway にデプロイしています。
+バックエンドを Railway にデプロイしています。＊フロント開発後、Verselにて公開予定です。
 
 構成
 
