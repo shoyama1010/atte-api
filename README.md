@@ -1,18 +1,33 @@
 # atte-api（勤怠管理アプリ）
-laravelのバックエンドのみでの勤退管理アプリの開発です。残業管理などは順次準備していく予定です。
 
-- フロントエンド側は、ログイン機能以外は、Next.jsにて実装。API連携にて、SPA化開発中。
+## アプリ概要
+
+ATTEは、従業員の勤怠管理業務を効率化することを目的とした勤怠管理システムです。
+
+一般ユーザーは、出勤・退勤・休憩時間の記録や勤怠履歴の確認、勤務時間修正申請を行うことができます。
+
+管理者は、従業員の勤怠情報や修正申請を管理し、申請内容の承認・却下を行えます。
+
+本アプリは Laravel を用いてバックエンドを構築し、Docker による開発環境で実装しました。
+
+現在は Railway を利用して本番公開しており、メール認証・管理者機能・勤怠修正申請などの主要機能を実装しています。
+
+- なお、フロントエンドは Next.js による SPA 化を進めており、ログイン機能を含む段階的な移行を行っています。
 - フロントエンド(Next.js)：https://github.com/shoyama1010/attendance-frontend
 
-# 作成した目的
+## 作成した目的
 
 想定ユーザー（一般従業員・管理者）として、勤怠打刻から勤怠修正申請と、管理者側では、勤怠の承認による管理及びスタッフ管理を目的としてます。
 
-# アプリケーションURL
-- ローカル環境：http://localhost/attendance
+## アプリケーションURL
+
+ ローカル環境：http://localhost/attendance
 - 自動的にログイン画面に移動します。会員登録してない方は、会員登録⇒メール認証となります。
 
-# 機能一覧
+公開環境（Railway）:https://atte-api-production.up.railway.app/attendance
+
+
+## 機能一覧
 
 ・ユーザー認証（登録＆ログイン）機能  （補足１にて記載）
 
@@ -38,7 +53,7 @@ laravelのバックエンドのみでの勤退管理アプリの開発です。�
 
 ・休憩時間複数機能（補足６）
 
-# 使用技術
+## 使用技術
 ・Laravel 8
 
 ・Nginx 1.21.1
@@ -55,33 +70,34 @@ laravelのバックエンドのみでの勤退管理アプリの開発です。�
 
 ・Sanctum　v2.14.1（API連携のため：version・downしてます⇒将来的にPHPのversion・upにより、Sanctumもversion・up予定）
 
-# テーブル設計
+## テーブル設計
 
 <img width="396" height="519" alt="Image" src="https://github.com/user-attachments/assets/4143f58d-d6e3-4968-887a-053a66b90ccc" />
 
 <img width="398" height="441" alt="Image" src="https://github.com/user-attachments/assets/e33a289b-f874-45ea-95c6-ba1ba519d727" />
 
-# ER図
+## ER図
 
 <img width="1536" height="1024" alt="Image" src="https://github.com/user-attachments/assets/e18749f6-d80f-43f0-bdc0-a47c0588cda7" />
 
-# 環境構築
-## 1 Gitファイルをクローンする
+## 環境構築
+
+ 1 Gitファイルをクローンする
 
 git clone git@github.com:shoyama1010/atte-api.git
 
-## 2 Dockerコンテナを作成する
+ 2 Dockerコンテナを作成する
 
 docker-compose up -d --build
 
-## 3 Laravelパッケージをインストールする
+ 3 Laravelパッケージをインストールする
 
 docker-compose exec php bash
 でPHPコンテナにログインし
 
 composer install
 
-## 4 .envファイルを作成する
+ 4 .envファイルを作成する
 
 PHPコンテナにログインした状態で
 
@@ -105,13 +121,13 @@ MAIL_PORT=1025
 
 MAIL_FROM_ADDRESS=no-reply@atte.com
 
-## 5 テーブルの作成
+ 5 テーブルの作成
 
 docker-compose exec php bash
 
 php artisan migrate
 
-## 6 ダミーデータ作成
+ 6 ダミーデータ作成
 
 （通常は、php artisan db:seedですが）
 
@@ -125,13 +141,13 @@ php artisan migrate:fresh --seed
 
 *AttendanceSeeder.phpにて、30日分自動生成済。
 
-## 7 アプリケーション起動キーの作成
+ 7 アプリケーション起動キーの作成
 
 PHPコンテナにログインした状態で
 
 php artisan key:generate
 
-## 8　各種機能についての補足
+ 8　各種機能についての補足
 
 １．ユーザー認証機能
 <img width="1290" height="669" alt="Image" src="https://github.com/user-attachments/assets/f07e10b9-9c4b-4a96-b515-4cec692e9087" />
