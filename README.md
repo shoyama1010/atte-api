@@ -60,13 +60,19 @@ ATTEは、従業員の勤怠管理業務を効率化することを目的とし�
 
 ・PHP 8.0
 
-・html/css (レスポンシブ対応)
+・html(Blade)
+
+・css (レスポンシブ対応)
 
 ・Mysql 8.0.26
+
+・Docker
 
 ・Fortfy（laravel認証）
 
 ・FormRequest（laravelバリデーション）
+
+・MailHog（ローカル）
 
 ・Sanctum　v2.14.1（API連携のため：version・downしてます⇒将来的にPHPのversion・upにより、Sanctumもversion・up予定）
 
@@ -167,13 +173,13 @@ php artisan key:generate
 
 メール：junpei@yahoo.com
 
-パスワード：********
+パスワード：junpei1234
 
 【管理者】
 
 メール：admin@example.com
 
-パスワード：********
+パスワード：password123
 
 ##　各種機能についての補足
 
