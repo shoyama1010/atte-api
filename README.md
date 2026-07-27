@@ -147,6 +147,34 @@ PHPコンテナにログインした状態で
 
 php artisan key:generate
 
+## 公開環境
+
+バックエンドを Railway にデプロイしています。
+
+構成
+
+- Laravel 11
+- PHP 8.2
+- MySQL（Railway）
+- Docker
+- Nginx
+
+公開URL
+- https://atte-api-production.up.railway.app/login
+
+## デモアカウント
+【一般ユーザー】
+
+メール：junpei@yahoo.com
+
+パスワード：********
+
+【管理者】
+
+メール：admin@example.com
+
+パスワード：********
+
  8　各種機能についての補足
 
 １．ユーザー認証機能
