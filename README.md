@@ -175,7 +175,7 @@ php artisan key:generate
 
 パスワード：********
 
- 8　各種機能についての補足
+##　各種機能についての補足
 
 １．ユーザー認証機能
 <img width="1290" height="669" alt="Image" src="https://github.com/user-attachments/assets/f07e10b9-9c4b-4a96-b515-4cec692e9087" />
