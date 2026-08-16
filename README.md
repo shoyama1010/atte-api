@@ -46,6 +46,43 @@ WorkFlowは、従業員の勤怠管理業務を効率化することを目的と
 
 ・休憩時間複数機能（補足６）
 
+## 各種機能についての補足
+
+１．ユーザー認証機能
+<img width="1290" height="669" alt="Image" src="https://github.com/user-attachments/assets/f07e10b9-9c4b-4a96-b515-4cec692e9087" />
+
+２．メール認証機能(ローカル環境：http://localhost:8025)
+<img width="1190" height="675" alt="Image" src="https://github.com/user-attachments/assets/0f416545-107a-4715-bf93-7f205f1c0748" />
+
+３．打刻機能
+<img width="1277" height="670" alt="Image" src="https://github.com/user-attachments/assets/d3569c47-07de-448b-826e-82a5137ce2a2" />
+
+  3.1　① statusは見た目わかるように、色を変えてます。
+  ①<img width="1213" height="675" alt="Image" src="https://github.com/user-attachments/assets/f755c14d-846e-4639-94c8-cb577ced8b97" />
+  
+  3.2　②最初の出勤時のみ、誰かわかるように、ユーザー名を入れてます。
+  <img width="1366" height="687" alt="Image" src="https://github.com/user-attachments/assets/a57febb7-7525-4833-8bda-d51947f1cce7" />
+
+４． 管理側ログイン（email -> admin@example.com　　password -> password123）
+<img width="1238" height="673" alt="Image" src="https://github.com/user-attachments/assets/1b4a7636-6912-463b-b964-745ad25bd30f" />
+
+５．（CRUD）バリデーション機能（退勤及び休憩の両方に不適切な値になれば、両方バリデーション出すようにしてる）
+<img width="1166" height="669" alt="Image" src="https://github.com/user-attachments/assets/e69f90fd-bf0e-46dc-8060-dd7a82448e6f" />
+
+６．CSV出力機能
+<img width="1176" height="679" alt="Image" src="https://github.com/user-attachments/assets/d882022e-6901-4e87-bbee-fb97deb44fd2" />
+-出力イメージ
+<img width="806" height="360" alt="Image" src="https://github.com/user-attachments/assets/24328e2a-f1ad-415e-963a-c9520a78a25d" />
+
+７．休憩複数機能
+<img width="1160" height="675" alt="Image" src="https://github.com/user-attachments/assets/327db922-8560-4486-8987-e01e10903d53" />
+
+<img width="1169" height="681" alt="Image" src="https://github.com/user-attachments/assets/84203133-a777-4b0c-8d8a-f8ee07e630bb" />
+
+８．スタッフ一覧機能
+<img width="1150" height="677" alt="Image" src="https://github.com/user-attachments/assets/1ed364e0-0183-4976-916b-f4f160942dde" />
+
+
 ## 使用技術
 ・Laravel 8.83
 
@@ -174,41 +211,6 @@ php artisan key:generate
 
 パスワード：password123
 
-## 各種機能についての補足
-
-１．ユーザー認証機能
-<img width="1290" height="669" alt="Image" src="https://github.com/user-attachments/assets/f07e10b9-9c4b-4a96-b515-4cec692e9087" />
-
-２．メール認証機能(ローカル環境：http://localhost:8025)
-<img width="1190" height="675" alt="Image" src="https://github.com/user-attachments/assets/0f416545-107a-4715-bf93-7f205f1c0748" />
-
-３．打刻機能
-<img width="1277" height="670" alt="Image" src="https://github.com/user-attachments/assets/d3569c47-07de-448b-826e-82a5137ce2a2" />
-
-  3.1　① statusは見た目わかるように、色を変えてます。
-  ①<img width="1213" height="675" alt="Image" src="https://github.com/user-attachments/assets/f755c14d-846e-4639-94c8-cb577ced8b97" />
-  
-  3.2　②最初の出勤時のみ、誰かわかるように、ユーザー名を入れてます。
-  <img width="1366" height="687" alt="Image" src="https://github.com/user-attachments/assets/a57febb7-7525-4833-8bda-d51947f1cce7" />
-
-４． 管理側ログイン（email -> admin@example.com　　password -> password123）
-<img width="1238" height="673" alt="Image" src="https://github.com/user-attachments/assets/1b4a7636-6912-463b-b964-745ad25bd30f" />
-
-５．（CRUD）バリデーション機能（退勤及び休憩の両方に不適切な値になれば、両方バリデーション出すようにしてる）
-<img width="1166" height="669" alt="Image" src="https://github.com/user-attachments/assets/e69f90fd-bf0e-46dc-8060-dd7a82448e6f" />
-
-６．CSV出力機能
-<img width="1176" height="679" alt="Image" src="https://github.com/user-attachments/assets/d882022e-6901-4e87-bbee-fb97deb44fd2" />
--出力イメージ
-<img width="806" height="360" alt="Image" src="https://github.com/user-attachments/assets/24328e2a-f1ad-415e-963a-c9520a78a25d" />
-
-７．休憩複数機能
-<img width="1160" height="675" alt="Image" src="https://github.com/user-attachments/assets/327db922-8560-4486-8987-e01e10903d53" />
-
-<img width="1169" height="681" alt="Image" src="https://github.com/user-attachments/assets/84203133-a777-4b0c-8d8a-f8ee07e630bb" />
-
-８．スタッフ一覧機能
-<img width="1150" height="677" alt="Image" src="https://github.com/user-attachments/assets/1ed364e0-0183-4976-916b-f4f160942dde" />
 
 ## テストの実行方法
 
