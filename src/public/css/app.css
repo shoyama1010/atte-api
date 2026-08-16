@@ -42,6 +42,41 @@ body {
   text-decoration: none;
 }
 
+/* 追加 */
+.header-logo {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    font-size: 36px;
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.header-logo__icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 42px;
+    height: 42px;
+    margin-right: 10px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #2563eb, #06b6d4);
+    color: #fff;
+    font-size: 26px;
+    font-weight: 900;
+}
+
+.header-logo__work {
+    color: #fff;
+}
+
+.header-logo__flow {
+    color: #22d3ee;
+}
+
+
 
 .header-nav ul {
     display: flex;

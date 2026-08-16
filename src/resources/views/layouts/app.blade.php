@@ -23,54 +23,58 @@
     <header class="app-header">
         <div class="header-inner">
             {{-- 左側：ロゴ --}}
-            <a href="{{ url('/') }}">
-                <img src="{{ asset('img/logo.jpg') }}" alt="ロゴ" height="40">
+            <a href="{{ url('/') }}" class="header-logo">
+                <span class="header-logo__icon">W</span>
+                <span class="header-logo__work">Work</span><span class="header-logo__flow">Flow</span>
             </a>
+            <!-- <a href="{{ url('/') }}">
+                <img src="{{ asset('img/logo.jpg') }}" alt="ロゴ" height="40">
+            </a> -->
 
             {{-- 右側：ナビメニュー --}}
             <nav class="header-nav">
                 <ul>
                     {{-- 🔹 一般ユーザー用メニュー(Fortify /auth:web） --}}
                     @if (Auth::guard('web')->check())
-                        <li><a href="{{ route('attendance.index') }}">勤怠</a></li>
-                        <li><a href="{{ route('attendance.list') }}">勤怠一覧</a></li>
-                        <li><a href="{{ route('stamp_correction_request.list') }}">申請一覧</a></li>
-                        <!-- <li><a href="http://localhost:3000/attendances">勤怠一覧（Next）</a></li> -->
-                        <li>
-                            <a href="#"
-                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
-                                class="logout-link">
-                                ログアウト
-                            </a>
-                            <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
-                                @csrf
-                            </form>
-                        </li>
+                    <li><a href="{{ route('attendance.index') }}">勤怠</a></li>
+                    <li><a href="{{ route('attendance.list') }}">勤怠一覧</a></li>
+                    <li><a href="{{ route('stamp_correction_request.list') }}">申請一覧</a></li>
+                    <!-- <li><a href="http://localhost:3000/attendances">勤怠一覧（Next）</a></li> -->
+                    <li>
+                        <a href="#"
+                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                            class="logout-link">
+                            ログアウト
+                        </a>
+                        <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
+                    </li>
 
-                        {{-- ▼ 管理者用メニュー（/admin/login でログインしたauth:admin） --}}
+                    {{-- ▼ 管理者用メニュー（/admin/login でログインしたauth:admin） --}}
                     @elseif (Auth::guard('admin')->check())
-                        <li><a href="{{ route('admin.attendance.list') }}">勤怠一覧</a></li>
-                        <li><a href="{{ route('admin.staff.list') }}">スタッフ一覧</a></li>
-                        <li><a href="{{ route('admin.stamp_correction_request.list') }}">申請一覧</a></li>
-                        <li>
-                            <a href="#"
-                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
-                                class="logout-link">
-                                ログアウト
-                            </a>
-                            <form id="logout-form" action="{{ route('admin.logout') }}" method="POST"
-                                style="display: none;">
-                                @csrf
-                            </form>
-                        </li>
+                    <li><a href="{{ route('admin.attendance.list') }}">勤怠一覧</a></li>
+                    <li><a href="{{ route('admin.staff.list') }}">スタッフ一覧</a></li>
+                    <li><a href="{{ route('admin.stamp_correction_request.list') }}">申請一覧</a></li>
+                    <li>
+                        <a href="#"
+                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                            class="logout-link">
+                            ログアウト
+                        </a>
+                        <form id="logout-form" action="{{ route('admin.logout') }}" method="POST"
+                            style="display: none;">
+                            @csrf
+                        </form>
+                    </li>
                     @endif
 
                     {{-- 未ログイン時（一般ユーザーも管理者もログインしていない時だけ） --}}
                     @if (!Auth::guard('web')->check() && !Auth::guard('admin')->check())
-                        <li><a href="{{ route('login') }}">一般ログイン</a></li>
-                        <li><a href="{{ route('register') }}">新規登録</a></li>
-                        <li><a href="{{ url('/admin/login') }}">管理者ログイン</a></li>
-                        <!-- <li><a href="http://localhost:3000/attendances">Next.js版（開発中）</a></li> -->
+                    <li><a href="{{ route('login') }}">一般ログイン</a></li>
+                    <li><a href="{{ route('register') }}">新規登録</a></li>
+                    <li><a href="{{ url('/admin/login') }}">管理者ログイン</a></li>
+                    <!-- <li><a href="http://localhost:3000/attendances">Next.js版（開発中）</a></li> -->
                     @endif
                 </ul>
             </nav>
