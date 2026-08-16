@@ -2,6 +2,9 @@
 
 ## アプリ概要
 
+<img width="1345" height="634" alt="スクリーンショット (6545)" src="https://github.com/user-attachments/assets/924eb90e-eebc-4382-8511-5d8ab4558d79" />
+<img width="1355" height="630" alt="スクリーンショット (6546)" src="https://github.com/user-attachments/assets/c4522f10-306c-4c4b-9e30-38f4f99ef2e7" />
+
 WorkFlowは、従業員の勤怠管理業務を効率化することを目的とした勤怠管理アプリです。
 
 一般ユーザーは、出勤・退勤・休憩時間の記録や勤怠履歴の確認、勤務時間修正申請を行うことができます。
