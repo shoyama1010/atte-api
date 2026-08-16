@@ -204,9 +204,9 @@ php artisan key:generate
 ## デモアカウント
 【一般ユーザー】
 
-メール：junpei@yahoo.com
+メールアドレス：workflow-test@example.com
 
-パスワード：junpei1234
+パスワード：password
 
 【管理者】
 
