@@ -1,8 +1,6 @@
 # WorkFlow（勤怠管理アプリ）
 
 ## アプリ概要
-
-<img width="1345" height="634" alt="スクリーンショット (6545)" src="https://github.com/user-attachments/assets/924eb90e-eebc-4382-8511-5d8ab4558d79" />
 <img width="1355" height="630" alt="スクリーンショット (6546)" src="https://github.com/user-attachments/assets/c4522f10-306c-4c4b-9e30-38f4f99ef2e7" />
 
 WorkFlowは、従業員の勤怠管理業務を効率化することを目的とした勤怠管理アプリです。
@@ -55,10 +53,10 @@ WorkFlowは、従業員の勤怠管理業務を効率化することを目的と
 <img width="1348" height="632" alt="スクリーンショット (6543)" src="https://github.com/user-attachments/assets/74b938d7-91c7-4df6-879c-6a0efea6e1b1" />
 
 ２．メール認証機能(ローカル環境：http://localhost:8025)
-<img width="1190" height="675" alt="Image" src="https://github.com/user-attachments/assets/0f416545-107a-4715-bf93-7f205f1c0748" />
+<img width="1306" height="616" alt="スクリーンショット (6552)" src="https://github.com/user-attachments/assets/905c194a-fb8b-4fe1-a8bd-766b17d6617a" />
 
 ３．打刻機能
-<img width="1277" height="670" alt="Image" src="https://github.com/user-attachments/assets/d3569c47-07de-448b-826e-82a5137ce2a2" />
+<img width="1345" height="634" alt="スクリーンショット (6545)" src="https://github.com/user-attachments/assets/924eb90e-eebc-4382-8511-5d8ab4558d79" />
 
   3.1　① statusは見た目わかるように、色を変えてます。
   ①<img width="1213" height="675" alt="Image" src="https://github.com/user-attachments/assets/f755c14d-846e-4639-94c8-cb577ced8b97" />
@@ -67,7 +65,7 @@ WorkFlowは、従業員の勤怠管理業務を効率化することを目的と
   <img width="1366" height="687" alt="Image" src="https://github.com/user-attachments/assets/a57febb7-7525-4833-8bda-d51947f1cce7" />
 
 ４． 管理側ログイン（email -> admin@example.com　　password -> password123）
-<img width="1238" height="673" alt="Image" src="https://github.com/user-attachments/assets/1b4a7636-6912-463b-b964-745ad25bd30f" />
+<img width="1346" height="630" alt="スクリーンショット (6555)" src="https://github.com/user-attachments/assets/a3d17bea-ecd5-4050-8a39-9fb5f878cb2d" />
 
 ５．（CRUD）バリデーション機能（退勤及び休憩の両方に不適切な値になれば、両方バリデーション出すようにしてる）
 <img width="1166" height="669" alt="Image" src="https://github.com/user-attachments/assets/e69f90fd-bf0e-46dc-8060-dd7a82448e6f" />
