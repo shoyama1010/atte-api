@@ -52,7 +52,7 @@ WorkFlowは、従業員の勤怠管理業務を効率化することを目的と
 ## 各種機能についての補足
 
 １．ユーザー認証機能
-<img width="1290" height="669" alt="Image" src="https://github.com/user-attachments/assets/f07e10b9-9c4b-4a96-b515-4cec692e9087" />
+<img width="1348" height="632" alt="スクリーンショット (6543)" src="https://github.com/user-attachments/assets/74b938d7-91c7-4df6-879c-6a0efea6e1b1" />
 
 ２．メール認証機能(ローカル環境：http://localhost:8025)
 <img width="1190" height="675" alt="Image" src="https://github.com/user-attachments/assets/0f416545-107a-4715-bf93-7f205f1c0748" />
