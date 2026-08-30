@@ -234,17 +234,24 @@ php artisan key:generate
 
 `.env.testing` では以下のように設定します。
 
-```env
+env
+
 APP_ENV=testing
 
 DB_CONNECTION=mysql
+
 DB_HOST=mysql
+
 DB_PORT=3306
+
 DB_DATABASE=laravel_testing
+
 DB_USERNAME=root
+
 DB_PASSWORD=root
 
 CACHE_DRIVER=array
+
 QUEUE_CONNECTION=sync
 
 #### テスト専用DBを作成後、マイグレーションを実行
