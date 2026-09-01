@@ -62,7 +62,7 @@ WorkFlowは、従業員の勤怠管理業務を効率化することを目的と
   <img width="1347" height="671" alt="スクリーンショット (6772)" src="https://github.com/user-attachments/assets/cd854b87-ef9a-4c13-8b60-3d6fa39519a3" />
 
   3.2　②最初の出勤時のみ、誰かわかるように、ユーザー名を入れてます。
-  <img width="1366" height="687" alt="Image" src="https://github.com/user-attachments/assets/a57febb7-7525-4833-8bda-d51947f1cce7" />
+<img width="1353" height="671" alt="スクリーンショット (6773)" src="https://github.com/user-attachments/assets/c7d8ff83-e485-40ba-b22a-9b76c9ac1fd0" />
 
 ４． 管理側ログイン（email -> admin@example.com　　password -> password123）
 <img width="1346" height="630" alt="スクリーンショット (6555)" src="https://github.com/user-attachments/assets/a3d17bea-ecd5-4050-8a39-9fb5f878cb2d" />
