@@ -59,8 +59,8 @@ WorkFlowは、従業員の勤怠管理業務を効率化することを目的と
 <img width="1345" height="634" alt="スクリーンショット (6545)" src="https://github.com/user-attachments/assets/924eb90e-eebc-4382-8511-5d8ab4558d79" />
 
   3.1　① statusは見た目わかるように、色を変えてます。
-  ①<img width="1213" height="675" alt="Image" src="https://github.com/user-attachments/assets/f755c14d-846e-4639-94c8-cb577ced8b97" />
-  
+  <img width="1347" height="671" alt="スクリーンショット (6772)" src="https://github.com/user-attachments/assets/cd854b87-ef9a-4c13-8b60-3d6fa39519a3" />
+
   3.2　②最初の出勤時のみ、誰かわかるように、ユーザー名を入れてます。
   <img width="1366" height="687" alt="Image" src="https://github.com/user-attachments/assets/a57febb7-7525-4833-8bda-d51947f1cce7" />
 
