@@ -71,7 +71,7 @@ WorkFlowは、従業員の勤怠管理業務を効率化することを目的と
 <img width="1166" height="669" alt="Image" src="https://github.com/user-attachments/assets/e69f90fd-bf0e-46dc-8060-dd7a82448e6f" />
 
 ６．CSV出力機能
-<img width="1176" height="679" alt="Image" src="https://github.com/user-attachments/assets/d882022e-6901-4e87-bbee-fb97deb44fd2" />
+<img width="1286" height="671" alt="スクリーンショット (6777)" src="https://github.com/user-attachments/assets/8456c17d-aa9b-43b9-9d02-fbc57e532ef7" />
 -出力イメージ
 <img width="806" height="360" alt="Image" src="https://github.com/user-attachments/assets/24328e2a-f1ad-415e-963a-c9520a78a25d" />
 
@@ -80,8 +80,7 @@ WorkFlowは、従業員の勤怠管理業務を効率化することを目的と
 <img width="1221" height="682" alt="スクリーンショット (6775)" src="https://github.com/user-attachments/assets/013f0cbe-89df-4dcf-9710-09a6f8a56010" />
 
 ８．スタッフ一覧機能
-<img width="1150" height="677" alt="Image" src="https://github.com/user-attachments/assets/1ed364e0-0183-4976-916b-f4f160942dde" />
-
+<img width="1268" height="675" alt="スクリーンショット (6776)" src="https://github.com/user-attachments/assets/b72196ec-0987-487a-8dc2-a574a788fcf7" />
 
 ## 使用技術
 ・Laravel 8.83
