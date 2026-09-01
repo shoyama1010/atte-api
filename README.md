@@ -76,9 +76,8 @@ WorkFlowは、従業員の勤怠管理業務を効率化することを目的と
 <img width="806" height="360" alt="Image" src="https://github.com/user-attachments/assets/24328e2a-f1ad-415e-963a-c9520a78a25d" />
 
 ７．休憩複数機能
-<img width="1160" height="675" alt="Image" src="https://github.com/user-attachments/assets/327db922-8560-4486-8987-e01e10903d53" />
-
-<img width="1169" height="681" alt="Image" src="https://github.com/user-attachments/assets/84203133-a777-4b0c-8d8a-f8ee07e630bb" />
+<img width="1116" height="648" alt="スクリーンショット (6774)" src="https://github.com/user-attachments/assets/e8f4a971-c0dd-45ac-b224-398beb5e2f24" />
+<img width="1221" height="682" alt="スクリーンショット (6775)" src="https://github.com/user-attachments/assets/013f0cbe-89df-4dcf-9710-09a6f8a56010" />
 
 ８．スタッフ一覧機能
 <img width="1150" height="677" alt="Image" src="https://github.com/user-attachments/assets/1ed364e0-0183-4976-916b-f4f160942dde" />
