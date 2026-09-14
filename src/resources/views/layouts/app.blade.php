@@ -7,8 +7,13 @@
     <title>Atte 勤怠管理システム</title>
 
     {{-- ✅ 共通CSS（全ページのベーススタイル） --}}
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/auth.css') }}">
+    <link
+        rel="stylesheet"
+        href="{{ asset('css/app.css') }}?v={{ filemtime(public_path('css/app.css')) }}">
+
+    <link
+        rel="stylesheet"
+        href="{{ asset('css/auth.css') }}?v={{ filemtime(public_path('css/auth.css')) }}">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
@@ -25,7 +30,8 @@
             {{-- 左側：ロゴ --}}
             <a href="{{ url('/') }}" class="header-logo">
                 <span class="header-logo__icon">W</span>
-                <span class="header-logo__work">Work</span><span class="header-logo__flow">Flow</span>
+                <span class="header-logo__work">Work</span>
+                <span class="header-logo__flow">Flow</span>
             </a>
 
             {{-- スマホ用メニューボタン --}}
@@ -33,12 +39,14 @@
                 type="button"
                 class="menu-toggle"
                 id="menu-toggle"
-                aria-label="メニューを開く">
+                aria-label="メニューを開く"
+                aria-expanded="false"
+                aria-controls="header-nav">
+
                 <i class="fa-solid fa-bars"></i>
             </button>
 
             {{-- 右側：ナビメニュー --}}
-            <!-- <nav class="header-nav"> -->
             <nav class="header-nav" id="header-nav">
                 <ul>
                     {{-- 🔹 一般ユーザー用メニュー(Fortify /auth:web） --}}
@@ -46,7 +54,6 @@
                     <li><a href="{{ route('attendance.index') }}">勤怠</a></li>
                     <li><a href="{{ route('attendance.list') }}">勤怠一覧</a></li>
                     <li><a href="{{ route('stamp_correction_request.list') }}">申請一覧</a></li>
-                    <!-- <li><a href="http://localhost:3000/attendances">勤怠一覧（Next）</a></li> -->
                     <li>
                         <a href="#"
                             onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
@@ -95,22 +102,42 @@
     </main>
 
     {{-- ===============================
-         フッター部
+         ハンバーガーメニュー
     ================================ --}}
-    {{-- <footer class="app-footer">
-        © 2025 Atte 勤怠管理システム
-    </footer> --}}
-</body>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuToggle = document.getElementById('menu-toggle');
+            const headerNav = document.getElementById('header-nav');
 
-<script>
-    const menuToggle = document.getElementById('menu-toggle');
-    const headerNav = document.getElementById('header-nav');
+            if (!menuToggle || !headerNav) {
+                return;
+            }
 
-    if (menuToggle && headerNav) {
-        menuToggle.addEventListener('click', () => {
-            headerNav.classList.toggle('is-open');
+            menuToggle.addEventListener('click', function() {
+                const isOpen = headerNav.classList.toggle('is-open');
+
+                menuToggle.setAttribute(
+                    'aria-expanded',
+                    isOpen ? 'true' : 'false'
+                );
+            });
+
+            /*
+             * メニュー内のリンクを押したら
+             * スマホ時はメニューを閉じる
+             */
+            headerNav.querySelectorAll('a').forEach(function(link) {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth <= 768) {
+                        headerNav.classList.remove('is-open');
+                        menuToggle.setAttribute('aria-expanded', 'false');
+                    }
+                });
+            });
         });
-    }
-</script>
+    </script>
+
+</body>
 
 </html>

@@ -1,220 +1,388 @@
+/* ===============================
+   勤務詳細画面
+================================ */
+
 /* 背景 */
 .detail-wrapper {
     width: 100%;
+    padding: 50px 16px;
     background: #f5f5f5;
-    padding: 50px 0;
+    box-sizing: border-box;
 }
 
 /* カード */
 .detail-card {
-    width: 720px;
-    background: #fff;
+    width: 100%;
+    max-width: 720px;
     margin: 0 auto;
     padding: 45px 55px;
+
+    background: #fff;
+
     border-radius: 14px;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+
+    box-shadow:
+        0 6px 16px rgba(0, 0, 0, 0.08);
+
+    box-sizing: border-box;
 }
 
-/* タイトル */
+
+/* ===============================
+   タイトル
+================================ */
+
 .detail-title {
+    margin: 0 0 35px;
+
+    padding-left: 12px;
+
+    border-left: 4px solid #000;
+
     font-size: 22px;
     font-weight: bold;
-    border-left: 4px solid #000;
-    padding-left: 12px;
-    margin-bottom: 35px;
 }
 
-/* テーブル */
+
+/* ===============================
+   詳細テーブル
+================================ */
+
 .detail-table {
     width: 100%;
+
     border-collapse: separate;
     border-spacing: 0 14px;
+
+    table-layout: fixed;
 }
 
 .detail-table th {
     width: 25%;
-    text-align: left;
-    padding: 6px 0;
-    font-weight: bold;
-    color: #333;
-    font-size: 15px;
-}
 
-.detail-table td {
-    background: #fafafa;
-    padding: 12px 14px;
-    border-radius: 6px;
-    color: #444;
+    padding: 6px 12px 6px 0;
+
+    color: #333;
+
     font-size: 15px;
+    font-weight: bold;
+
+    text-align: left;
     vertical-align: middle;
 }
 
-/* 日付2分割 */
+.detail-table td {
+    width: 75%;
+
+    padding: 12px 14px;
+
+    background: #fafafa;
+
+    border-radius: 6px;
+
+    color: #444;
+
+    font-size: 15px;
+
+    vertical-align: middle;
+
+    box-sizing: border-box;
+}
+
+
+/* ===============================
+   日付
+================================ */
+
 .date-split {
     display: flex;
+    flex-wrap: wrap;
+
     gap: 20px;
 }
 
-.year {
-    font-weight: bold;
-}
-
+.year,
 .ymd {
     font-weight: bold;
 }
 
 
-/* 出勤・退勤用（横並びのまま） */
+/* ===============================
+   時刻入力
+================================ */
+
 .edit-field-row {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
+
     gap: 10px;
 }
 
-/* 休憩用（縦並び） */
-.edit-field-column {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+.edit-field-row input[type="time"] {
+    width: 120px;
+    max-width: 100%;
+
+    padding: 5px 6px;
+
+    box-sizing: border-box;
 }
 
-/* 編集フィールド */
-.edit-field input [type="time"] {
-    width: 200px;
-    padding: 6px 12px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 16px;
-    background: #fff;
-}
 
-textarea {
-    width: 90%;
-    height: 90px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
+/* ===============================
+   備考
+================================ */
+
+.edit-field textarea {
+    display: block;
+
+    width: 100%;
+    min-height: 90px;
+
     padding: 12px;
+
+    border: 1px solid #ccc;
+    border-radius: 6px;
+
+    background: #fff;
+
     font-size: 15px;
+
     resize: vertical;
-}
 
-/* 休憩行
-.rest-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-} */
-
-.rest-label {
-    display: inline-block;
-    width: 60px;
-    font-weight: bold;
-    color: #333;
-}
-
-/* --- 出勤・退勤には影響を与えない構成 --- */
-.form-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    /* margin-bottom: 8px; */
-}
-
-.form-row label {
-    width: 60px;
-    font-weight: bold;
-    color: #333;
-}
-
-.time-range {
-    display: flex;
-    align-items: center;
-    gap: 5px;
+    box-sizing: border-box;
 }
 
 
-/* 承認待ちメッセージ（Figma仕様：右寄せ、赤字テキストのみ） */
+/* ===============================
+   エラー表示
+================================ */
+
+.error-message {
+    width: 100%;
+
+    margin: 6px 0 0;
+
+    color: #d32f2f;
+
+    font-size: 13px;
+}
+
+
+/* ===============================
+   承認待ち
+================================ */
+
 .pending-text {
     margin-top: 25px;
-    text-align: right;
+
     color: red;
-    font-weight: bold;
+
     font-size: 14.5px;
+    font-weight: bold;
+
+    text-align: right;
 }
 
-/* ボタン右寄せ */
-.footer-btn-area-right {
-    text-align: right;
-    margin-top: 30px;
+
+/* ===============================
+   ボタン
+================================ */
+
+.footer-btn-area {
+    display: flex;
+    justify-content: flex-end;
+
+    margin-top: 25px;
 }
 
 .btn-submit {
+    min-width: 100px;
+
+    padding: 10px 28px;
+
     background: #000;
     color: #fff;
-    padding: 10px 28px;
-    border-radius: 6px;
+
     border: none;
-    margin-left: 600px;
+    border-radius: 6px;
+
+    font-size: 15px;
+    font-weight: bold;
+
+    white-space: nowrap;
+
+    cursor: pointer;
 }
 
 .btn-submit:hover {
     background: #333;
 }
 
-/* 戻るボタン（灰） */
+
+/* 戻るボタン */
 .btn-back {
+    display: inline-block;
+
+    padding: 10px 30px;
+
     background: #888;
     color: #fff;
-    padding: 10px 30px;
+
     border-radius: 6px;
+
     font-size: 15px;
+
     text-decoration: none;
-    margin-right: 12px;
+
+    white-space: nowrap;
 }
 
 .btn-back:hover {
     background: #666;
 }
 
-/*********************************************
- * レスポンシブ対応
- *********************************************/
-@media (max-width: 768px) {
+
+/* ===============================
+   タブレット・スマホ
+================================ */
+
+@media screen and (max-width: 768px) {
+
+    .detail-wrapper {
+        padding: 24px 8px;
+    }
+
     .detail-card {
-        width: 90%;
-        padding: 30px;
+        width: 100%;
+        max-width: none;
+
+        padding: 28px 20px;
+
+        border-radius: 10px;
     }
 
-    .detail-table th, .detail-table td {
-        display: block;
-        width: 100%;
+    .detail-title {
+        margin-bottom: 25px;
+
+        font-size: 20px;
     }
 
-    .edit-field input[type="time"],
-    .rest-row input[type="time"],
-    textarea {
-        width: 100%;
+    .detail-table {
+        border-spacing: 0 10px;
+    }
+
+    .detail-table th {
+        width: 30%;
+
+        padding-right: 10px;
+
+        font-size: 14px;
+    }
+
+    .detail-table td {
+        width: 70%;
+
+        padding: 10px;
+
+        font-size: 14px;
+    }
+
+    .edit-field-row {
+        gap: 6px;
+    }
+
+    .edit-field-row input[type="time"] {
+        width: 105px;
     }
 
     .footer-btn-area {
-        text-align: center;
+        justify-content: center;
+
+        margin-top: 20px;
     }
 
-    .btn-submit,
-    .btn-back {
-        width: 90%;
-        margin-top: 10px;
+    .btn-submit {
+        width: 100%;
+        max-width: 240px;
+
+        margin: 0;
+    }
+
+    .pending-text {
+        text-align: left;
+
+        font-size: 13px;
     }
 }
 
-/* 出勤・退勤、休憩共通（横並び） */
-.edit-field-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
 
-/* テーブル間のゆとり */
-.detail-table tr + tr {
-    margin-top: 10px;
+/* ===============================
+   小さいスマホ
+================================ */
+
+@media screen and (max-width: 480px) {
+
+    .detail-wrapper {
+        padding: 16px 4px;
+    }
+
+    .detail-card {
+        padding: 22px 14px;
+    }
+
+    .detail-title {
+        font-size: 19px;
+    }
+
+    /*
+     * 小さいスマホでは
+     * 項目名と内容を上下配置
+     */
+    .detail-table,
+    .detail-table tbody,
+    .detail-table tr,
+    .detail-table th,
+    .detail-table td {
+        display: block;
+
+        width: 100%;
+    }
+
+    .detail-table tr {
+        margin-bottom: 14px;
+    }
+
+    .detail-table th {
+        padding: 0 0 6px;
+
+        font-size: 14px;
+    }
+
+    .detail-table td {
+        padding: 10px 12px;
+    }
+
+    .edit-field-row {
+        display: flex;
+        flex-wrap: wrap;
+
+        gap: 8px;
+    }
+
+    .edit-field-row input[type="time"] {
+        flex: 1;
+
+        width: auto;
+        min-width: 95px;
+    }
+
+    .edit-field textarea {
+        width: 100%;
+    }
+
+    .btn-submit {
+        width: 100%;
+        max-width: none;
+    }
 }

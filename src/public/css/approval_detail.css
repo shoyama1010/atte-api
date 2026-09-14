@@ -1,62 +1,136 @@
+/* ===============================
+   承認詳細画面
+================================ */
+
 /* ===== 背景 ===== */
+
 .approval-wrapper {
     width: 100%;
-    padding: 60px 0;
+    padding: 50px 16px;
     background: #f2f2f2;
+    box-sizing: border-box;
 }
+
 
 /* ===== カード ===== */
+
 .approval-card {
-    width: 860px;
+    width: 100%;
+    max-width: 860px;
+
     margin: 0 auto;
-    background: #fff;
     padding: 45px 55px;
+
+    background: #fff;
+
     border-radius: 12px;
-    box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+
+    box-shadow:
+        0 6px 16px rgba(0, 0, 0, 0.08);
+
+    box-sizing: border-box;
 }
 
-/* タイトル */
+
+/* ===== タイトル ===== */
+
 .title {
+    margin: 0 0 35px;
+
+    padding-left: 14px;
+
+    border-left: 4px solid #000;
+
     font-size: 24px;
     font-weight: bold;
-    margin-bottom: 35px;
-    border-left: 4px solid #000;
-    padding-left: 14px;
 }
 
+
 /* ===== テーブル ===== */
+
 .detail-table {
     width: 100%;
-    border-collapse: collapse;
+
     margin-bottom: 40px;
+
+    border-collapse: collapse;
+
+    table-layout: fixed;
 }
 
 .detail-table th {
-    width: 180px;
-    font-weight: 600;
-    color: #333;
-    padding: 18px 0;
+    width: 25%;
+
+    padding: 18px 12px 18px 0;
+
     border-bottom: 1px solid #e5e5e5;
+
+    color: #333;
+
+    font-weight: 600;
+
+    text-align: left;
+    vertical-align: middle;
 }
 
 .detail-table td {
+    width: 75%;
+
     padding: 18px 0;
+
     border-bottom: 1px solid #e5e5e5;
+
     color: #444;
+
+    vertical-align: middle;
+
+    overflow-wrap: anywhere;
+}
+
+/* ===== 日付 ===== */
+
+.date-display {
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 40px;
 }
 
 /* ===== ボタンエリア ===== */
+
 .button-area {
-    text-align: right;
+    display: flex;
+    justify-content: flex-end;
+
     margin-top: 15px;
 }
 
+.button-area form {
+    margin: 0;
+}
+
+.btn-approve,
+.btn-approved {
+    min-width: 110px;
+
+    padding: 10px 28px;
+
+    border: none;
+    border-radius: 6px;
+
+    color: #fff;
+
+    font-weight: bold;
+
+    white-space: nowrap;
+}
+
+
+/* 承認ボタン */
+
 .btn-approve {
     background: #000;
-    color: #fff;
-    padding: 10px 28px;
-    border-radius: 6px;
-    border: none;
+
     cursor: pointer;
 }
 
@@ -64,11 +138,133 @@
     background: #333;
 }
 
-/* 承認済みボタン（Figma準拠：薄グレー） */
+
+/* 承認済み */
+
 .btn-approved {
     background: #bfbfbf;
-    color: #fff;
-    padding: 10px 28px;
-    border-radius: 6px;
-    border: none;
+
+    cursor: default;
+}
+
+
+/* ===============================
+   タブレット・スマホ
+================================ */
+
+@media screen and (max-width: 768px) {
+
+    .approval-wrapper {
+        padding: 24px 8px;
+    }
+
+    .approval-card {
+        max-width: none;
+
+        padding: 28px 20px;
+
+        border-radius: 10px;
+    }
+
+    .title {
+        margin-bottom: 25px;
+
+        font-size: 20px;
+    }
+
+    .detail-table th {
+        width: 30%;
+
+        padding: 14px 10px 14px 0;
+
+        font-size: 14px;
+    }
+
+    .detail-table td {
+        width: 70%;
+
+        padding: 14px 0;
+
+        font-size: 14px;
+    }
+
+    .date-display {
+        gap: 20px;
+    }
+
+    .button-area {
+        justify-content: center;
+
+        margin-top: 20px;
+    }
+
+    .btn-approve,
+    .btn-approved {
+        width: 100%;
+        max-width: 240px;
+    }
+}
+
+/* ===============================
+   小さいスマホ
+================================ */
+
+@media screen and (max-width: 480px) {
+
+    .approval-wrapper {
+        padding: 16px 4px;
+    }
+
+    .approval-card {
+        padding: 22px 14px;
+    }
+
+    .title {
+        font-size: 19px;
+    }
+
+    .detail-table,
+    .detail-table tbody,
+    .detail-table tr,
+    .detail-table th,
+    .detail-table td {
+        display: block;
+
+        width: 100%;
+    }
+
+    .detail-table tr {
+        margin-bottom: 14px;
+    }
+
+    .detail-table th {
+        padding: 0 0 6px;
+
+        border-bottom: none;
+
+        font-size: 14px;
+    }
+
+    .detail-table td {
+        padding: 10px 12px;
+
+        background: #fafafa;
+
+        border-bottom: none;
+        border-radius: 6px;
+    }
+
+    .date-display {
+        gap: 12px;
+    }
+
+    .button-area {
+        width: 100%;
+    }
+
+    .btn-approve,
+    .btn-approved {
+        width: 100%;
+        max-width: none;
+    }
 }

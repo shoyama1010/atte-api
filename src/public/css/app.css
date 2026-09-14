@@ -1,69 +1,83 @@
 /* ===============================
-   共通レイアウト（全ページ共通）
-=============================== */
+   共通レイアウト
+================================ */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
 
 body {
     font-family: "Noto Sans JP", sans-serif;
     background-color: #f8f9fa;
-    margin: 0;
-    padding: 0;
     color: #333;
 }
 
-/* -------------------------------
+
+/* ===============================
    Header
--------------------------------- */
+================================ */
+
 .app-header {
+    width: 100%;
     background-color: #000;
     color: #fff;
-    /* padding: 10px 20px; */
-    padding: 10px 40px; /* 上下左右の余白（左右を広く） */
+    padding: 10px 40px;
 }
 
 .header-inner {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    /* max-width: 1000px; */
-    max-width: 1200px; /* 中央コンテナ幅を制限 */
+    justify-content: space-between;
+
+    width: 100%;
+    max-width: 1200px;
     margin: 0 auto;
 }
 
-/* =====================
-   ヘッダー ロゴ部分
-===================== */
-.header__logo img {
-  display: block;
-  height: 40px;
-}
 
-.header__logo a {
-  display: inline-block;
-  text-decoration: none;
-}
+/* ===============================
+   Logo
+================================ */
 
-/* 追加 */
 .header-logo {
     display: inline-flex;
     align-items: center;
+
     text-decoration: none;
+    white-space: nowrap;
+
     font-size: 36px;
     font-weight: 800;
     letter-spacing: -1.5px;
     line-height: 1;
-    white-space: nowrap;
 }
 
 .header-logo__icon {
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
+
     width: 42px;
     height: 42px;
+
     margin-right: 10px;
+
     border-radius: 10px;
-    background: linear-gradient(135deg, #2563eb, #06b6d4);
+
+    background: linear-gradient(
+        135deg,
+        #2563eb,
+        #06b6d4
+    );
+
     color: #fff;
+
     font-size: 26px;
     font-weight: 900;
 }
@@ -77,49 +91,88 @@ body {
 }
 
 
+/* ===============================
+   Navigation
+================================ */
+
+.header-nav {
+    display: block;
+}
 
 .header-nav ul {
     display: flex;
-    gap: 20px;
+    align-items: center;
+
+    gap: 25px;
+
+    margin: 0;
+    padding: 0;
+
     list-style: none;
+}
+
+.header-nav li {
     margin: 0;
     padding: 0;
 }
 
 .header-nav a {
+    display: inline-block;
+
     color: #fff;
+
     text-decoration: none;
+
     font-weight: 500;
+
+    transition: color 0.2s ease;
 }
 
-/* 追加 */
+.header-nav a:hover,
 .logout-link:hover {
-  color: #007bff;
+    color: #22d3ee;
 }
+
+
+/* ===============================
+   Logout
+================================ */
 
 .logout-form {
-    display: inline;
+    display: none;
 }
 
-.logout-btn {
-    /* background: none; */
-    background: #fff;
+
+/* ===============================
+   Hamburger
+================================ */
+
+.menu-toggle {
+    display: none;
+
+    padding: 4px;
+
+    background: transparent;
     border: none;
-    color: #000;
-    padding: 4px 10px;
-    border-radius: 4px;
+
+    color: #fff;
+
+    font-size: 30px;
+
+    line-height: 1;
+
     cursor: pointer;
-    font-weight: 600;
 }
 
-.logout-btn:hover,
-.header-nav a:hover {
-    color: #007bff;
+.menu-toggle:hover {
+    color: #22d3ee;
 }
 
-/* -------------------------------
+
+/* ===============================
    Main
--------------------------------- */
+================================ */
+
 .app-main {
     max-width: 1100px;
     margin: 60px auto;
@@ -129,93 +182,51 @@ body {
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
 }
 
-/* -------------------------------
+/* ===============================
    Footer
--------------------------------- */
+================================ */
+
 .app-footer {
-    text-align: center;
-    color: #555;
-    font-size: 12px;
     margin-top: 60px;
     padding-bottom: 10px;
+
+    color: #555;
+
+    font-size: 12px;
+
+    text-align: center;
 }
+
 
 /* ===============================
-   ヘッダー共通（既存の部分）
-================================ */
-.app-header {
-  background-color: #000;
-  color: #fff;
-  padding: 10px 40px;
-}
-
-.header-inner {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.header__logo img {
-  display: block;
-  height: 40px;
-}
-
-.header-nav ul {
-  display: flex;
-  gap: 25px;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.header-nav a {
-  color: #fff;
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.logout-btn {
-  background: #fff;
-  color: #000;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 600;
-}
-
-/* =====================
-   ハンバーガーボタン
-===================== */
-
-.menu-toggle {
-    display: none;
-    background: none;
-    border: none;
-    color: #fff;
-    font-size: 28px;
-    cursor: pointer;
-}
-
-/* ===============================
-   レスポンシブ
+   Tablet / Smartphone
+   768px以下
 ================================ */
 
 @media screen and (max-width: 768px) {
 
+    /* -------------------------------
+       Header
+    -------------------------------- */
+
     .app-header {
-        padding: 12px 16px;
+        padding: 10px 16px;
     }
 
     .header-inner {
-        display: flex;
+        position: relative;
+
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
-        position: relative;
+
+        width: 100%;
     }
+
+
+    /* -------------------------------
+       Logo
+    -------------------------------- */
 
     .header-logo {
         font-size: 28px;
@@ -224,22 +235,45 @@ body {
     .header-logo__icon {
         width: 36px;
         height: 36px;
-        font-size: 22px;
+
         margin-right: 8px;
+
+        border-radius: 8px;
+
+        font-size: 22px;
     }
+
+
+    /* -------------------------------
+       Hamburger
+    -------------------------------- */
 
     .menu-toggle {
         display: block;
+
+        margin-left: auto;
     }
+
+
+    /* -------------------------------
+       Navigation
+    -------------------------------- */
 
     .header-nav {
         display: none;
+
         position: absolute;
-        top: calc(100% + 12px);
+
+        top: calc(100% + 10px);
         left: -16px;
+
         width: calc(100% + 32px);
+
         background-color: #000;
+
         z-index: 1000;
+
+        border-top: 1px solid #333;
     }
 
     .header-nav.is-open {
@@ -248,23 +282,77 @@ body {
 
     .header-nav ul {
         display: flex;
+
         flex-direction: column;
-        gap: 0;
+
+        align-items: stretch;
+
         width: 100%;
+
+        gap: 0;
     }
 
     .header-nav li {
         width: 100%;
-        border-top: 1px solid #333;
+
+        border-bottom: 1px solid #333;
     }
 
     .header-nav a {
         display: block;
+
         width: 100%;
-        box-sizing: border-box;
+
         padding: 16px 20px;
+
         text-align: center;
+
+        font-size: 16px;
     }
+
+
+    /* -------------------------------
+       Main
+    -------------------------------- */
+
+     .app-main {
+        width: auto;
+        max-width: none;
+
+        margin: 30px 12px;
+        padding: 20px 12px;
+
+        overflow: visible;
+    }
+    
 }
 
 
+/* ===============================
+   Small Smartphone
+   480px以下
+================================ */
+
+@media screen and (max-width: 480px) {
+
+    .header-logo {
+        font-size: 25px;
+    }
+
+    .header-logo__icon {
+        width: 34px;
+        height: 34px;
+
+        font-size: 20px;
+    }
+
+    .menu-toggle {
+        font-size: 28px;
+    }
+
+    .app-main {
+        margin: 24px 8px;
+        padding: 16px 8px;
+    }
+    
+}

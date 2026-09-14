@@ -20,10 +20,13 @@
             <tr>
                 <th>日付</th>
                 <td>
-                    {{ \Carbon\Carbon::parse($requestData->attendance->clock_in_time)->format('Y年') }}
+                    {{ \Carbon\Carbon::parse($requestData->after_clock_in)->format('H:i') }}
+                    〜
+                    {{ \Carbon\Carbon::parse($requestData->after_clock_out)->format('H:i') }}
+                    <!-- {{ \Carbon\Carbon::parse($requestData->attendance->clock_in_time)->format('Y年') }}
                     <span style="margin-left:40px;">
                         {{ \Carbon\Carbon::parse($requestData->attendance->clock_in_time)->format('n月j日') }}
-                    </span>
+                    </span> -->
                 </td>
             </tr>
 
@@ -31,30 +34,35 @@
                 <th>出勤・退勤</th>
                 <td>
                     {{ \Carbon\Carbon::parse($requestData->after_clock_in)->format('H:i') }}
-                    &nbsp;&nbsp;〜&nbsp;&nbsp;
+                    〜
                     {{ \Carbon\Carbon::parse($requestData->after_clock_out)->format('H:i') }}
                 </td>
+                <!-- <td>
+                    {{ \Carbon\Carbon::parse($requestData->after_clock_in)->format('H:i') }}
+                    &nbsp;&nbsp;〜&nbsp;&nbsp;
+                    {{ \Carbon\Carbon::parse($requestData->after_clock_out)->format('H:i') }}
+                </td> -->
             </tr>
-                {{-- 休憩 --}}
-        @if ($attendance && $attendance->rests && $attendance->rests->count() > 0)
+            {{-- 休憩 --}}
+            @if ($attendance && $attendance->rests && $attendance->rests->count() > 0)
             @foreach ($attendance->rests as $i => $rest)
             <tr>
                 {{-- 休憩{{ $i + 1 }}： --}}
-               <th>{{ $i === 0 ? '休憩' : '休憩' . ($i + 1) }}</th>
-               <td>
-                {{ \Carbon\Carbon::parse($rest->break_start)->format('H:i') }}
-                〜
-                {{ \Carbon\Carbon::parse($rest->break_end)->format('H:i') }}
-                {{-- <br> --}}
+                <th>{{ $i === 0 ? '休憩' : '休憩' . ($i + 1) }}</th>
+                <td>
+                    {{ \Carbon\Carbon::parse($rest->break_start)->format('H:i') }}
+                    〜
+                    {{ \Carbon\Carbon::parse($rest->break_end)->format('H:i') }}
                 </td>
             </tr>
             @endforeach
-        @else
+            @else
             <tr>
                 <th>休憩</th>
-                ーー 〜 ーー
+                <td>ーー 〜 ーー</td>
+                <!-- ーー 〜 ーー -->
             </tr>
-        @endif
+            @endif
 
             <tr>
                 <th>備考</th>
@@ -66,12 +74,12 @@
         <div class="button-area">
 
             @if ($requestData->status === 'pending')
-                <form method="POST" action="{{ route('admin.correction_request.approve', $requestData->id) }}">
-                    @csrf
-                    <button type="submit" class="btn-approve">承認する</button>
-                </form>
+            <form method="POST" action="{{ route('admin.correction_request.approve', $requestData->id) }}">
+                @csrf
+                <button type="submit" class="btn-approve">承認する</button>
+            </form>
             @else
-                <button class="btn-approved" disabled>承認済み</button>
+            <button class="btn-approved" disabled>承認済み</button>
             @endif
         </div>
     </div>
