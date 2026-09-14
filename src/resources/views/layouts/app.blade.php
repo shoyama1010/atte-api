@@ -27,12 +27,19 @@
                 <span class="header-logo__icon">W</span>
                 <span class="header-logo__work">Work</span><span class="header-logo__flow">Flow</span>
             </a>
-            <!-- <a href="{{ url('/') }}">
-                <img src="{{ asset('img/logo.jpg') }}" alt="ロゴ" height="40">
-            </a> -->
+
+            {{-- スマホ用メニューボタン --}}
+            <button
+                type="button"
+                class="menu-toggle"
+                id="menu-toggle"
+                aria-label="メニューを開く">
+                <i class="fa-solid fa-bars"></i>
+            </button>
 
             {{-- 右側：ナビメニュー --}}
-            <nav class="header-nav">
+            <!-- <nav class="header-nav"> -->
+            <nav class="header-nav" id="header-nav">
                 <ul>
                     {{-- 🔹 一般ユーザー用メニュー(Fortify /auth:web） --}}
                     @if (Auth::guard('web')->check())
@@ -74,7 +81,6 @@
                     <li><a href="{{ route('login') }}">一般ログイン</a></li>
                     <li><a href="{{ route('register') }}">新規登録</a></li>
                     <li><a href="{{ url('/admin/login') }}">管理者ログイン</a></li>
-                    <!-- <li><a href="http://localhost:3000/attendances">Next.js版（開発中）</a></li> -->
                     @endif
                 </ul>
             </nav>
@@ -95,5 +101,16 @@
         © 2025 Atte 勤怠管理システム
     </footer> --}}
 </body>
+
+<script>
+    const menuToggle = document.getElementById('menu-toggle');
+    const headerNav = document.getElementById('header-nav');
+
+    if (menuToggle && headerNav) {
+        menuToggle.addEventListener('click', () => {
+            headerNav.classList.toggle('is-open');
+        });
+    }
+</script>
 
 </html>

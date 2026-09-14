@@ -186,54 +186,85 @@ body {
   font-weight: 600;
 }
 
+/* =====================
+   ハンバーガーボタン
+===================== */
+
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 28px;
+    cursor: pointer;
+}
+
 /* ===============================
-   レスポンシブ対応
+   レスポンシブ
 ================================ */
 
-/* 画面幅が900px以下（タブレット以下）の場合 */
-@media screen and (max-width: 900px) {
-  .header-inner {
-    flex-direction: column;       /* 上下に並べる */
-    align-items: flex-start;      /* 左寄せ */
-    padding: 10px 20px;
-  }
+@media screen and (max-width: 768px) {
 
-  .header__logo {
-    margin-bottom: 10px;
-  }
+    .app-header {
+        padding: 12px 16px;
+    }
 
-  .header-nav ul {
-    flex-wrap: wrap;              /* 折り返し許可 */
-    gap: 15px;
-  }
+    .header-inner {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+    }
+
+    .header-logo {
+        font-size: 28px;
+    }
+
+    .header-logo__icon {
+        width: 36px;
+        height: 36px;
+        font-size: 22px;
+        margin-right: 8px;
+    }
+
+    .menu-toggle {
+        display: block;
+    }
+
+    .header-nav {
+        display: none;
+        position: absolute;
+        top: calc(100% + 12px);
+        left: -16px;
+        width: calc(100% + 32px);
+        background-color: #000;
+        z-index: 1000;
+    }
+
+    .header-nav.is-open {
+        display: block;
+    }
+
+    .header-nav ul {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        width: 100%;
+    }
+
+    .header-nav li {
+        width: 100%;
+        border-top: 1px solid #333;
+    }
+
+    .header-nav a {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 16px 20px;
+        text-align: center;
+    }
 }
 
-/* 画面幅が600px以下（スマホサイズ） */
-@media screen and (max-width: 600px) {
-  .header-inner {
-    align-items: center;
-  }
 
-  .header__logo img {
-    height: 32px;                 /* ロゴを少し小さく */
-  }
-
-  .header-nav ul {
-    flex-direction: column;       /* 縦並びに変更 */
-    align-items: center;
-    gap: 10px;
-  }
-
-  .header-nav a {
-    display: block;
-    width: 100%;
-    text-align: center;
-    padding: 8px 0;
-    border-top: 1px solid #333;
-  }
-
-  .logout-btn {
-    margin-top: 5px;
-    width: 100%;
-  }
-}
