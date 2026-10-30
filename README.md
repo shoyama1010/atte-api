@@ -87,7 +87,7 @@ WorkFlowは、従業員の勤怠管理業務を効率化することを目的と
 
 ・Nginx 1.21.1
 
-・PHP 8.2
+・PHP 8.2.35
 
 ・html(Blade)
 
